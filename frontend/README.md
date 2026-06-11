@@ -1,4 +1,13 @@
-# Getting Started with Create React App
+# Pool of Grace - Frontend
+
+Learning platform for women in STEM with modules, community forums, and career resources.
+
+## Design
+
+View all UI designs and mockups in Figma:
+https://www.figma.com/design/tnmbno4d7nWT96PtFASTT0/Pool-of-Grace
+
+## Getting Started
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

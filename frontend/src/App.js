@@ -7,27 +7,27 @@ const paleGreen = '#eafaea';
 const white = '#ffffff';
 
 const styles = {
-  nav: { display:'flex', justifyContent:'space-between', alignItems:'center', padding:'15px 40px', background:white, boxShadow:'0 2px 15px rgba(0,0,0,0.08)', position:'sticky', top:0, zIndex:100 },
+  nav: { display:'flex', justifyContent:'space-between', alignItems:'center', gap:'16px', padding:'15px 40px', background:white, boxShadow:'0 2px 15px rgba(0,0,0,0.08)', position:'sticky', top:0, zIndex:100, flexWrap:'wrap' },
   logo: { color:green, margin:0, fontSize:'26px', fontWeight:'800' },
   logoSpan: { color:lightGreen },
-  page: { minHeight:'100vh', background:'#f8fdf8', fontFamily:'"Segoe UI", Arial, sans-serif' },
+  page: { minHeight:'100vh', background:'#f8fdf8', fontFamily:'"Segoe UI", Arial, sans-serif', overflowX:'hidden' },
   primaryBtn: { background:lightGreen, color:white, border:'none', padding:'12px 28px', borderRadius:'25px', cursor:'pointer', fontSize:'15px', fontWeight:'700', transition:'all 0.2s', boxShadow:'0 4px 15px rgba(92,184,92,0.3)' },
   outlineBtn: { background:'transparent', border:'2px solid '+lightGreen, color:lightGreen, padding:'10px 22px', borderRadius:'25px', cursor:'pointer', fontSize:'14px', fontWeight:'600', marginRight:'10px' },
   input: { width:'100%', padding:'13px 16px', marginBottom:'15px', border:'2px solid #e8f5e8', borderRadius:'12px', fontSize:'15px', boxSizing:'border-box', outline:'none' },
   textarea: { width:'100%', padding:'13px 16px', marginBottom:'15px', border:'2px solid #e8f5e8', borderRadius:'12px', fontSize:'15px', boxSizing:'border-box', outline:'none', resize:'vertical', minHeight:'100px', fontFamily:'"Segoe UI", Arial, sans-serif' },
   card: { background:white, padding:'30px', borderRadius:'16px', boxShadow:'0 4px 20px rgba(0,0,0,0.06)' },
   authPage: { minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'linear-gradient(135deg, #1a5c1a 0%, #2d7a2d 40%, #5cb85c 100%)' },
-  authCard: { background:white, padding:'45px', borderRadius:'20px', width:'420px', boxShadow:'0 25px 70px rgba(0,0,0,0.25)' },
+  authCard: { background:white, padding:'45px', borderRadius:'20px', width:'min(420px, calc(100vw - 32px))', boxShadow:'0 25px 70px rgba(0,0,0,0.25)', boxSizing:'border-box' },
   msg: { background:'#d4edda', color:'#155724', padding:'12px 16px', borderRadius:'10px', textAlign:'center', marginBottom:'15px', fontSize:'14px', fontWeight:'500' },
   errorMsg: { background:'#f8d7da', color:'#721c24', padding:'12px 16px', borderRadius:'10px', textAlign:'center', marginBottom:'15px', fontSize:'14px', fontWeight:'500' },
-  grid2: { display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:'20px' },
-  grid3: { display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'24px' },
-  grid4: { display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'20px' },
+  grid2: { display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))', gap:'20px' },
+  grid3: { display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:'24px' },
+  grid4: { display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:'20px' },
   hero: { textAlign:'center', padding:'100px 40px', background:'linear-gradient(135deg, #1a5c1a 0%, #2d7a2d 50%, #5cb85c 100%)' },
-  section: { padding:'70px 60px' },
-  dashContent: { padding:'40px 60px' },
+  section: { padding:'70px clamp(20px, 5vw, 60px)' },
+  dashContent: { padding:'40px clamp(20px, 5vw, 60px)' },
   statCard: { background:white, padding:'28px', borderRadius:'16px', textAlign:'center', boxShadow:'0 4px 20px rgba(0,0,0,0.06)', borderTop:'4px solid '+lightGreen },
-  adminCard: { background:white, padding:'28px', borderRadius:'16px', boxShadow:'0 4px 20px rgba(0,0,0,0.06)', borderLeft:'5px solid '+lightGreen },
+  adminCard: { background:white, padding:'28px', borderRadius:'16px', boxShadow:'0 4px 20px rgba(0,0,0,0.06)', borderLeft:'5px solid '+lightGreen, minWidth:0 },
   badge: { display:'inline-block', padding:'5px 14px', borderRadius:'20px', fontSize:'12px', fontWeight:'700', marginBottom:'12px', textTransform:'uppercase', letterSpacing:'0.5px' },
   moduleCard: { background:white, padding:'28px', borderRadius:'16px', boxShadow:'0 4px 20px rgba(0,0,0,0.06)', border:'1px solid #e8f5e8', transition:'transform 0.2s, box-shadow 0.2s', cursor:'pointer' },
   progressBar: { background:'#e8f5e8', borderRadius:'10px', height:'10px', overflow:'hidden', marginTop:'8px' },
@@ -37,6 +37,7 @@ export default function App() {
   const [page, setPage] = useState('home');
   const [user, setUser] = useState(null);
   const [selectedModule, setSelectedModule] = useState(null);
+  const [selectedAdminPanel, setSelectedAdminPanel] = useState(null);
 const [, setOnboardingData] = useState(null);
   useEffect(() => {
     const savedUser = localStorage.getItem('poolofgrace_user');
@@ -92,6 +93,11 @@ const [, setOnboardingData] = useState(null);
     setPage('moduleView');
   };
 
+  const openAdminPanel = (panel) => {
+    setSelectedAdminPanel(panel);
+    setPage('adminAction');
+  };
+
   if (page === 'home') return <Home go={go} />;
   if (page === 'register') return <Register go={go} login={login} />;
   if (page === 'login') return <Login go={go} login={login} />;
@@ -101,7 +107,10 @@ const [, setOnboardingData] = useState(null);
   if (page === 'modules') return <Modules go={go} openModule={openModule} />;
   if (page === 'moduleView') return <ModuleView module={selectedModule} go={go} />;
   if (page === 'schedule') return <Schedule user={user} go={go} />;
-  if (page === 'admin') return <Admin user={user} go={go} logout={logout} />;
+  if (page === 'forum') return <Forum go={go} />;
+  if (page === 'career') return <CareerResources go={go} />;
+  if (page === 'admin') return <Admin user={user} go={go} logout={logout} openAdminPanel={openAdminPanel} />;
+  if (page === 'adminAction') return <AdminAction user={user} go={go} panel={selectedAdminPanel} />;
   return <Home go={go} />;
 }
 
@@ -721,13 +730,99 @@ function Dashboard({ user, go, logout }) {
           <div style={styles.card}>
             <h3 style={{ color:green, marginBottom:'8px', fontSize:'17px', fontWeight:'700' }}>Community Forum</h3>
             <p style={{ color:'#666', lineHeight:'1.6', fontSize:'14px', marginBottom:'20px' }}>Connect with other young women on the same journey. Share experiences and support each other.</p>
-            <button style={styles.primaryBtn}>Visit Forum</button>
+            <button style={styles.primaryBtn} onClick={() => go('forum')}>Visit Forum</button>
           </div>
           <div style={styles.card}>
             <h3 style={{ color:green, marginBottom:'8px', fontSize:'17px', fontWeight:'700' }}>Career Resources</h3>
             <p style={{ color:'#666', lineHeight:'1.6', fontSize:'14px', marginBottom:'20px' }}>Browse Ghana tech jobs, internships, scholarships, and certification opportunities.</p>
-            <button style={styles.primaryBtn}>View Opportunities</button>
+            <button style={styles.primaryBtn} onClick={() => go('career')}>View Opportunities</button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Forum({ go }) {
+  const posts = [
+    {
+      author: 'Ama',
+      title: 'Starting HTML as a beginner',
+      category: 'Learning Support',
+      content: 'I just finished the first self-worth modules and want to start HTML. What should I practice first?',
+    },
+    {
+      author: 'Efua',
+      title: 'Mentor session preparation tips',
+      category: 'Mentorship',
+      content: 'Has anyone prepared questions before a mentorship session? I want to make the most of my first call.',
+    },
+    {
+      author: 'Akosua',
+      title: 'Laptop alternatives for learning',
+      category: 'Access and Devices',
+      content: 'If you do not have a laptop yet, you can still use the mobile lessons and save notes offline.',
+    },
+  ];
+
+  return (
+    <div style={styles.page}>
+      <nav style={styles.nav}>
+        <h2 style={styles.logo}>Pool <span style={styles.logoSpan}>of Grace</span></h2>
+        <button style={styles.outlineBtn} onClick={() => go('dashboard')}>Back to Dashboard</button>
+      </nav>
+      <div style={styles.dashContent}>
+        <div style={{ marginBottom:'30px' }}>
+          <h2 style={{ color:green, fontSize:'28px', fontWeight:'800', marginBottom:'8px' }}>Community Forum</h2>
+          <p style={{ color:'#888', fontSize:'16px', maxWidth:'760px' }}>A safe space for questions, encouragement, and peer support while you learn.</p>
+        </div>
+        <div style={styles.grid3}>
+          {posts.map((post, index) => (
+            <div key={index} style={styles.card}>
+              <div style={{ marginBottom:'12px' }}>
+                <span style={{ ...styles.badge, background:'#e8f5e8', color:green }}>{post.category}</span>
+              </div>
+              <h3 style={{ color:green, margin:'0 0 10px', fontSize:'18px' }}>{post.title}</h3>
+              <p style={{ color:'#666', lineHeight:'1.7', fontSize:'14px', marginBottom:'18px' }}>{post.content}</p>
+              <div style={{ color:'#888', fontSize:'13px' }}>Posted by {post.author}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CareerResources({ go }) {
+  const resources = [
+    { title: 'Junior Web Developer', company: 'Local Ghana Startup', type: 'Job', location: 'Accra' },
+    { title: 'Frontend Internship', company: 'Digital Skills Hub', type: 'Internship', location: 'Kumasi' },
+    { title: 'Women in Tech Scholarship', company: 'Tech Education Fund', type: 'Scholarship', location: 'Nationwide' },
+    { title: 'CV and Interview Prep', company: 'Pool of Grace', type: 'Support', location: 'Online' },
+  ];
+
+  return (
+    <div style={styles.page}>
+      <nav style={styles.nav}>
+        <h2 style={styles.logo}>Pool <span style={styles.logoSpan}>of Grace</span></h2>
+        <button style={styles.outlineBtn} onClick={() => go('dashboard')}>Back to Dashboard</button>
+      </nav>
+      <div style={styles.dashContent}>
+        <div style={{ marginBottom:'30px' }}>
+          <h2 style={{ color:green, fontSize:'28px', fontWeight:'800', marginBottom:'8px' }}>Career Resources</h2>
+          <p style={{ color:'#888', fontSize:'16px', maxWidth:'760px' }}>Find opportunities, preparation tools, and next-step guidance for your technology journey.</p>
+        </div>
+        <div style={styles.grid2}>
+          {resources.map((resource, index) => (
+            <div key={index} style={styles.card}>
+              <div style={{ marginBottom:'12px' }}>
+                <span style={{ ...styles.badge, background:'#fff3e8', color:'#b85c00' }}>{resource.type}</span>
+              </div>
+              <h3 style={{ color:green, margin:'0 0 10px', fontSize:'18px' }}>{resource.title}</h3>
+              <p style={{ color:'#666', margin:'0 0 6px', fontSize:'14px' }}>{resource.company}</p>
+              <p style={{ color:'#888', margin:0, fontSize:'13px' }}>{resource.location}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -1341,7 +1436,14 @@ const [completed, setCompleted] = useState(false);  const [answers, setAnswers] 
   );
 }
 
-function Admin({ user, go, logout }) {
+function Admin({ user, go, logout, openAdminPanel }) {
+  const adminItems = [
+    { title:'Manage Users', desc:'View, edit, and manage all participant and mentor accounts on the platform', btn:'View All Users', action:() => openAdminPanel('users') },
+    { title:'Manage Modules', desc:'Add, edit, and organize the 20 learning modules and their content', btn:'Manage Modules', action:() => go('modules') },
+    { title:'Mentorship Sessions', desc:'Monitor all scheduled and completed mentorship sessions across the platform', btn:'View Sessions', action:() => openAdminPanel('sessions') },
+    { title:'Platform Analytics', desc:'Track engagement levels, completion rates, and user activity reports', btn:'View Analytics', action:() => openAdminPanel('analytics') },
+  ];
+
   return (
     <div style={styles.page}>
       <nav style={styles.nav}>
@@ -1373,18 +1475,69 @@ function Admin({ user, go, logout }) {
           ))}
         </div>
         <div style={styles.grid2}>
-          {[
-            { title:'Manage Users', desc:'View, edit, and manage all participant and mentor accounts on the platform', btn:'View All Users' },
-            { title:'Manage Modules', desc:'Add, edit, and organize the 20 learning modules and their content', btn:'Manage Modules' },
-            { title:'Mentorship Sessions', desc:'Monitor all scheduled and completed mentorship sessions across the platform', btn:'View Sessions' },
-            { title:'Platform Analytics', desc:'Track engagement levels, completion rates, and user activity reports', btn:'View Analytics' },
-          ].map((item, i) => (
-            <div key={i} style={styles.adminCard}>
+          {adminItems.map((item, i) => (
+            <div key={i} style={{ ...styles.adminCard, cursor:'pointer', display:'flex', flexDirection:'column', gap:'10px' }} onClick={item.action} role="button" tabIndex={0}>
               <h3 style={{ color:green, marginBottom:'10px', fontSize:'17px', fontWeight:'700' }}>{item.title}</h3>
               <p style={{ color:'#666', lineHeight:'1.6', fontSize:'14px', marginBottom:'20px' }}>{item.desc}</p>
-              <button style={styles.primaryBtn}>{item.btn}</button>
+              <button style={{ ...styles.primaryBtn, width:'100%' }} onClick={(event) => { event.stopPropagation(); item.action(); }}>{item.btn}</button>
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminAction({ user, go, panel }) {
+  const panels = {
+    users: {
+      title: 'Manage Users',
+      summary: 'Review participant and mentor accounts, update profiles, and monitor access.',
+      stats: ['12 participants', '4 mentors', '2 pending approvals'],
+    },
+    modules: {
+      title: 'Manage Modules',
+      summary: 'Edit learning modules, reorder content, and publish updates to the platform.',
+      stats: ['20 learning modules', '7 self-worth', '7 technical', '6 career'],
+    },
+    sessions: {
+      title: 'Mentorship Sessions',
+      summary: 'Track scheduled sessions, attendance, and mentor availability across the program.',
+      stats: ['8 scheduled', '6 completed', '2 upcoming'],
+    },
+    analytics: {
+      title: 'Platform Analytics',
+      summary: 'Monitor engagement, completion trends, and participation across the dashboard.',
+      stats: ['0% completion', '0 active users', '0 forum posts'],
+    },
+  };
+
+  const content = panels[panel] || panels.modules;
+
+  return (
+    <div style={styles.page}>
+      <nav style={styles.nav}>
+        <h2 style={styles.logo}>Pool <span style={styles.logoSpan}>of Grace</span> — Admin</h2>
+        <button style={styles.outlineBtn} onClick={() => go('admin')}>Back to Admin</button>
+      </nav>
+      <div style={styles.dashContent}>
+        <div style={{ maxWidth:'920px', margin:'0 auto' }}>
+          <div style={styles.card}>
+            <span style={{ ...styles.badge, background:'#e8f5e8', color:green }}>Admin Panel</span>
+            <h2 style={{ color:green, fontSize:'28px', fontWeight:'800', margin:'10px 0' }}>{content.title}</h2>
+            <p style={{ color:'#666', fontSize:'16px', lineHeight:'1.7', marginBottom:'24px' }}>{content.summary}</p>
+            <div style={styles.grid3}>
+              {content.stats.map((stat, index) => (
+                <div key={index} style={{ ...styles.statCard, textAlign:'left' }}>
+                  <div style={{ fontSize:'16px', fontWeight:'700', color:green }}>{stat}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display:'flex', gap:'12px', flexWrap:'wrap', marginTop:'28px' }}>
+              <button style={styles.primaryBtn} onClick={() => go('modules')}>Open Learning Modules</button>
+              <button style={styles.outlineBtn} onClick={() => go('admin')}>Back to Dashboard</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
