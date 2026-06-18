@@ -2155,6 +2155,7 @@ function Admin({ openAdminPanel, lang }) {
 function AdminAction({ go, panel, lang }) {
   void lang;
   const [sessionList, setSessionList] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [mentorList,  setMentorList]  = useState([]);
 
   useEffect(()=>{
