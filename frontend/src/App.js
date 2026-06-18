@@ -440,7 +440,7 @@ export default function App() {
   if (page === 'grades')        return <AuthenticatedPortal><Grades modules={modules} lang={lang} /></AuthenticatedPortal>;
   if (page === 'certificates')  return <AuthenticatedPortal><CertificatePage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
   if (page === 'recordings')    return <AuthenticatedPortal><RecordingsPage lang={lang} /></AuthenticatedPortal>;
-  if (page === 'announcements') return <AuthenticatedPortal><AnnouncementsPage lang={lang} /></AuthenticatedPortal>;
+  if (page === 'announcements') return <AuthenticatedPortal><AnnouncementsPage lang={lang} user={user} /></AuthenticatedPortal>;
   if (page === 'calendar')      return <AuthenticatedPortal><CalendarPage lang={lang} /></AuthenticatedPortal>;
   if (page === 'inbox')         return <AuthenticatedPortal><Inbox messages={inboxMessages} lang={lang} /></AuthenticatedPortal>;
   if (page === 'history')       return <AuthenticatedPortal><History modules={modules} lang={lang} /></AuthenticatedPortal>;
@@ -913,6 +913,34 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
   const greeting = hour < 12 ? t('dashboard.greetingMorning',lang) : hour < 17 ? t('dashboard.greetingAfternoon',lang) : t('dashboard.greetingEvening',lang);
   const progressPercent = Math.round((completionsCount / 20) * 100);
 
+  // Live countdown to next Saturday 4:00 PM GMT
+  const getNextSaturday = () => {
+    const now = new Date();
+    const utcNow = new Date(now.toUTCString());
+    const day = utcNow.getDay(); // 0=Sun,6=Sat
+    const daysToSat = day === 6 ? (utcNow.getHours() < 16 ? 0 : 7) : (6 - day);
+    const sat = new Date(utcNow);
+    sat.setDate(sat.getDate() + daysToSat);
+    sat.setHours(16, 0, 0, 0);
+    return sat;
+  };
+  const [countdown, setCountdown] = useState({ d:0, h:0, m:0, s:0 });
+  React.useEffect(() => {
+    const tick = () => {
+      const diff = getNextSaturday() - new Date();
+      if (diff <= 0) { setCountdown({ d:0, h:0, m:0, s:0 }); return; }
+      setCountdown({
+        d: Math.floor(diff / 86400000),
+        h: Math.floor((diff % 86400000) / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <div className="animate-fade-in">
       <div className="page-header">
@@ -931,13 +959,24 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
         <button onClick={()=>go('announcements')} style={{ background:'rgba(255,255,255,0.15)',border:'1px solid rgba(255,255,255,0.3)',color:'#fff',padding:'7px 16px',borderRadius:'18px',cursor:'pointer',fontSize:'13px',fontWeight:'600',fontFamily:'inherit',whiteSpace:'nowrap' }}>View All</button>
       </div>
 
-      {/* Meeting Banner */}
-      <div className="banner-strip">
+      {/* Meeting Banner + Countdown */}
+      <div className="banner-strip" style={{ display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'14px' }}>
         <div>
           <div style={{ fontWeight:'700',fontSize:'15px',marginBottom:'3px' }}>Weekly General Meeting — Every Saturday at 4:00 PM Ghana Time</div>
           <div style={{ color:'rgba(255,255,255,0.82)',fontSize:'13px' }}>Led by Agnes Berko — All participants welcome — Free Google Meet session</div>
         </div>
-        <a href="https://meet.google.com/bii-jzew-udd" target="_blank" rel="noopener noreferrer">Join Meeting</a>
+        <div style={{ display:'flex',alignItems:'center',gap:'16px',flexWrap:'wrap' }}>
+          {/* Countdown */}
+          <div style={{ display:'flex',gap:'8px' }}>
+            {[['d','Days'],['h','Hrs'],['m','Min'],['s','Sec']].map(([k,label])=>(
+              <div key={k} style={{ textAlign:'center',background:'rgba(255,255,255,0.15)',borderRadius:'8px',padding:'6px 10px',minWidth:'42px' }}>
+                <div style={{ fontSize:'18px',fontWeight:'800',lineHeight:1 }}>{String(countdown[k]).padStart(2,'0')}</div>
+                <div style={{ fontSize:'9px',fontWeight:'600',color:'rgba(255,255,255,0.7)',textTransform:'uppercase',marginTop:'2px' }}>{label}</div>
+              </div>
+            ))}
+          </div>
+          <a href="https://meet.google.com/bii-jzew-udd" target="_blank" rel="noopener noreferrer">Join Meeting</a>
+        </div>
       </div>
 
       {/* Stats */}
@@ -3155,43 +3194,54 @@ function RecordingsPage({ lang }) {
 /* =========================================================
    ANNOUNCEMENTS PAGE
    ========================================================= */
-function AnnouncementsPage({ lang }) {
+function AnnouncementsPage({ lang, user }) {
   void lang;
-  const announcements = [
-    {
-      id:1, priority:'high', title:'New Cohort — June 2026 Applications Now Open',
-      body:'Pool of Grace is accepting new participants for the June 2026 cohort. Eligible women aged 16-30 in Kumasi and Accra can apply now. Share with friends and family who would benefit from this free program.',
-      date:'2026-06-17', author:'Agnes Berko (Admin)', pinned:true,
-    },
-    {
-      id:2, priority:'normal', title:'Weekly Saturday Meeting — 4:00 PM Ghana Time',
-      body:'Join our weekly general meeting every Saturday at 4:00 PM Ghana Time (GMT) via Google Meet. Link: https://meet.google.com/bii-jzew-udd — This week we will be discussing Module 3: Building Self-Efficacy.',
-      date:'2026-06-14', author:'Agnes Berko', pinned:true,
-    },
-    {
-      id:3, priority:'normal', title:'Office Hours Now Available — Book with Agnes',
-      body:'Individual office hours with Agnes Berko are now bookable on Tuesdays, Fridays, and Saturdays from 2:00 PM to 3:00 PM Ghana Time. Visit the Mentorship page to book your slot. You can also email a.berko1@alustudent.com.',
-      date:'2026-06-12', author:'Agnes Berko', pinned:false,
-    },
-    {
-      id:4, priority:'normal', title:'Module Recordings Now Available in the Recordings Section',
-      body:'Session recordings for Weeks 1 and 2 are now available in the Recordings section. You can watch or download any session you missed. New recordings are uploaded every Sunday after Saturday meetings.',
-      date:'2026-06-10', author:'Pool of Grace System', pinned:false,
-    },
-    {
-      id:5, priority:'low', title:'Community Forum Guidelines',
-      body:'A reminder to keep all forum posts respectful, supportive, and on-topic. Pool of Grace is a safe space for all young women. Any harassment or inappropriate content will be removed. Report issues to admin.',
-      date:'2026-06-07', author:'Agnes Berko', pinned:false,
-    },
-    {
-      id:6, priority:'low', title:'ALU Research Ethics Compliance Notice',
-      body:'Pool of Grace is operating under ALU Research Ethics Committee approval. All participant data is confidential, stored securely, and will not be shared. Your participation is entirely voluntary and you may withdraw at any time. See the Privacy and Ethics page for full details.',
-      date:'2026-06-03', author:'Agnes Berko (Researcher)', pinned:false,
-    },
+
+  const defaultAnnouncements = [
+    { id:1, priority:'high',   title:'New Cohort — June 2026 Applications Now Open',          body:'Pool of Grace is accepting new participants for the June 2026 cohort. Eligible women aged 16-30 in Kumasi and Accra can apply now. Share with friends and family who would benefit from this free program.',                                                                                                                              date:'2026-06-17', author:'Agnes Berko (Admin)', pinned:true  },
+    { id:2, priority:'normal', title:'Weekly Saturday Meeting — 4:00 PM Ghana Time',           body:'Join our weekly general meeting every Saturday at 4:00 PM Ghana Time (GMT) via Google Meet. Link: https://meet.google.com/bii-jzew-udd — This week we will be discussing Module 3: Building Self-Efficacy.',                                                                                                                               date:'2026-06-14', author:'Agnes Berko',          pinned:true  },
+    { id:3, priority:'normal', title:'Office Hours Now Available — Book with Agnes',           body:'Individual office hours with Agnes Berko are now bookable on Tuesdays, Fridays, and Saturdays from 2:00 PM to 3:00 PM Ghana Time. Visit the Mentorship page to book your slot. You can also email a.berko1@alustudent.com.',                                                                                                              date:'2026-06-12', author:'Agnes Berko',          pinned:false },
+    { id:4, priority:'normal', title:'Module Recordings Now Available',                        body:'Session recordings for Weeks 1 and 2 are now available in the Recordings section. You can watch or download any session you missed. New recordings are uploaded every Sunday after Saturday meetings.',                                                                                                                                    date:'2026-06-10', author:'Pool of Grace System',  pinned:false },
+    { id:5, priority:'low',    title:'Community Forum Guidelines',                             body:'A reminder to keep all forum posts respectful, supportive, and on-topic. Pool of Grace is a safe space for all young women. Any harassment or inappropriate content will be removed. Report issues to admin.',                                                                                                                             date:'2026-06-07', author:'Agnes Berko',          pinned:false },
+    { id:6, priority:'low',    title:'ALU Research Ethics Compliance Notice',                  body:'Pool of Grace is operating under ALU Research Ethics Committee approval. All participant data is confidential, stored securely, and will not be shared. Your participation is entirely voluntary and you may withdraw at any time. See the Privacy and Ethics page for full details.',                                                       date:'2026-06-03', author:'Agnes Berko (Researcher)', pinned:false },
   ];
 
-  const priorityStyle = { high:{ bg:'#fff0f0',border:'#e05252',label:'Important' }, normal:{ bg:'#fff',border:'var(--primary-pale)',label:'' }, low:{ bg:'#fafafa',border:'#e0e0e0',label:'' } };
+  const storedExtra = JSON.parse(localStorage.getItem('pog_announcements') || '[]');
+  const [announcements, setAnnouncements] = useState([...storedExtra, ...defaultAnnouncements]);
   const [active, setActive] = useState(null);
+  const isAdmin = user && user.role === 'admin';
+
+  // New announcement form (admin only)
+  const [showForm, setShowForm] = useState(false);
+  const [newAnn, setNewAnn] = useState({ title:'', body:'', priority:'normal', pinned:false });
+
+  const postAnnouncement = () => {
+    if (!newAnn.title || !newAnn.body) return;
+    const entry = {
+      id: Date.now(), ...newAnn,
+      date: new Date().toISOString().split('T')[0],
+      author: 'Agnes Berko (Admin)',
+    };
+    const updated = [entry, ...storedExtra];
+    localStorage.setItem('pog_announcements', JSON.stringify(updated));
+    setAnnouncements([entry, ...announcements]);
+    setNewAnn({ title:'', body:'', priority:'normal', pinned:false });
+    setShowForm(false);
+    setActive(entry);
+  };
+
+  const deleteAnnouncement = (id) => {
+    const updatedExtra = storedExtra.filter(a => a.id !== id);
+    localStorage.setItem('pog_announcements', JSON.stringify(updatedExtra));
+    setAnnouncements(prev => prev.filter(a => a.id !== id));
+    if (active && active.id === id) setActive(null);
+  };
+
+  const priorityStyle = {
+    high:   { bg:'#fff0f0', border:'#e05252', label:'Important' },
+    normal: { bg:'#fff',    border:'var(--primary-pale)', label:'' },
+    low:    { bg:'#fafafa', border:'#e0e0e0', label:'' },
+  };
 
   return (
     <div className="animate-fade-in">
@@ -3200,16 +3250,53 @@ function AnnouncementsPage({ lang }) {
         <p>Important updates, meeting notices, and platform news from Pool of Grace</p>
       </div>
 
+      {/* Admin: Post new announcement */}
+      {isAdmin && (
+        <div className="premium-card" style={{ padding:'22px 26px',marginBottom:'24px',borderLeft:'5px solid var(--secondary)' }}>
+          <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom: showForm ? '18px' : 0 }}>
+            <h3 style={{ color:'var(--primary)',fontSize:'15px',fontWeight:'700',margin:0 }}>Post New Announcement</h3>
+            <button className={showForm ? 'btn-outline' : 'btn-primary'} style={{ fontSize:'13px',padding:'8px 18px' }} onClick={()=>setShowForm(f=>!f)}>
+              {showForm ? 'Cancel' : 'New Announcement'}
+            </button>
+          </div>
+          {showForm && (
+            <div>
+              <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Title *</label>
+              <input className="premium-input" placeholder="Announcement title..." value={newAnn.title} onChange={e=>setNewAnn({...newAnn,title:e.target.value})} />
+              <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Message *</label>
+              <textarea className="premium-input" style={{ minHeight:'80px',resize:'vertical',marginBottom:'12px' }} placeholder="Announcement details..." value={newAnn.body} onChange={e=>setNewAnn({...newAnn,body:e.target.value})} />
+              <div style={{ display:'flex',gap:'12px',alignItems:'center',flexWrap:'wrap',marginBottom:'14px' }}>
+                <div>
+                  <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Priority</label>
+                  <select className="premium-input" style={{ marginBottom:0,width:'auto' }} value={newAnn.priority} onChange={e=>setNewAnn({...newAnn,priority:e.target.value})}>
+                    <option value="normal">Normal</option>
+                    <option value="high">Important (red)</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+                <label style={{ display:'flex',alignItems:'center',gap:'8px',cursor:'pointer',marginTop:'16px' }}>
+                  <input type="checkbox" checked={newAnn.pinned} onChange={e=>setNewAnn({...newAnn,pinned:e.target.checked})} style={{ accentColor:'var(--primary)',width:'16px',height:'16px' }} />
+                  <span style={{ fontSize:'13px',fontWeight:'600' }}>Pin to top</span>
+                </label>
+              </div>
+              <button className="btn-primary" onClick={postAnnouncement} disabled={!newAnn.title||!newAnn.body}>Post Announcement</button>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="two-col-panel" style={{ alignItems:'flex-start' }}>
         {/* List */}
         <div style={{ display:'flex',flexDirection:'column',gap:'10px' }}>
           {announcements.map(a => {
-            const s = priorityStyle[a.priority];
+            const s = priorityStyle[a.priority] || priorityStyle.normal;
+            const isCustom = storedExtra.some(e => e.id === a.id);
             return (
-              <div key={a.id} onClick={() => setActive(a)} style={{
+              <div key={a.id} onClick={()=>setActive(a)} style={{
                 padding:'16px 18px',borderRadius:'12px',cursor:'pointer',transition:'var(--transition)',
                 border:'2px solid '+(active?.id===a.id?'var(--primary-light)':s.border),
-                background:active?.id===a.id?'var(--primary-pale)':s.bg
+                background:active?.id===a.id?'var(--primary-pale)':s.bg,
+                position:'relative'
               }}>
                 <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'8px' }}>
                   <div style={{ flex:1,minWidth:0 }}>
@@ -3218,6 +3305,9 @@ function AnnouncementsPage({ lang }) {
                     <h4 style={{ color:'var(--primary)',fontSize:'14px',fontWeight:'700',margin:'0 0 4px',lineHeight:'1.4' }}>{a.title}</h4>
                     <p style={{ color:'var(--text-muted)',fontSize:'12px',margin:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{a.body.substring(0,70)}...</p>
                   </div>
+                  {isAdmin && isCustom && (
+                    <button onClick={e=>{e.stopPropagation();deleteAnnouncement(a.id);}} style={{ background:'none',border:'none',color:'#e05252',cursor:'pointer',fontSize:'16px',padding:'2px 6px',flexShrink:0 }}>X</button>
+                  )}
                 </div>
                 <div style={{ fontSize:'11px',color:'var(--text-muted)',marginTop:'8px' }}>{a.date} — {a.author}</div>
               </div>
@@ -3358,7 +3448,25 @@ function ProfilePage({ user, lang, modules }) {
   void lang;
   const completedModules = modules ? modules.filter(m => m.completed) : [];
   const passedWithDistinction = completedModules.filter(m => m.score >= 5).length;
-  const initials = user ? `${(user.firstName||'')[0]}${(user.lastName||'')[0]}`.toUpperCase() : 'PG';
+
+  // Editable profile fields persisted in localStorage
+  const savedProfile = JSON.parse(localStorage.getItem('pog_profile') || '{}');
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState({
+    firstName:  savedProfile.firstName  || (user ? user.firstName : ''),
+    lastName:   savedProfile.lastName   || (user ? user.lastName  : ''),
+    bio:        savedProfile.bio        || '',
+    location:   savedProfile.location   || '',
+    photoUrl:   savedProfile.photoUrl   || '',
+  });
+
+  const saveProfile = () => {
+    localStorage.setItem('pog_profile', JSON.stringify(form));
+    setEditing(false);
+  };
+
+  const displayName = `${form.firstName} ${form.lastName}`.trim() || 'Participant';
+  const initials = `${(form.firstName||'')[0]}${(form.lastName||'')[0]}`.toUpperCase() || 'PG';
 
   const stats = [
     { label:'Modules Completed',    value: completedModules.length, color:'var(--primary)' },
@@ -3376,20 +3484,61 @@ function ProfilePage({ user, lang, modules }) {
 
       {/* Profile card */}
       <div className="premium-card" style={{ padding:'clamp(22px,4vw,36px)',marginBottom:'28px' }}>
-        <div style={{ display:'flex',alignItems:'center',gap:'24px',flexWrap:'wrap',marginBottom:'26px' }}>
-          <div style={{ width:'80px',height:'80px',borderRadius:'50%',background:'var(--primary)',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:'28px',fontWeight:'800',flexShrink:0 }}>
-            {initials}
+        <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'14px',marginBottom:'22px' }}>
+          <div style={{ display:'flex',alignItems:'center',gap:'20px',flexWrap:'wrap' }}>
+            {/* Avatar */}
+            {form.photoUrl ? (
+              <img src={form.photoUrl} alt={displayName} style={{ width:'80px',height:'80px',borderRadius:'50%',objectFit:'cover',border:'3px solid var(--primary)',flexShrink:0 }}
+                onError={e=>{e.target.style.display='none';}} />
+            ) : (
+              <div style={{ width:'80px',height:'80px',borderRadius:'50%',background:'linear-gradient(135deg,var(--primary),var(--primary-light))',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:'28px',fontWeight:'800',flexShrink:0 }}>
+                {initials}
+              </div>
+            )}
+            <div>
+              <h3 style={{ color:'var(--primary)',fontSize:'clamp(18px,3vw,22px)',fontWeight:'800',margin:'0 0 4px' }}>{displayName}</h3>
+              <p style={{ color:'var(--text-muted)',fontSize:'14px',margin:'0 0 4px' }}>{user ? user.email : ''}</p>
+              {form.location && <p style={{ color:'var(--text-muted)',fontSize:'13px',margin:'0 0 6px' }}>{form.location}</p>}
+              {form.bio && <p style={{ color:'var(--text-main)',fontSize:'13px',margin:'0 0 6px',fontStyle:'italic' }}>"{form.bio}"</p>}
+              <span className="badge" style={{ background:'var(--primary-pale)',color:'var(--primary)',textTransform:'capitalize' }}>
+                {user ? user.role : 'participant'}
+              </span>
+            </div>
           </div>
-          <div>
-            <h3 style={{ color:'var(--primary)',fontSize:'clamp(18px,3vw,22px)',fontWeight:'800',margin:'0 0 4px' }}>
-              {user ? `${user.firstName} ${user.lastName}` : 'Participant'}
-            </h3>
-            <p style={{ color:'var(--text-muted)',fontSize:'14px',margin:'0 0 6px' }}>{user ? user.email : ''}</p>
-            <span className="badge" style={{ background:'var(--primary-pale)',color:'var(--primary)',textTransform:'capitalize' }}>
-              {user ? user.role : 'participant'}
-            </span>
-          </div>
+          <button className="btn-outline" style={{ fontSize:'13px',padding:'8px 18px' }} onClick={()=>setEditing(e=>!e)}>
+            {editing ? 'Cancel' : 'Edit Profile'}
+          </button>
         </div>
+
+        {/* Edit form */}
+        {editing && (
+          <div style={{ background:'var(--bg-main)',padding:'20px',borderRadius:'12px',border:'2px solid var(--primary-pale)',marginBottom:'22px' }}>
+            <h4 style={{ color:'var(--primary)',fontWeight:'700',marginBottom:'14px',fontSize:'15px' }}>Edit Your Profile</h4>
+            <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:'12px',marginBottom:'12px' }}>
+              <div>
+                <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>First Name</label>
+                <input className="premium-input" style={{ marginBottom:0 }} value={form.firstName} onChange={e=>setForm({...form,firstName:e.target.value})} placeholder="First name" />
+              </div>
+              <div>
+                <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Last Name</label>
+                <input className="premium-input" style={{ marginBottom:0 }} value={form.lastName} onChange={e=>setForm({...form,lastName:e.target.value})} placeholder="Last name" />
+              </div>
+              <div>
+                <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Location (City, Country)</label>
+                <input className="premium-input" style={{ marginBottom:0 }} value={form.location} onChange={e=>setForm({...form,location:e.target.value})} placeholder="e.g. Kumasi, Ghana" />
+              </div>
+              <div>
+                <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Photo URL (optional)</label>
+                <input className="premium-input" style={{ marginBottom:0 }} value={form.photoUrl} onChange={e=>setForm({...form,photoUrl:e.target.value})} placeholder="https://example.com/photo.jpg" />
+              </div>
+            </div>
+            <div style={{ marginBottom:'14px' }}>
+              <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Short Bio (1-2 sentences)</label>
+              <textarea className="premium-input" style={{ marginBottom:0,minHeight:'72px',resize:'vertical' }} value={form.bio} onChange={e=>setForm({...form,bio:e.target.value})} placeholder="Tell us a little about yourself..." />
+            </div>
+            <button className="btn-primary" style={{ padding:'10px 28px' }} onClick={saveProfile}>Save Profile</button>
+          </div>
+        )}
 
         {/* Stats row */}
         <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))',gap:'12px',marginBottom:'26px' }}>
