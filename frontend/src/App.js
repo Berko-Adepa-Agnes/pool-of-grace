@@ -1383,7 +1383,7 @@ function Schedule({ go, lang, onBooked }) {
           <div style={{ flex:1,minWidth:'200px' }}>
             <div style={{ fontWeight:'800',fontSize:'16px',color:'var(--primary)',marginBottom:'2px' }}>{agnesInfo.name}</div>
             <div style={{ fontSize:'13px',color:'var(--text-muted)',marginBottom:'12px' }}>{agnesInfo.role} — Pool of Grace</div>
-            <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:'8px',marginBottom:'14px' }}>
+            <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:'8px',marginBottom:'16px' }}>
               {agnesSlots.map((slot,i)=>(
                 <div key={i} style={{ background:'var(--secondary-pale)',padding:'10px 14px',borderRadius:'9px',borderLeft:'4px solid var(--secondary)' }}>
                   <div style={{ fontSize:'12px',fontWeight:'700',color:'#7a5b13' }}>{slot.day}</div>
@@ -1392,11 +1392,18 @@ function Schedule({ go, lang, onBooked }) {
                 </div>
               ))}
             </div>
-            <div style={{ display:'flex',gap:'12px',alignItems:'center',flexWrap:'wrap' }}>
-              <a href={`mailto:${agnesInfo.email}`} style={{ display:'inline-flex',alignItems:'center',gap:'6px',background:'var(--primary)',color:'#fff',padding:'8px 18px',borderRadius:'18px',fontWeight:'700',fontSize:'13px' }}>
+            <div style={{ display:'flex',gap:'10px',alignItems:'center',flexWrap:'wrap' }}>
+              <a href={`mailto:${agnesInfo.email}`} style={{ display:'inline-flex',alignItems:'center',gap:'6px',background:'var(--primary)',color:'#fff',padding:'9px 18px',borderRadius:'18px',fontWeight:'700',fontSize:'13px',textDecoration:'none' }}>
                 Email: {agnesInfo.email}
               </a>
-              <span style={{ fontSize:'12px',color:'var(--text-muted)' }}>or book below using the form</span>
+              <button className="btn-primary" style={{ background:'var(--secondary)',borderColor:'var(--secondary)',fontSize:'13px',padding:'9px 20px' }}
+                onClick={()=>{
+                  setBooking(prev => ({ ...prev, type:'agnes-office', mentorId: mentors.length > 0 ? String(mentors[0].id) : '1' }));
+                  setStep(2);
+                }}>
+                Book Agnes Office Hours
+              </button>
+              <span style={{ fontSize:'12px',color:'var(--text-muted)' }}>or choose a mentor below</span>
             </div>
           </div>
         </div>
@@ -1440,30 +1447,47 @@ function Schedule({ go, lang, onBooked }) {
           <div>
             <h3 style={{ color:'var(--primary)',fontSize:'17px',fontWeight:'700',marginBottom:'18px' }}>Available Ghanaian Mentors</h3>
             <div style={{ display:'flex',flexDirection:'column',gap:'12px' }}>
-              {mentors.map(mentor=>(
-                <div key={mentor.id} style={{
-                  padding:'20px',borderRadius:'14px',cursor:'pointer',transition:'var(--transition)',
-                  border:'2px solid '+(booking.mentorId===String(mentor.id)?'var(--primary-light)':'var(--primary-pale)'),
-                  background:booking.mentorId===String(mentor.id)?'var(--primary-pale)':'#fff'
-                }} onClick={()=>setBooking({...booking,mentorId:String(mentor.id)})}>
-                  <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'12px' }}>
-                    <div style={{ display:'flex',gap:'14px' }}>
-                      <div className="mentor-avatar">{mentor.name.charAt(0)}</div>
-                      <div>
-                        <h4 style={{ color:'var(--text-main)',margin:'0 0 3px',fontSize:'15px',fontWeight:'700' }}>{mentor.name}</h4>
-                        <p style={{ color:'var(--text-muted)',fontSize:'13px',margin:0 }}>{mentor.role} at {mentor.company} ({mentor.experience})</p>
-                        <p style={{ color:'var(--primary)',fontSize:'13px',fontWeight:'600',marginTop:'4px' }}>Speciality: {mentor.speciality}</p>
+              {mentors.length === 0 ? (
+                <div style={{ padding:'20px',textAlign:'center',color:'var(--text-muted)',background:'var(--bg-main)',borderRadius:'12px' }}>
+                  <p style={{ marginBottom:'8px' }}>Loading mentors...</p>
+                  <p style={{ fontSize:'13px' }}>If mentors do not appear, please refresh the page.</p>
+                </div>
+              ) : (
+                mentors.map(mentor=>(
+                  <div key={mentor.id} style={{
+                    padding:'20px',borderRadius:'14px',cursor:'pointer',transition:'var(--transition)',
+                    border:'2px solid '+(booking.mentorId===String(mentor.id)?'var(--primary-light)':'var(--primary-pale)'),
+                    background:booking.mentorId===String(mentor.id)?'var(--primary-pale)':'#fff'
+                  }} onClick={()=>setBooking({...booking,mentorId:String(mentor.id)})}>
+                    <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'12px' }}>
+                      <div style={{ display:'flex',gap:'14px' }}>
+                        <div className="mentor-avatar">{mentor.name.charAt(0)}</div>
+                        <div>
+                          <h4 style={{ color:'var(--text-main)',margin:'0 0 3px',fontSize:'15px',fontWeight:'700' }}>{mentor.name}</h4>
+                          <p style={{ color:'var(--text-muted)',fontSize:'13px',margin:0 }}>{mentor.role} at {mentor.company} ({mentor.experience})</p>
+                          <p style={{ color:'var(--primary)',fontSize:'13px',fontWeight:'600',marginTop:'4px' }}>Speciality: {mentor.speciality}</p>
+                        </div>
+                      </div>
+                      <div style={{ textAlign:'right',flexShrink:0 }}>
+                        <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>{mentor.location}</div>
+                        <div style={{ fontSize:'13px',fontWeight:'600',color:'var(--primary)',marginTop:'3px' }}>{mentor.available}</div>
+                        {booking.mentorId===String(mentor.id) && (
+                          <span className="badge badge-green" style={{ marginTop:'6px',display:'inline-block' }}>Selected</span>
+                        )}
                       </div>
                     </div>
-                    <div style={{ textAlign:'right',flexShrink:0 }}>
-                      <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>{mentor.location}</div>
-                      <div style={{ fontSize:'13px',fontWeight:'600',color:'var(--primary)',marginTop:'3px' }}>{mentor.available}</div>
-                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
-            <button className="btn-primary" style={{ marginTop:'22px' }} onClick={()=>setStep(2)} disabled={!booking.mentorId}>Continue</button>
+            <div style={{ marginTop:'22px',display:'flex',alignItems:'center',gap:'12px',flexWrap:'wrap' }}>
+              <button className="btn-primary" onClick={()=>setStep(2)} disabled={!booking.mentorId} style={{ minWidth:'160px' }}>
+                {booking.mentorId ? `Continue with ${mentors.find(m=>String(m.id)===booking.mentorId)?.name?.split(' ')[0] || 'Mentor'}` : 'Select a Mentor to Continue'}
+              </button>
+              {!booking.mentorId && (
+                <span style={{ fontSize:'13px',color:'var(--text-muted)' }}>Click a mentor card above to select them</span>
+              )}
+            </div>
           </div>
         )}
 
