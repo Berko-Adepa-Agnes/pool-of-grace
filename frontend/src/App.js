@@ -439,7 +439,7 @@ export default function App() {
   if (page === 'career')        return <AuthenticatedPortal><CareerResources lang={lang} /></AuthenticatedPortal>;
   if (page === 'grades')        return <AuthenticatedPortal><Grades modules={modules} lang={lang} /></AuthenticatedPortal>;
   if (page === 'certificates')  return <AuthenticatedPortal><CertificatePage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'recordings')    return <AuthenticatedPortal><RecordingsPage lang={lang} /></AuthenticatedPortal>;
+  if (page === 'recordings')    return <AuthenticatedPortal><RecordingsPage lang={lang} user={user} /></AuthenticatedPortal>;
   if (page === 'announcements') return <AuthenticatedPortal><AnnouncementsPage lang={lang} user={user} /></AuthenticatedPortal>;
   if (page === 'calendar')      return <AuthenticatedPortal><CalendarPage lang={lang} /></AuthenticatedPortal>;
   if (page === 'inbox')         return <AuthenticatedPortal><Inbox messages={inboxMessages} lang={lang} /></AuthenticatedPortal>;
@@ -3114,15 +3114,31 @@ function CertificatePage({ user, modules, lang }) {
 /* =========================================================
    RECORDINGS PAGE
    ========================================================= */
-function RecordingsPage({ lang }) {
+function RecordingsPage({ lang, user }) {
   void lang;
-  const recordings = [
-    { id:1, title:'Welcome Session — Introduction to Pool of Grace', date:'2026-06-07', duration:'45 min', host:'Agnes Berko', type:'general', thumb:'General Meeting Recording' },
-    { id:2, title:'Module 1 Study Session — Understanding Self-Worth', date:'2026-06-14', duration:'62 min', host:'Agnes Berko', type:'module', thumb:'Study Session Recording' },
-    { id:3, title:'General Meeting — Week 2', date:'2026-06-21', duration:'50 min', host:'Agnes Berko', type:'general', thumb:'General Meeting Recording' },
-    { id:4, title:'Mentorship Workshop — Breaking Tech Barriers', date:'2026-06-10', duration:'38 min', host:'Abena Asante', type:'workshop', thumb:'Mentorship Workshop' },
-    { id:5, title:'Career Talk — Working in Ghana\'s Tech Industry', date:'2026-06-17', duration:'55 min', host:'Ama Owusu', type:'career', thumb:'Career Talk Recording' },
-  ];
+
+  const storedRecs = JSON.parse(localStorage.getItem('pog_recordings') || '[]');
+  const [recordings, setRecordings] = useState(storedRecs);
+  const isAdmin = user && user.role === 'admin';
+
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ title:'', url:'', host:'Agnes Berko', type:'general', date:'', duration:'' });
+
+  const addRecording = () => {
+    if (!form.title || !form.url) return;
+    const entry = { id: Date.now(), ...form, date: form.date || new Date().toISOString().split('T')[0] };
+    const updated = [entry, ...recordings];
+    localStorage.setItem('pog_recordings', JSON.stringify(updated));
+    setRecordings(updated);
+    setForm({ title:'', url:'', host:'Agnes Berko', type:'general', date:'', duration:'' });
+    setShowForm(false);
+  };
+
+  const deleteRecording = (id) => {
+    const updated = recordings.filter(r => r.id !== id);
+    localStorage.setItem('pog_recordings', JSON.stringify(updated));
+    setRecordings(updated);
+  };
 
   const typeColors = { general:'var(--primary)', module:'#7c5cbf', workshop:'#e67e22', career:'#16a085' };
   const [filter, setFilter] = useState('all');
@@ -3132,61 +3148,128 @@ function RecordingsPage({ lang }) {
     <div className="animate-fade-in">
       <div className="page-header">
         <h2>Session Recordings</h2>
-        <p>Access recorded general meetings, study sessions, and mentorship workshops.</p>
+        <p>Recorded general meetings, study sessions, and mentorship workshops</p>
       </div>
 
-      <div className="alert-info" style={{ marginBottom:'26px' }}>
-        <strong>Recording Access:</strong> All Pool of Grace sessions are recorded for participants. Recordings are available for 90 days after the session date. New recordings appear here after each Saturday meeting.
-      </div>
-
-      {/* Filters */}
-      <div style={{ display:'flex',gap:'8px',marginBottom:'24px',flexWrap:'wrap' }}>
-        {[['all','All Recordings'],['general','General Meetings'],['module','Study Sessions'],['workshop','Workshops'],['career','Career Talks']].map(([key,label])=>(
-          <button key={key} onClick={() => setFilter(key)} style={{
-            padding:'8px 16px',borderRadius:'20px',fontSize:'13px',fontWeight:'600',cursor:'pointer',
-            border:'2px solid '+(filter===key?'var(--primary-light)':'var(--primary-pale)'),
-            background:filter===key?'var(--primary-light)':'#fff',
-            color:filter===key?'#fff':'var(--text-muted)',transition:'var(--transition)',fontFamily:'inherit'
-          }}>{label}</button>
-        ))}
-      </div>
-
-      <div style={{ display:'flex',flexDirection:'column',gap:'14px' }}>
-        {filtered.map(rec => (
-          <div key={rec.id} className="premium-card" style={{ padding:'0',overflow:'hidden',display:'flex',flexWrap:'wrap' }}>
-            {/* Thumbnail */}
-            <div style={{ width:'clamp(100px,22vw,180px)',background:`${typeColors[rec.type]}18`,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:'8px',padding:'22px',borderRight:'1px solid var(--primary-pale)',flexShrink:0 }}>
-              <div style={{ color:typeColors[rec.type] }}><Icons.Video2 /></div>
-              <div style={{ fontSize:'11px',fontWeight:'600',color:typeColors[rec.type],textAlign:'center',textTransform:'uppercase',letterSpacing:'0.5px' }}>{rec.type}</div>
-            </div>
-            {/* Info */}
-            <div style={{ flex:1,padding:'20px 24px',minWidth:'200px' }}>
-              <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'10px' }}>
-                <div style={{ flex:1 }}>
-                  <h3 style={{ color:'var(--primary)',fontSize:'clamp(14px,2.5vw,16px)',fontWeight:'700',margin:'0 0 6px' }}>{rec.title}</h3>
-                  <div style={{ fontSize:'13px',color:'var(--text-muted)',display:'flex',gap:'16px',flexWrap:'wrap' }}>
-                    <span>Host: <strong>{rec.host}</strong></span>
-                    <span>{rec.date}</span>
-                    <span>{rec.duration}</span>
-                  </div>
+      {/* Admin: Add recording */}
+      {isAdmin && (
+        <div className="premium-card" style={{ padding:'22px 26px',marginBottom:'24px',borderLeft:'5px solid var(--secondary)' }}>
+          <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom: showForm?'18px':0 }}>
+            <h3 style={{ color:'var(--primary)',fontSize:'15px',fontWeight:'700',margin:0 }}>Add a Recording</h3>
+            <button className={showForm?'btn-outline':'btn-primary'} style={{ fontSize:'13px',padding:'8px 18px' }} onClick={()=>setShowForm(f=>!f)}>
+              {showForm ? 'Cancel' : 'Add Recording'}
+            </button>
+          </div>
+          {showForm && (
+            <div>
+              <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:'12px',marginBottom:'12px' }}>
+                <div>
+                  <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Title *</label>
+                  <input className="premium-input" style={{ marginBottom:0 }} placeholder="e.g. General Meeting — Week 1" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} />
                 </div>
-                <div style={{ display:'flex',gap:'8px',flexShrink:0 }}>
-                  <button className="btn-outline" style={{ padding:'8px 16px',fontSize:'13px' }}>
-                    Watch
-                  </button>
-                  <button className="btn-primary" style={{ padding:'8px 16px',fontSize:'13px',background:typeColors[rec.type] }}>
-                    Download
-                  </button>
+                <div>
+                  <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Recording Link (YouTube / Drive / Meet) *</label>
+                  <input className="premium-input" style={{ marginBottom:0 }} placeholder="https://..." value={form.url} onChange={e=>setForm({...form,url:e.target.value})} />
+                </div>
+                <div>
+                  <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Host</label>
+                  <input className="premium-input" style={{ marginBottom:0 }} placeholder="Agnes Berko" value={form.host} onChange={e=>setForm({...form,host:e.target.value})} />
+                </div>
+                <div>
+                  <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Type</label>
+                  <select className="premium-input" style={{ marginBottom:0 }} value={form.type} onChange={e=>setForm({...form,type:e.target.value})}>
+                    <option value="general">General Meeting</option>
+                    <option value="module">Study Session</option>
+                    <option value="workshop">Mentorship Workshop</option>
+                    <option value="career">Career Talk</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Date</label>
+                  <input className="premium-input" style={{ marginBottom:0 }} type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})} />
+                </div>
+                <div>
+                  <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Duration (e.g. 45 min)</label>
+                  <input className="premium-input" style={{ marginBottom:0 }} placeholder="45 min" value={form.duration} onChange={e=>setForm({...form,duration:e.target.value})} />
                 </div>
               </div>
+              <button className="btn-primary" onClick={addRecording} disabled={!form.title||!form.url}>Add Recording</button>
             </div>
-          </div>
-        ))}
-      </div>
+          )}
+        </div>
+      )}
 
-      <div className="alert-warning" style={{ marginTop:'28px' }}>
-        <strong>Upload a Recording:</strong> If you are a mentor or admin, use the Admin panel to upload new session recordings. Contact <a href="mailto:a.berko1@alustudent.com" style={{ color:'var(--primary)',fontWeight:'700' }}>a.berko1@alustudent.com</a> to share a recording link.
-      </div>
+      {recordings.length === 0 ? (
+        <div className="premium-card" style={{ padding:'60px',textAlign:'center' }}>
+          <div style={{ width:'70px',height:'70px',background:'var(--primary-pale)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 20px',color:'var(--primary)' }}>
+            <Icons.Video2 />
+          </div>
+          <h3 style={{ color:'var(--primary)',fontWeight:'800',fontSize:'18px',marginBottom:'10px' }}>No recordings yet</h3>
+          <p style={{ color:'var(--text-muted)',fontSize:'14px',maxWidth:'420px',margin:'0 auto 20px',lineHeight:'1.7' }}>
+            Session recordings will be added here after each Saturday general meeting and study session. Check back after the next meeting!
+          </p>
+          <div style={{ background:'var(--primary-pale)',padding:'16px 22px',borderRadius:'12px',display:'inline-block',textAlign:'left' }}>
+            <p style={{ fontSize:'13px',color:'var(--primary)',fontWeight:'600',margin:'0 0 4px' }}>Next Saturday Meeting</p>
+            <p style={{ fontSize:'13px',color:'var(--text-muted)',margin:0 }}>Every Saturday at 4:00 PM Ghana Time (GMT)</p>
+            <a href="https://meet.google.com/bii-jzew-udd" target="_blank" rel="noopener noreferrer"
+              style={{ display:'inline-block',marginTop:'10px',background:'var(--primary)',color:'#fff',padding:'8px 18px',borderRadius:'18px',fontSize:'13px',fontWeight:'700',textDecoration:'none' }}>
+              Join Live on Google Meet
+            </a>
+          </div>
+          {!isAdmin && (
+            <p style={{ fontSize:'13px',color:'var(--text-muted)',marginTop:'22px' }}>
+              To request a recording be uploaded, email{' '}
+              <a href="mailto:a.berko1@alustudent.com" style={{ color:'var(--primary)',fontWeight:'700' }}>a.berko1@alustudent.com</a>
+            </p>
+          )}
+        </div>
+      ) : (
+        <div>
+          {/* Filters */}
+          <div style={{ display:'flex',gap:'8px',marginBottom:'24px',flexWrap:'wrap' }}>
+            {[['all','All'],['general','General Meetings'],['module','Study Sessions'],['workshop','Workshops'],['career','Career Talks']].map(([key,label])=>(
+              <button key={key} onClick={()=>setFilter(key)} style={{
+                padding:'8px 16px',borderRadius:'20px',fontSize:'13px',fontWeight:'600',cursor:'pointer',
+                border:'2px solid '+(filter===key?'var(--primary-light)':'var(--primary-pale)'),
+                background:filter===key?'var(--primary-light)':'#fff',
+                color:filter===key?'#fff':'var(--text-muted)',transition:'var(--transition)',fontFamily:'inherit'
+              }}>{label}</button>
+            ))}
+          </div>
+
+          <div style={{ display:'flex',flexDirection:'column',gap:'14px' }}>
+            {filtered.map(rec=>(
+              <div key={rec.id} className="premium-card" style={{ padding:'0',overflow:'hidden',display:'flex',flexWrap:'wrap' }}>
+                <div style={{ width:'clamp(80px,18vw,140px)',background:`${typeColors[rec.type]||'var(--primary)'}18`,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:'8px',padding:'20px',borderRight:'1px solid var(--primary-pale)',flexShrink:0 }}>
+                  <div style={{ color:typeColors[rec.type]||'var(--primary)' }}><Icons.Video2 /></div>
+                  <div style={{ fontSize:'10px',fontWeight:'700',color:typeColors[rec.type]||'var(--primary)',textAlign:'center',textTransform:'uppercase',letterSpacing:'0.5px' }}>{rec.type}</div>
+                </div>
+                <div style={{ flex:1,padding:'18px 22px',minWidth:'200px' }}>
+                  <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'10px' }}>
+                    <div style={{ flex:1 }}>
+                      <h3 style={{ color:'var(--primary)',fontSize:'clamp(14px,2.5vw,16px)',fontWeight:'700',margin:'0 0 6px' }}>{rec.title}</h3>
+                      <div style={{ fontSize:'13px',color:'var(--text-muted)',display:'flex',gap:'16px',flexWrap:'wrap' }}>
+                        {rec.host && <span>Host: <strong>{rec.host}</strong></span>}
+                        {rec.date && <span>{rec.date}</span>}
+                        {rec.duration && <span>{rec.duration}</span>}
+                      </div>
+                    </div>
+                    <div style={{ display:'flex',gap:'8px',flexShrink:0,alignItems:'center' }}>
+                      <a href={rec.url} target="_blank" rel="noopener noreferrer"
+                        style={{ padding:'8px 16px',fontSize:'13px',background:'var(--primary)',color:'#fff',borderRadius:'20px',fontWeight:'700',textDecoration:'none' }}>
+                        Watch
+                      </a>
+                      {isAdmin && (
+                        <button onClick={()=>deleteRecording(rec.id)} style={{ background:'none',border:'1px solid #e05252',color:'#e05252',borderRadius:'20px',padding:'8px 14px',cursor:'pointer',fontSize:'13px',fontFamily:'inherit',fontWeight:'600' }}>Remove</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
