@@ -143,27 +143,51 @@ export default function App() {
   const [inboxMessages] = useState([
     {
       id: 1,
-      from: 'Agnes Berko (Admin)',
+      from: 'Agnes Berko — Founder',
       subject: 'Welcome to Pool of Grace!',
-      body: 'Welcome! We are thrilled to have you on this journey. Start with Module 1 and remember: every expert was once a beginner.',
+      body: 'Welcome to Pool of Grace! We are so glad you are here. This platform was built for you — to help you grow in confidence, technology skills, and career readiness. Start with Module 1: Self-Worth Foundation. Take your time, engage with the notes, submit your assignments, and do not hesitate to book an office hours session if you need support. You belong here.',
       date: '2026-06-01',
       read: false
     },
     {
       id: 2,
-      from: 'Abena Asante (Mentor)',
-      subject: 'Ready to support you',
-      body: 'Hi! I am your assigned mentor. Feel free to book an office hours session with me any time. I specialize in web development.',
-      date: '2026-06-03',
-      read: true
+      from: 'Pool of Grace System',
+      subject: 'Saturday General Meeting — Every Week at 4PM Ghana Time',
+      body: 'Your weekly general meeting is every Saturday at 4:00 PM Ghana Time (GMT). Join here: https://meet.google.com/bii-jzew-udd. These sessions are recorded and available in the Recordings page if you miss one. Do not miss — Agnes covers new topics and takes questions every week!',
+      date: '2026-06-07',
+      read: false
     },
     {
       id: 3,
       from: 'Pool of Grace System',
-      subject: 'General Meeting — This Saturday',
-      body: 'Join our weekly general meeting this Saturday at 4:00 PM Ghana Time. Link: https://meet.google.com/bii-jzew-udd',
+      subject: 'Your Module Progress Saved to Database',
+      body: 'Great news! Your quiz scores and module completions are now permanently saved to our secure database. This means your progress is safe even if you clear your browser or switch devices. Keep going — every module completed brings you one step closer to your certificate!',
       date: '2026-06-10',
       read: false
+    },
+    {
+      id: 4,
+      from: 'Agnes Berko — Founder',
+      subject: 'Office Hours Now Open — Book Your Slot',
+      body: 'My personal office hours are now open for booking! You can meet me directly on: Tuesdays 2:00–3:00 PM, Fridays 2:00–3:00 PM, and Saturdays 2:00–3:00 PM (all Ghana Time). Go to Mentorship and click Book Now under Founder Office Hours. Or email me directly: a.berko1@alustudent.com.',
+      date: '2026-06-12',
+      read: true
+    },
+    {
+      id: 5,
+      from: 'Pool of Grace System',
+      subject: 'Please Complete the Usability Survey',
+      body: 'We would love your feedback on the platform! The System Usability Scale (SUS) survey takes only 2 minutes to complete and helps us improve Pool of Grace for you and future participants. Go to the Survey page from the sidebar to fill it in. Your feedback is anonymous and very important for our research.',
+      date: '2026-06-15',
+      read: false
+    },
+    {
+      id: 6,
+      from: 'Efua Boateng (Mentor)',
+      subject: 'Career Development Resources Added',
+      body: 'Hello! I have added new career development resources specifically for the Ghana tech market to the Career Board. Check out the latest listings from AmaliTech, MEST Africa, and DevCongress Ghana. These are real opportunities for young women in technology here in Ghana. All the best!',
+      date: '2026-06-14',
+      read: true
     },
   ]);
 
@@ -271,6 +295,8 @@ export default function App() {
     { key: 'calendar',      label: 'Calendar',                  icon: <Icons.Calendar /> },
     { key: 'inbox',         label: unreadCount > 0 ? `Inbox (${unreadCount})` : 'Inbox', icon: <Icons.Inbox /> },
     { key: 'history',       label: 'History',                   icon: <Icons.History /> },
+    { key: 'profile',       label: 'My Profile',                icon: <Icons.Dashboard /> },
+    { key: 'survey',        label: 'Usability Survey',          icon: <Icons.Admin /> },
     { key: 'privacy',       label: 'Privacy & Ethics',          icon: <Icons.Admin /> },
   ] : [
     { key: 'admin',         label: t('nav.adminPanel', lang),   icon: <Icons.Admin /> },
@@ -364,6 +390,8 @@ export default function App() {
   if (page === 'inbox')         return <AuthenticatedPortal><Inbox messages={inboxMessages} lang={lang} /></AuthenticatedPortal>;
   if (page === 'history')       return <AuthenticatedPortal><History modules={modules} lang={lang} /></AuthenticatedPortal>;
   if (page === 'privacy')       return <AuthenticatedPortal><PrivacyPage lang={lang} /></AuthenticatedPortal>;
+  if (page === 'profile')       return <AuthenticatedPortal><ProfilePage user={user} lang={lang} modules={modules} /></AuthenticatedPortal>;
+  if (page === 'survey')        return <AuthenticatedPortal><SUSPage lang={lang} /></AuthenticatedPortal>;
   if (page === 'admin')         return <AuthenticatedPortal><Admin openAdminPanel={openAdminPanel} lang={lang} /></AuthenticatedPortal>;
   if (page === 'adminAction')   return <AuthenticatedPortal><AdminAction go={setPage} panel={selectedAdminPanel} lang={lang} /></AuthenticatedPortal>;
 
@@ -1818,40 +1846,72 @@ function CalendarPage({ lang }) {
   const daysInMonth = new Date(year, month+1, 0).getDate();
   const firstDay    = new Date(year, month, 1).getDay();
 
-  const events = [
-    { day:today.getDate(), label:'Today',                                   color:'var(--primary)',       text:'#fff' },
-    { day:14,              label:'General Meeting — 4PM GMT',               color:'#e67e22',              text:'#fff' },
-    { day:21,              label:'General Meeting — 4PM GMT',               color:'#e67e22',              text:'#fff' },
-    { day:28,              label:'General Meeting — 4PM GMT',               color:'#e67e22',              text:'#fff' },
-    { day:7,               label:'Module Assignment Due',                   color:'var(--primary-light)', text:'#fff' },
-  ];
-  const getEv = (d) => events.find(e=>e.day===d);
+  // Calculate all Saturdays in the current month
+  const saturdays = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    if (new Date(year, month, d).getDay() === 6) saturdays.push(d);
+  }
+
+  // Build event map
+  const eventMap = {};
+  saturdays.forEach(d => {
+    eventMap[d] = { label:'Meeting 4PM', color:'#e67e22', text:'#fff' };
+  });
+  eventMap[today.getDate()] = { label:'Today', color:'var(--primary)', text:'#fff' };
+
+  const getEv = (d) => eventMap[d] || null;
   const cells = [];
-  for (let i=0;i<firstDay;i++) cells.push(null);
-  for (let d=1;d<=daysInMonth;d++) cells.push(d);
+  for (let i = 0; i < firstDay; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+
+  // Upcoming Saturdays
+  const upcomingSats = saturdays.filter(d => d >= today.getDate()).slice(0,3);
 
   return (
     <div className="animate-fade-in">
       <div className="page-header">
         <h2>Calendar</h2>
-        <p>Your learning schedule, meetings, and deadlines</p>
+        <p>Your learning schedule, meetings, and deadlines for {months[month]} {year}</p>
       </div>
 
-      {/* Upcoming */}
-      <div className="stat-grid" style={{ marginBottom:'28px' }}>
+      {/* Quick links */}
+      <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:'14px',marginBottom:'28px' }}>
         {[
           { label:'Weekly General Meeting', detail:'Every Saturday — 4:00 PM Ghana Time', href:'https://meet.google.com/bii-jzew-udd', color:'var(--primary)', icon:<Icons.Meet /> },
-          { label:'Study Sessions',         detail:'Self-paced — complete at your own pace', href:null, color:'#7c5cbf', icon:<Icons.Modules /> },
-          { label:'Office Hours (Book)',     detail:'Mon - Sat by appointment',             href:null, color:'#e67e22', icon:<Icons.Mentorship /> },
+          { label:'Agnes Office Hours', detail:'Tue, Fri, Sat — 2:00–3:00 PM Ghana Time', href:'mailto:a.berko1@alustudent.com', color:'#7c5cbf', icon:<Icons.Mentorship /> },
+          { label:'Module Deadlines', detail:'Self-paced — complete at your own pace', href:null, color:'#e67e22', icon:<Icons.Modules /> },
         ].map((ev,i)=>(
           <div key={i} className="premium-card" style={{ padding:'18px',borderLeft:`4px solid ${ev.color}` }}>
             <div style={{ color:ev.color,marginBottom:'6px' }}>{ev.icon}</div>
             <div style={{ fontWeight:'700',color:ev.color,fontSize:'14px',marginBottom:'3px' }}>{ev.label}</div>
             <div style={{ color:'var(--text-muted)',fontSize:'12px',marginBottom:ev.href?'10px':'0' }}>{ev.detail}</div>
-            {ev.href && <a href={ev.href} target="_blank" rel="noopener noreferrer" style={{ color:ev.color,fontWeight:'700',fontSize:'13px',textDecoration:'underline' }}>Join Meeting</a>}
+            {ev.href && <a href={ev.href} target="_blank" rel="noopener noreferrer" style={{ color:ev.color,fontWeight:'700',fontSize:'13px',textDecoration:'underline' }}>{ev.href.startsWith('mailto') ? 'Send Email' : 'Join Meeting'}</a>}
           </div>
         ))}
       </div>
+
+      {/* Upcoming Saturdays */}
+      {upcomingSats.length > 0 && (
+        <div className="premium-card" style={{ padding:'20px 24px',marginBottom:'24px',borderLeft:'5px solid #e67e22' }}>
+          <h3 style={{ color:'#e67e22',fontSize:'15px',fontWeight:'700',marginBottom:'14px' }}>Upcoming General Meetings</h3>
+          <div style={{ display:'flex',flexWrap:'wrap',gap:'10px' }}>
+            {upcomingSats.map((d,i)=>(
+              <div key={i} style={{ display:'flex',alignItems:'center',gap:'12px',background:'#fff8f0',padding:'12px 18px',borderRadius:'10px',border:'1px solid #f5d8b0' }}>
+                <div style={{ textAlign:'center' }}>
+                  <div style={{ fontSize:'22px',fontWeight:'800',color:'#e67e22' }}>{d}</div>
+                  <div style={{ fontSize:'11px',color:'var(--text-muted)',fontWeight:'600' }}>{months[month].substring(0,3)}</div>
+                </div>
+                <div>
+                  <div style={{ fontWeight:'700',fontSize:'13px',color:'var(--text-main)' }}>Saturday Meeting</div>
+                  <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>4:00 PM Ghana Time</div>
+                  <a href="https://meet.google.com/bii-jzew-udd" target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize:'12px',color:'#e67e22',fontWeight:'700' }}>Join Google Meet</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Month grid */}
       <div className="premium-card" style={{ padding:'clamp(16px,4vw,28px)' }}>
@@ -1861,22 +1921,32 @@ function CalendarPage({ lang }) {
         </div>
         <div className="cal-grid">
           {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>(
-            <div key={d} style={{ textAlign:'center',padding:'8px 4px',fontSize:'11px',fontWeight:'700',color:'var(--text-muted)',textTransform:'uppercase' }}>{d}</div>
+            <div key={d} style={{ textAlign:'center',padding:'8px 4px',fontSize:'11px',fontWeight:'700',color:d==='Sat'?'#e67e22':'var(--text-muted)',textTransform:'uppercase' }}>{d}</div>
           ))}
           {cells.map((day,i)=>{
             const ev = day ? getEv(day) : null;
+            const isSat = day && new Date(year,month,day).getDay()===6;
+            const isToday = day===today.getDate();
             return (
-              <div key={i} className="cal-cell" style={{ background:ev?ev.color:day?'#fafafa':'transparent',border:day?'1px solid #eee':'none',borderRadius:'10px' }}>
+              <div key={i} className="cal-cell" style={{
+                background: isToday?'var(--primary)': isSat?'#fff3e0':'#fafafa',
+                border: day?(isSat?'2px solid #e67e22':'1px solid #eee'):'none',
+                borderRadius:'10px'
+              }}>
                 {day && (
                   <>
-                    <span style={{ fontSize:'13px',fontWeight:ev?'800':'400',color:ev?ev.text:'var(--text-main)' }}>{day}</span>
-                    {ev && ev.day!==today.getDate() && <span style={{ fontSize:'9px',color:ev.text,textAlign:'center',lineHeight:'1.2',fontWeight:'600',marginTop:'2px' }}>{ev.label.substring(0,12)}</span>}
-                    {ev && ev.day===today.getDate() && <span style={{ fontSize:'9px',color:'#fff',fontWeight:'800' }}>TODAY</span>}
+                    <span style={{ fontSize:'13px',fontWeight:ev||isSat?'800':'400',color:isToday?'#fff':isSat?'#e67e22':'var(--text-main)' }}>{day}</span>
+                    {isSat && !isToday && <span style={{ fontSize:'8px',color:'#e67e22',fontWeight:'700',textAlign:'center',lineHeight:'1.2',marginTop:'2px' }}>Meet 4PM</span>}
+                    {isToday && <span style={{ fontSize:'8px',color:'#fff',fontWeight:'800' }}>TODAY</span>}
                   </>
                 )}
               </div>
             );
           })}
+        </div>
+        <div style={{ display:'flex',gap:'14px',marginTop:'14px',flexWrap:'wrap',fontSize:'12px',color:'var(--text-muted)' }}>
+          <span style={{ display:'flex',alignItems:'center',gap:'5px' }}><span style={{ width:'12px',height:'12px',background:'var(--primary)',borderRadius:'3px',display:'inline-block' }}></span>Today</span>
+          <span style={{ display:'flex',alignItems:'center',gap:'5px' }}><span style={{ width:'12px',height:'12px',background:'#fff3e0',border:'2px solid #e67e22',borderRadius:'3px',display:'inline-block' }}></span>Saturday Meeting</span>
         </div>
       </div>
     </div>
@@ -2950,6 +3020,256 @@ function PrivacyPage({ lang }) {
         <a href="mailto:a.berko1@alustudent.com" style={{ color:'var(--primary)',fontWeight:'700' }}>a.berko1@alustudent.com</a>.
         You can also visit the Mentorship page to book an office hours session.
       </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   PROFILE PAGE
+   ========================================================= */
+function ProfilePage({ user, lang, modules }) {
+  void lang;
+  const completedModules = modules ? modules.filter(m => m.completed) : [];
+  const passedWithDistinction = completedModules.filter(m => m.score >= 5).length;
+  const initials = user ? `${(user.firstName||'')[0]}${(user.lastName||'')[0]}`.toUpperCase() : 'PG';
+
+  const stats = [
+    { label:'Modules Completed',    value: completedModules.length, color:'var(--primary)' },
+    { label:'Distinctions',         value: passedWithDistinction,   color:'#f39c12' },
+    { label:'Total Modules',        value: modules ? modules.length : 20, color:'#7c5cbf' },
+    { label:'Completion Rate',      value: modules && modules.length > 0 ? Math.round((completedModules.length / modules.length) * 100) + '%' : '0%', color:'#16a085' },
+  ];
+
+  return (
+    <div className="animate-fade-in">
+      <div className="page-header">
+        <h2>My Profile</h2>
+        <p>Your personal account and learning progress overview</p>
+      </div>
+
+      {/* Profile card */}
+      <div className="premium-card" style={{ padding:'clamp(22px,4vw,36px)',marginBottom:'28px' }}>
+        <div style={{ display:'flex',alignItems:'center',gap:'24px',flexWrap:'wrap',marginBottom:'26px' }}>
+          <div style={{ width:'80px',height:'80px',borderRadius:'50%',background:'var(--primary)',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:'28px',fontWeight:'800',flexShrink:0 }}>
+            {initials}
+          </div>
+          <div>
+            <h3 style={{ color:'var(--primary)',fontSize:'clamp(18px,3vw,22px)',fontWeight:'800',margin:'0 0 4px' }}>
+              {user ? `${user.firstName} ${user.lastName}` : 'Participant'}
+            </h3>
+            <p style={{ color:'var(--text-muted)',fontSize:'14px',margin:'0 0 6px' }}>{user ? user.email : ''}</p>
+            <span className="badge" style={{ background:'var(--primary-pale)',color:'var(--primary)',textTransform:'capitalize' }}>
+              {user ? user.role : 'participant'}
+            </span>
+          </div>
+        </div>
+
+        {/* Stats row */}
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))',gap:'12px',marginBottom:'26px' }}>
+          {stats.map((s,i) => (
+            <div key={i} style={{ background:'var(--bg-main)',padding:'16px',borderRadius:'10px',textAlign:'center',borderTop:`3px solid ${s.color}` }}>
+              <div style={{ fontSize:'clamp(22px,3vw,28px)',fontWeight:'800',color:s.color,marginBottom:'4px' }}>{s.value}</div>
+              <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Progress bar */}
+        <div>
+          <div style={{ display:'flex',justifyContent:'space-between',marginBottom:'8px' }}>
+            <span style={{ fontSize:'13px',fontWeight:'700',color:'var(--text-main)' }}>Overall Progress</span>
+            <span style={{ fontSize:'13px',fontWeight:'700',color:'var(--primary)' }}>
+              {completedModules.length}/{modules ? modules.length : 20} modules
+            </span>
+          </div>
+          <div style={{ height:'12px',background:'#f0f0f0',borderRadius:'6px',overflow:'hidden' }}>
+            <div style={{
+              width: modules && modules.length > 0 ? `${(completedModules.length / modules.length) * 100}%` : '0%',
+              height:'100%',background:'linear-gradient(90deg,var(--primary),var(--primary-light))',borderRadius:'6px',transition:'width 1s ease'
+            }}></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Completed modules list */}
+      <div className="premium-card" style={{ padding:'clamp(18px,3vw,28px)',marginBottom:'24px' }}>
+        <h3 style={{ color:'var(--primary)',fontSize:'16px',fontWeight:'700',marginBottom:'16px' }}>
+          Completed Modules ({completedModules.length})
+        </h3>
+        {completedModules.length === 0 ? (
+          <div style={{ textAlign:'center',padding:'28px',color:'var(--text-muted)' }}>
+            <p style={{ marginBottom:'12px' }}>You have not completed any modules yet.</p>
+            <p style={{ fontSize:'13px' }}>Start with Module 1 and work your way through all 20 stages!</p>
+          </div>
+        ) : (
+          <div style={{ display:'flex',flexDirection:'column',gap:'8px' }}>
+            {completedModules.map((m,i) => (
+              <div key={i} style={{ display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',background:'var(--bg-main)',borderRadius:'9px',border:'1px solid var(--primary-pale)',flexWrap:'wrap',gap:'8px' }}>
+                <div>
+                  <div style={{ fontWeight:'700',color:'var(--primary)',fontSize:'14px' }}>{m.title}</div>
+                  <div style={{ fontSize:'12px',color:'var(--text-muted)',textTransform:'capitalize' }}>{m.category.replace('-',' ')}</div>
+                </div>
+                <div style={{ display:'flex',gap:'8px',alignItems:'center' }}>
+                  <span style={{ fontWeight:'800',color:m.score>=5?'#f39c12':'var(--primary)',fontSize:'15px' }}>{m.score || 0}/5</span>
+                  <span className="badge" style={{ background: m.score>=5?'#fff8e1':'var(--primary-pale)', color:m.score>=5?'#f39c12':'var(--primary)' }}>
+                    {m.score >= 5 ? 'Distinction' : 'Pass'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Contact / booking */}
+      <div className="premium-card" style={{ padding:'22px 26px',borderLeft:'5px solid var(--primary)' }}>
+        <h3 style={{ color:'var(--primary)',fontSize:'15px',fontWeight:'700',marginBottom:'14px' }}>Book Support or Office Hours</h3>
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:'12px' }}>
+          {[
+            { label:'Agnes Berko \u2014 Founder', slots:'Tue, Fri, Sat \u2014 2:00\u20133:00 PM Ghana Time', action:'mailto:a.berko1@alustudent.com', btnLabel:'Email to Book', color:'var(--primary)' },
+            { label:'Weekly General Meeting', slots:'Every Saturday \u2014 4:00 PM Ghana Time', action:'https://meet.google.com/bii-jzew-udd', btnLabel:'Join Google Meet', color:'#e67e22' },
+          ].map((item,i) => (
+            <div key={i} style={{ background:'var(--bg-main)',padding:'16px',borderRadius:'10px',border:`1px solid ${item.color}30` }}>
+              <div style={{ fontWeight:'700',color:item.color,fontSize:'14px',marginBottom:'4px' }}>{item.label}</div>
+              <div style={{ fontSize:'12px',color:'var(--text-muted)',marginBottom:'12px' }}>{item.slots}</div>
+              <a href={item.action} target="_blank" rel="noopener noreferrer"
+                style={{ display:'inline-block',padding:'8px 16px',background:item.color,color:'#fff',borderRadius:'8px',fontSize:'13px',fontWeight:'700',textDecoration:'none' }}>
+                {item.btnLabel}
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   SUS SURVEY PAGE
+   ========================================================= */
+function SUSPage({ lang }) {
+  void lang;
+  const questions = [
+    'I think that I would like to use this platform frequently.',
+    'I found the platform unnecessarily complex.',
+    'I thought the platform was easy to use.',
+    'I think that I would need the support of a technical person to be able to use this platform.',
+    'I found the various modules and features in this platform were well integrated.',
+    'I thought there was too much inconsistency in this platform.',
+    'I would imagine that most people would learn to use this platform very quickly.',
+    'I found the platform very awkward to use.',
+    'I felt very confident using the platform.',
+    'I needed to learn a lot of things before I could get going with this platform.',
+  ];
+
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [score, setScore] = useState(null);
+  const [name, setName] = useState('');
+  const [cohort, setCohort] = useState('');
+
+  const setAnswer = (qi, val) => setAnswers(prev => ({ ...prev, [qi]: val }));
+  const allAnswered = Object.keys(answers).length === questions.length;
+
+  const submit = () => {
+    // SUS scoring formula
+    let total = 0;
+    questions.forEach((q, i) => {
+      const val = parseInt(answers[i]) || 1;
+      // Odd-numbered (1-indexed): score - 1; Even-numbered: 5 - score
+      if (i % 2 === 0) total += (val - 1);
+      else total += (5 - val);
+    });
+    const susScore = total * 2.5;
+    setScore(Math.round(susScore));
+    setSubmitted(true);
+    // Save to localStorage for admin review
+    const prev = JSON.parse(localStorage.getItem('pog_sus_responses') || '[]');
+    prev.push({ name: name || 'Anonymous', cohort, answers, score: Math.round(susScore), date: new Date().toISOString().split('T')[0] });
+    localStorage.setItem('pog_sus_responses', JSON.stringify(prev));
+  };
+
+  const grade = score !== null ? (score >= 90 ? { label:'Excellent (A)', color:'#1e5a2c' } : score >= 80 ? { label:'Good (B)', color:'#2d7a2d' } : score >= 70 ? { label:'OK (C)', color:'#e67e22' } : score >= 51 ? { label:'Poor (D)', color:'#c0392b' } : { label:'Unacceptable (F)', color:'#7e2a2a' }) : null;
+
+  return (
+    <div className="animate-fade-in" style={{ maxWidth:'820px',margin:'0 auto' }}>
+      <div className="page-header">
+        <h2>Usability Survey</h2>
+        <p>System Usability Scale (SUS) \u2014 takes about 2 minutes to complete</p>
+      </div>
+
+      {!submitted ? (
+        <div className="premium-card" style={{ padding:'clamp(22px,4vw,36px)' }}>
+          <div className="alert-info" style={{ marginBottom:'24px' }}>
+            <strong>Instructions:</strong> Please rate each statement from <strong>1 (Strongly Disagree)</strong> to <strong>5 (Strongly Agree)</strong> based on your experience using the Pool of Grace platform. There are no right or wrong answers \u2014 we just want your honest opinion.
+          </div>
+
+          {/* Optional info */}
+          <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:'12px',marginBottom:'28px' }}>
+            <div>
+              <label style={{ fontSize:'13px',fontWeight:'700',color:'var(--text-main)',display:'block',marginBottom:'5px' }}>Your Name (optional)</label>
+              <input className="premium-input" style={{ marginBottom:0 }} placeholder="e.g. Akosua" value={name} onChange={e=>setName(e.target.value)} />
+            </div>
+            <div>
+              <label style={{ fontSize:'13px',fontWeight:'700',color:'var(--text-main)',display:'block',marginBottom:'5px' }}>Cohort / Location (optional)</label>
+              <input className="premium-input" style={{ marginBottom:0 }} placeholder="e.g. June 2026 \u2014 Kumasi" value={cohort} onChange={e=>setCohort(e.target.value)} />
+            </div>
+          </div>
+
+          {/* Questions */}
+          <div style={{ display:'flex',flexDirection:'column',gap:'22px',marginBottom:'28px' }}>
+            {questions.map((q, qi) => (
+              <div key={qi} style={{ padding:'18px 20px',background:'var(--bg-main)',borderRadius:'12px',border:'1px solid var(--primary-pale)' }}>
+                <p style={{ fontWeight:'700',color:'var(--text-main)',fontSize:'14px',marginBottom:'14px',lineHeight:'1.55' }}>
+                  <span style={{ color:'var(--primary)',fontWeight:'800' }}>Q{qi+1}. </span>{q}
+                </p>
+                <div style={{ display:'flex',justifyContent:'space-between',gap:'6px',flexWrap:'wrap' }}>
+                  {[1,2,3,4,5].map(val => (
+                    <label key={val} style={{
+                      display:'flex',flexDirection:'column',alignItems:'center',gap:'5px',cursor:'pointer',
+                      padding:'8px 10px',borderRadius:'8px',minWidth:'48px',flex:1,
+                      background: answers[qi]===val ? 'var(--primary)' : '#fff',
+                      border: `2px solid ${answers[qi]===val ? 'var(--primary)' : 'var(--primary-pale)'}`,
+                      transition:'all 0.15s'
+                    }}>
+                      <input type="radio" name={`q${qi}`} value={val} checked={answers[qi]===val} onChange={()=>setAnswer(qi,val)} style={{ display:'none' }} />
+                      <span style={{ fontWeight:'800',fontSize:'16px',color:answers[qi]===val?'#fff':'var(--primary)' }}>{val}</span>
+                      <span style={{ fontSize:'9px',color:answers[qi]===val?'rgba(255,255,255,0.8)':'var(--text-muted)',textAlign:'center',lineHeight:'1.2' }}>
+                        {val===1?'Strongly\nDisagree':val===5?'Strongly\nAgree':''}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'12px' }}>
+            <p style={{ fontSize:'13px',color:'var(--text-muted)' }}>{Object.keys(answers).length}/{questions.length} questions answered</p>
+            <button className="btn-primary" onClick={submit} disabled={!allAnswered} style={{ minWidth:'160px' }}>
+              Submit Survey
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="premium-card" style={{ padding:'clamp(22px,4vw,36px)',textAlign:'center' }}>
+          <div style={{ width:'90px',height:'90px',borderRadius:'50%',background:grade.color,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 20px',color:'#fff',fontSize:'28px',fontWeight:'900' }}>
+            {score}
+          </div>
+          <h3 style={{ color:grade.color,fontSize:'clamp(20px,3vw,26px)',fontWeight:'800',marginBottom:'8px' }}>SUS Score: {score}/100</h3>
+          <div className="badge" style={{ background:`${grade.color}18`,color:grade.color,fontSize:'15px',padding:'8px 20px',marginBottom:'22px',display:'inline-block' }}>{grade.label}</div>
+          <p style={{ color:'var(--text-muted)',fontSize:'14px',maxWidth:'500px',margin:'0 auto 24px',lineHeight:'1.7' }}>
+            Thank you so much for completing the survey! Your feedback has been saved and will be used to improve the Pool of Grace platform for all participants. Agnes Berko will review your responses.
+          </p>
+          <div className="alert-info" style={{ textAlign:'left',maxWidth:'500px',margin:'0 auto' }}>
+            <strong>SUS Score Guide:</strong><br/>
+            90\u2013100 = Excellent | 80\u201389 = Good | 70\u201379 = OK | 51\u201369 = Poor | Below 51 = Unacceptable
+          </div>
+          <button className="btn-outline" style={{ marginTop:'22px' }} onClick={()=>{ setAnswers({}); setSubmitted(false); setScore(null); setName(''); setCohort(''); }}>
+            Submit Another Response
+          </button>
+        </div>
+      )}
     </div>
   );
 }
