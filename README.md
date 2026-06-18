@@ -76,11 +76,13 @@ Gender inequality in education remains a critical barrier to economic developmen
 
 ## 3. Live Deployed Version
 
-🌐 **Deployed Application:** [LINK TO BE ADDED AFTER DEPLOYMENT]
+🌐 **Deployed Application:** [https://pool-of-grace.onrender.com](https://pool-of-grace.onrender.com)
 
 > **Production Architecture (per proposal):** AWS EC2 (application hosting) + RDS (PostgreSQL database) + S3 (media storage) + CloudFront (CDN).  
 > **Current Beta Hosting:** Render.com (free tier) for the capstone demo and beta validation phase.  
 > See [Section 13: Deployment Plan](#13-deployment-plan) for full AWS deployment documentation.
+
+> ⚠️ **Note:** Free tier may take 50 seconds to wake up on first visit (spin-down on inactivity). Wait a moment and refresh if the page loads slowly.
 
 ---
 
