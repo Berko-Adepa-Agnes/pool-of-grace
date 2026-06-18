@@ -2,48 +2,35 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const db = require('../db');
 
-const users = [];
-
-const createAdmin = async () => {
-  const passwordHash = await bcrypt.hash('admin123', 10);
-  users.push({
-    id: 1,
-    firstName: 'Admin',
-    lastName: 'PoolOfGrace',
-    email: 'admin@poolofgrace.com',
-    passwordHash,
-    role: 'admin'
-  });
-};
-
-createAdmin();
-
+// Registration endpoint
 router.post('/register', async (req, res) => {
   try {
     const { firstName, lastName, email, password, role } = req.body;
 
-    const existingUser = users.find(u => u.email === email);
+    if (!firstName || !email || !password) {
+      return res.status(400).json({ message: 'First name, email, and password are required' });
+    }
+
+    const existingUser = await db.getUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const newUser = {
-      id: users.length + 1,
+    const newUser = await db.saveUser({
       firstName,
-      lastName,
+      lastName: lastName || '',
       email,
       passwordHash,
       role: role || 'participant'
-    };
-
-    users.push(newUser);
+    });
 
     const token = jwt.sign(
       { id: newUser.id, email: newUser.email, role: newUser.role },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'poolofgrace_secret_key_2026',
       { expiresIn: '7d' }
     );
 
@@ -55,7 +42,8 @@ router.post('/register', async (req, res) => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         email: newUser.email,
-        role: newUser.role
+        role: newUser.role,
+        onboardingData: null
       }
     });
 
@@ -64,11 +52,16 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Login endpoint
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = users.find(u => u.email === email);
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    const user = await db.getUserByEmail(email);
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
@@ -80,7 +73,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'poolofgrace_secret_key_2026',
       { expiresIn: '7d' }
     );
 
@@ -92,10 +85,30 @@ router.post('/login', async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role
+        role: user.role,
+        onboardingData: user.onboardingData
       }
     });
 
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Onboarding persistence endpoint
+router.post('/onboarding', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Unauthorized access' });
+    }
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'poolofgrace_secret_key_2026');
+    
+    const { onboardingData } = req.body;
+    await db.updateUserOnboarding(decoded.id, onboardingData);
+
+    res.json({ message: 'Onboarding data updated successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

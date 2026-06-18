@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "firstName": "Admin",
+    "lastName": "PoolOfGrace",
+    "email": "admin@poolofgrace.com",
+    "passwordHash": "$2b$10$9RLDDQQ8NWwmHoOAJ59P7eaZK0TXIsao7Tnr5UBuyCe06ArPZPUni",
+    "role": "admin",
+    "onboardingData": null
+  },
+  {
+    "id": 2,
+    "firstName": "Agnes",
+    "lastName": "Berko",
+    "email": "berkoagnes33@gmail.com",
+    "passwordHash": "$2b$10$M6PRA3I9GjDNdvm7VSy3Ru1tQZs0G.hDUyMfCTK7542ONxhyfRRHi",
+    "role": "participant",
+    "onboardingData": {
+      "story": "yes",
+      "barriers": [
+        "Financial barriers",
+        "Limited internet or device access"
+      ],
+      "goals": "yes",
+      "techExperience": "none",
+      "motivation": "t",
+      "location": "accra",
+      "age": "19-22",
+      "education": "tertiary"
+    }
+  }
+]
