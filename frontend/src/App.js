@@ -138,6 +138,13 @@ export default function App() {
   const [selectedModule, setSelectedModule] = useState(null);
   const [selectedAdminPanel, setSelectedAdminPanel] = useState(null);
   const [completionsCount, setCompletionsCount] = useState(0);
+  const [toast, setToast]                 = useState(null);
+
+  const showToast = (msg, type='success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
   const [sessionsCount, setSessionsCount] = useState(0);
 
   const [inboxMessages] = useState([
@@ -376,11 +383,25 @@ export default function App() {
   if (page === 'onboarding')   return <Onboarding user={user} completeOnboarding={completeOnboardingData} lang={lang} />;
   if (page === 'selfWorthIntro') return <SelfWorthIntro user={user} go={setPage} lang={lang} />;
 
-  if (page === 'dashboard')     return <AuthenticatedPortal><Dashboard user={user} go={setPage} completionsCount={completionsCount} sessionsCount={sessionsCount} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'modules')       return <AuthenticatedPortal><ModulesList openModule={openModule} lang={lang} modules={modules} /></AuthenticatedPortal>;
-  if (page === 'moduleView')    return <AuthenticatedPortal><ModuleView module={selectedModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} /></AuthenticatedPortal>;
-  if (page === 'schedule')      return <AuthenticatedPortal><Schedule go={setPage} lang={lang} onBooked={fetchStats} /></AuthenticatedPortal>;
-  if (page === 'forum')         return <AuthenticatedPortal><Forum lang={lang} /></AuthenticatedPortal>;
+  const ToastBar = () => toast ? (
+    <div style={{
+      position:'fixed',bottom:'24px',right:'24px',zIndex:9999,
+      background: toast.type==='error'?'#c0392b': toast.type==='info'?'var(--primary)':'#1e5a2c',
+      color:'#fff',padding:'14px 22px',borderRadius:'14px',
+      fontSize:'14px',fontWeight:'600',boxShadow:'0 8px 28px rgba(0,0,0,0.22)',
+      maxWidth:'320px',lineHeight:'1.5',
+      animation:'fadeInUp 0.35s ease both'
+    }}>
+      {toast.msg}
+    </div>
+  ) : null;
+
+
+  if (page === 'dashboard')     return <><ToastBar/><AuthenticatedPortal><Dashboard user={user} go={setPage} completionsCount={completionsCount} sessionsCount={sessionsCount} lang={lang} /></AuthenticatedPortal></>;
+  if (page === 'modules')       return <><ToastBar/><AuthenticatedPortal><ModulesList openModule={openModule} lang={lang} modules={modules} /></AuthenticatedPortal></>;
+  if (page === 'moduleView')    return <><ToastBar/><AuthenticatedPortal><ModuleView module={selectedModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} showToast={showToast} /></AuthenticatedPortal></>;
+  if (page === 'schedule')      return <><ToastBar/><AuthenticatedPortal><Schedule go={setPage} lang={lang} onBooked={()=>{ fetchStats(); showToast('Session booked! Check your inbox for details.'); }} /></AuthenticatedPortal></>;
+  if (page === 'forum')         return <><ToastBar/><AuthenticatedPortal><Forum lang={lang} /></AuthenticatedPortal></>;
   if (page === 'career')        return <AuthenticatedPortal><CareerResources lang={lang} /></AuthenticatedPortal>;
   if (page === 'grades')        return <AuthenticatedPortal><Grades modules={modules} lang={lang} /></AuthenticatedPortal>;
   if (page === 'certificates')  return <AuthenticatedPortal><CertificatePage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
@@ -391,7 +412,7 @@ export default function App() {
   if (page === 'history')       return <AuthenticatedPortal><History modules={modules} lang={lang} /></AuthenticatedPortal>;
   if (page === 'privacy')       return <AuthenticatedPortal><PrivacyPage lang={lang} /></AuthenticatedPortal>;
   if (page === 'profile')       return <AuthenticatedPortal><ProfilePage user={user} lang={lang} modules={modules} /></AuthenticatedPortal>;
-  if (page === 'survey')        return <AuthenticatedPortal><SUSPage lang={lang} /></AuthenticatedPortal>;
+  if (page === 'survey')        return <><ToastBar/><AuthenticatedPortal><SUSPage lang={lang} showToast={showToast} /></AuthenticatedPortal></>;
   if (page === 'admin')         return <AuthenticatedPortal><Admin openAdminPanel={openAdminPanel} lang={lang} /></AuthenticatedPortal>;
   if (page === 'adminAction')   return <AuthenticatedPortal><AdminAction go={setPage} panel={selectedAdminPanel} lang={lang} /></AuthenticatedPortal>;
 
@@ -874,7 +895,11 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
    ========================================================= */
 function ModulesList({ openModule, lang, modules }) {
   const [filter, setFilter] = useState('all');
-  const filtered = filter === 'all' ? modules : modules.filter(m=>m.category===filter);
+  const [search, setSearch] = useState('');
+
+  const filtered = modules
+    .filter(m => filter === 'all' || m.category === filter)
+    .filter(m => !search || m.title.toLowerCase().includes(search.toLowerCase()) || (m.description||'').toLowerCase().includes(search.toLowerCase()));
 
   const catStyle = { 'self-worth':{ bg:'#eafaea',color:'var(--primary)' }, 'technical-skills':{ bg:'#ede8ff',color:'#5a3e8a' }, 'professional-development':{ bg:'#fff3e0',color:'#e65100' } };
   const catLabel = { 'self-worth':'Self Worth', 'technical-skills':'Tech Skills', 'professional-development':'Career' };
@@ -905,6 +930,18 @@ function ModulesList({ openModule, lang, modules }) {
         </div>
       </div>
 
+      {/* Search bar */}
+      <div style={{ marginBottom:'16px',position:'relative' }}>
+        <input
+          className="premium-input"
+          style={{ marginBottom:0,paddingLeft:'42px' }}
+          placeholder="Search modules by name or topic..."
+          value={search}
+          onChange={e=>setSearch(e.target.value)}
+        />
+        <span style={{ position:'absolute',left:'14px',top:'50%',transform:'translateY(-50%)',color:'var(--text-muted)',fontSize:'16px',pointerEvents:'none' }}>S</span>
+      </div>
+
       {/* Filter tabs */}
       <div style={{ display:'flex',gap:'8px',marginBottom:'26px',flexWrap:'wrap' }}>
         {[
@@ -922,6 +959,12 @@ function ModulesList({ openModule, lang, modules }) {
             {f.label}
           </button>
         ))}
+        {(search || filter !== 'all') && (
+          <button onClick={()=>{setSearch('');setFilter('all');}} style={{
+            padding:'8px 16px',borderRadius:'22px',cursor:'pointer',fontSize:'13px',fontWeight:'600',
+            border:'2px solid #ffd0d0',background:'#fff0f0',color:'#c0392b',fontFamily:'inherit'
+          }}>Clear</button>
+        )}
       </div>
 
       {modules.length === 0 ? (
@@ -973,7 +1016,8 @@ function ModulesList({ openModule, lang, modules }) {
 /* =========================================================
    MODULE VIEW  (Canvas-style tabs)
    ========================================================= */
-function ModuleView({ module, go, lang, onQuizPassed, modules, openModule }) {
+function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showToast }) {
+
   const [activeTab, setActiveTab] = useState('notes');
   const [answers, setAnswers]     = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
@@ -997,10 +1041,17 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule }) {
     setScore(correct);
     setQuizSubmitted(true);
     if (correct >= 3) {
-      try { await completeModuleQuiz(module.id, correct); onQuizPassed(); }
+      try {
+        await completeModuleQuiz(module.id, correct);
+        onQuizPassed();
+        if (showToast) showToast(`Module complete! You scored ${correct}/${content.quiz.length} — well done!`);
+      }
       catch(err) { console.error(err); }
+    } else {
+      if (showToast) showToast(`Score: ${correct}/${content.quiz.length}. You need at least 3 correct to pass. Try again!`, 'error');
     }
   };
+
 
   const saveNote = () => {
     localStorage.setItem(`pog_note_${module.id}`, noteContent);
@@ -1371,8 +1422,8 @@ function Schedule({ go, lang, onBooked }) {
       <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'22px' }}>Schedule a one-on-one session with one of our expert mentors below.</p>
 
       {/* Agnes Office Hours */}
-      <div className="premium-card" style={{ marginBottom:'22px',border:'2px solid var(--secondary)',overflow:'hidden' }}>
-        <div style={{ background:'linear-gradient(135deg,var(--secondary),#e8a000)',padding:'14px 22px' }}>
+      <div className="premium-card" style={{ marginBottom:'22px',border:'2px solid var(--secondary)' }}>
+        <div style={{ background:'linear-gradient(135deg,var(--secondary),#e8a000)',padding:'14px 22px',borderRadius:'13px 13px 0 0' }}>
           <span style={{ color:'#fff',fontSize:'12px',fontWeight:'700',textTransform:'uppercase',letterSpacing:'1px' }}>Founder Office Hours</span>
         </div>
         <div style={{ padding:'22px 26px',display:'flex',gap:'20px',flexWrap:'wrap',alignItems:'flex-start' }}>
@@ -1383,7 +1434,7 @@ function Schedule({ go, lang, onBooked }) {
           <div style={{ flex:1,minWidth:'200px' }}>
             <div style={{ fontWeight:'800',fontSize:'16px',color:'var(--primary)',marginBottom:'2px' }}>{agnesInfo.name}</div>
             <div style={{ fontSize:'13px',color:'var(--text-muted)',marginBottom:'12px' }}>{agnesInfo.role} — Pool of Grace</div>
-            <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:'8px',marginBottom:'16px' }}>
+            <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:'8px',marginBottom:'16px' }}>
               {agnesSlots.map((slot,i)=>(
                 <div key={i} style={{ background:'var(--secondary-pale)',padding:'10px 14px',borderRadius:'9px',borderLeft:'4px solid var(--secondary)' }}>
                   <div style={{ fontSize:'12px',fontWeight:'700',color:'#7a5b13' }}>{slot.day}</div>
@@ -1392,18 +1443,36 @@ function Schedule({ go, lang, onBooked }) {
                 </div>
               ))}
             </div>
-            <div style={{ display:'flex',gap:'10px',alignItems:'center',flexWrap:'wrap' }}>
-              <a href={`mailto:${agnesInfo.email}`} style={{ display:'inline-flex',alignItems:'center',gap:'6px',background:'var(--primary)',color:'#fff',padding:'9px 18px',borderRadius:'18px',fontWeight:'700',fontSize:'13px',textDecoration:'none' }}>
-                Email: {agnesInfo.email}
+            <div style={{ display:'flex',gap:'10px',alignItems:'center',flexWrap:'wrap',position:'relative',zIndex:10 }}>
+              <a
+                href="mailto:a.berko1@alustudent.com"
+                style={{
+                  display:'inline-flex',alignItems:'center',gap:'6px',
+                  background:'var(--primary)',color:'#fff',
+                  padding:'10px 20px',borderRadius:'22px',
+                  fontWeight:'700',fontSize:'13px',
+                  textDecoration:'none',cursor:'pointer',
+                  pointerEvents:'auto',position:'relative',zIndex:10
+                }}
+              >
+                Email Agnes: a.berko1@alustudent.com
               </a>
-              <button className="btn-primary" style={{ background:'var(--secondary)',borderColor:'var(--secondary)',fontSize:'13px',padding:'9px 20px' }}
+              <button
+                style={{
+                  display:'inline-flex',alignItems:'center',gap:'6px',
+                  background:'var(--secondary)',color:'#fff',
+                  padding:'10px 20px',borderRadius:'22px',
+                  fontWeight:'700',fontSize:'13px',
+                  border:'none',cursor:'pointer',
+                  pointerEvents:'auto',position:'relative',zIndex:10
+                }}
                 onClick={()=>{
                   setBooking(prev => ({ ...prev, type:'agnes-office', mentorId: mentors.length > 0 ? String(mentors[0].id) : '1' }));
                   setStep(2);
-                }}>
+                }}
+              >
                 Book Agnes Office Hours
               </button>
-              <span style={{ fontSize:'12px',color:'var(--text-muted)' }}>or choose a mentor below</span>
             </div>
           </div>
         </div>
@@ -2113,17 +2182,22 @@ function Admin({ openAdminPanel, lang }) {
   const panels = [
     { key:'users',        title:'Participants',        desc:'View all registered participants, performance, and profiles.',    btn:'Manage Participants',  icon:'P' },
     { key:'leaderboard',  title:'Leaderboard',         desc:'Top performers ranked by quiz scores and module completions.',     btn:'View Leaderboard',     icon:'L' },
-    { key:'roles',        title:'Roles & Mentors',     desc:'Assign mentor, instructor, or admin roles to platform users.',    btn:'Manage Roles',         icon:'R' },
+    { key:'roles',        title:'Roles and Mentors',   desc:'Assign mentor, instructor, or admin roles to platform users.',    btn:'Manage Roles',         icon:'R' },
     { key:'sessions',     title:'Mentorship Sessions', desc:'Monitor all mentorship bookings and session history.',             btn:'Monitor Bookings',     icon:'S' },
     { key:'analytics',    title:'Analytics',           desc:'Detailed engagement, retention, and completion analytics.',        btn:'View Analytics',       icon:'A' },
     { key:'announcements',title:'Announcements',        desc:'Post platform-wide announcements visible to all users.',          btn:'Manage Announcements', icon:'N' },
   ];
 
+  // Read SUS responses from localStorage
+  const susResults = JSON.parse(localStorage.getItem('pog_sus_responses') || '[]');
+  const avgScore = susResults.length > 0 ? Math.round(susResults.reduce((a,b)=>a+b.score,0)/susResults.length) : null;
+  const getGrade = (s) => s>=90?{label:'Excellent',color:'#1e5a2c'}:s>=80?{label:'Good',color:'#2d7a2d'}:s>=70?{label:'OK',color:'#e67e22'}:s>=51?{label:'Poor',color:'#c0392b'}:{label:'Needs Work',color:'#7e2a2a'};
+
   return (
     <div className="animate-fade-in">
       <div className="page-header">
         <h2>Admin Dashboard</h2>
-        <p>Pool of Grace platform management console — Agnes Berko, Founder</p>
+        <p>Pool of Grace platform management console \u2014 Agnes Berko, Founder</p>
       </div>
 
       {/* Quick stats */}
@@ -2159,7 +2233,7 @@ function Admin({ openAdminPanel, lang }) {
       </div>
 
       {/* Panel cards */}
-      <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))',gap:'16px' }}>
+      <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))',gap:'16px',marginBottom:'36px' }}>
         {panels.map((p,i)=>(
           <div key={i} className="premium-card" style={{ padding:'24px',display:'flex',flexDirection:'column' }}>
             <div style={{ width:'42px',height:'42px',background:'var(--primary-pale)',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:'800',fontSize:'16px',color:'var(--primary)',marginBottom:'14px' }}>{p.icon}</div>
@@ -2169,9 +2243,69 @@ function Admin({ openAdminPanel, lang }) {
           </div>
         ))}
       </div>
+
+      {/* SUS Survey Results */}
+      <div className="premium-card" style={{ padding:'clamp(18px,4vw,30px)',borderLeft:'5px solid var(--secondary)' }}>
+        <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'12px',marginBottom:'18px' }}>
+          <div>
+            <h3 style={{ color:'var(--primary)',fontSize:'16px',fontWeight:'700',marginBottom:'3px' }}>SUS Survey Results</h3>
+            <p style={{ color:'var(--text-muted)',fontSize:'13px' }}>System Usability Scale responses from participants \u2014 screenshot for supervisor</p>
+          </div>
+          {avgScore !== null && (
+            <div style={{ textAlign:'center',background:'var(--primary-pale)',padding:'12px 20px',borderRadius:'12px' }}>
+              <div style={{ fontSize:'clamp(22px,3vw,28px)',fontWeight:'800',color:'var(--primary)' }}>{avgScore}</div>
+              <div style={{ fontSize:'11px',color:'var(--text-muted)',fontWeight:'600' }}>Average SUS Score</div>
+              <div style={{ fontSize:'11px',color:getGrade(avgScore).color,fontWeight:'700' }}>{getGrade(avgScore).label}</div>
+            </div>
+          )}
+        </div>
+
+        {susResults.length === 0 ? (
+          <div style={{ textAlign:'center',padding:'32px',color:'var(--text-muted)',background:'var(--bg-main)',borderRadius:'10px' }}>
+            <p style={{ fontWeight:'700',marginBottom:'6px' }}>No survey responses yet</p>
+            <p style={{ fontSize:'13px' }}>Once participants complete the Usability Survey, their responses will appear here.</p>
+          </div>
+        ) : (
+          <div className="table-responsive">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Participant</th>
+                  <th>Cohort / Location</th>
+                  <th>Date</th>
+                  <th>SUS Score</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {susResults.map((r,i)=>{
+                  const g = getGrade(r.score);
+                  return (
+                    <tr key={i}>
+                      <td style={{ fontWeight:'700',color:'var(--text-muted)' }}>{i+1}</td>
+                      <td style={{ fontWeight:'600' }}>{r.name}</td>
+                      <td style={{ color:'var(--text-muted)' }}>{r.cohort || '\u2014'}</td>
+                      <td style={{ color:'var(--text-muted)' }}>{r.date}</td>
+                      <td>
+                        <span style={{ fontWeight:'800',fontSize:'16px',color:g.color }}>{r.score}</span>
+                        <span style={{ color:'var(--text-muted)',fontSize:'11px' }}>/100</span>
+                      </td>
+                      <td>
+                        <span className="badge" style={{ background:`${g.color}18`,color:g.color }}>{g.label}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
 
 /* =========================================================
    ADMIN ACTION
@@ -3172,7 +3306,8 @@ function ProfilePage({ user, lang, modules }) {
 /* =========================================================
    SUS SURVEY PAGE
    ========================================================= */
-function SUSPage({ lang }) {
+function SUSPage({ lang, showToast }) {
+
   void lang;
   const questions = [
     'I think that I would like to use this platform frequently.',
@@ -3212,6 +3347,7 @@ function SUSPage({ lang }) {
     const prev = JSON.parse(localStorage.getItem('pog_sus_responses') || '[]');
     prev.push({ name: name || 'Anonymous', cohort, answers, score: Math.round(susScore), date: new Date().toISOString().split('T')[0] });
     localStorage.setItem('pog_sus_responses', JSON.stringify(prev));
+    if (showToast) showToast(`Survey submitted! Your SUS score is ${Math.round(susScore)}/100. Thank you!`);
   };
 
   const grade = score !== null ? (score >= 90 ? { label:'Excellent (A)', color:'#1e5a2c' } : score >= 80 ? { label:'Good (B)', color:'#2d7a2d' } : score >= 70 ? { label:'OK (C)', color:'#e67e22' } : score >= 51 ? { label:'Poor (D)', color:'#c0392b' } : { label:'Unacceptable (F)', color:'#7e2a2a' }) : null;
