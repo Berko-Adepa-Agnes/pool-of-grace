@@ -522,10 +522,78 @@ function Home({ go, lang, LanguageToggle }) {
       </div>
 
       {/* Footer */}
-      <footer style={{ background:'#091209',padding:'36px 20px',textAlign:'center',color:'rgba(255,255,255,0.55)' }}>
-        <h3 style={{ color:'#fff',marginBottom:'8px',fontWeight:'700' }}>Pool of Grace</h3>
-        <p style={{ fontSize:'14px' }}>Empowering young women in Ghana through technology education and mentorship</p>
-        <p style={{ fontSize:'12px',color:'rgba(255,255,255,0.28)',marginTop:'18px' }}>Kumasi and Accra, Ghana — Capstone 2026</p>
+      <footer style={{ background:'#0a150a',padding:'clamp(40px,6vw,64px) clamp(20px,5vw,60px) 24px',color:'rgba(255,255,255,0.65)' }}>
+        <div style={{ maxWidth:'1080px',margin:'0 auto' }}>
+
+          {/* Top row */}
+          <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:'36px',marginBottom:'44px' }}>
+
+            {/* Brand column */}
+            <div>
+              <h3 style={{ color:'#fff',fontWeight:'800',fontSize:'20px',marginBottom:'10px' }}>Pool of Grace</h3>
+              <p style={{ fontSize:'14px',lineHeight:'1.8',marginBottom:'16px' }}>Empowering young women in Ghana through structured technology education, mentorship, and community support.</p>
+              <div style={{ display:'flex',gap:'10px',flexWrap:'wrap' }}>
+                <a href="mailto:a.berko1@alustudent.com" style={{ background:'var(--primary)',color:'#fff',padding:'7px 16px',borderRadius:'20px',fontSize:'12px',fontWeight:'700',textDecoration:'none' }}>Email Us</a>
+                <a href="https://meet.google.com/bii-jzew-udd" target="_blank" rel="noopener noreferrer" style={{ background:'rgba(255,255,255,0.12)',color:'#fff',padding:'7px 16px',borderRadius:'20px',fontSize:'12px',fontWeight:'700',textDecoration:'none' }}>Join Meeting</a>
+              </div>
+            </div>
+
+            {/* Platform links */}
+            <div>
+              <h4 style={{ color:'#fff',fontWeight:'700',fontSize:'14px',marginBottom:'14px',textTransform:'uppercase',letterSpacing:'1px' }}>Platform</h4>
+              {['Learning Modules','Mentorship Booking','Community Forum','Career Resources','Usability Survey'].map((link,i)=>(
+                <div key={i} style={{ marginBottom:'9px' }}>
+                  <span style={{ fontSize:'13px',color:'rgba(255,255,255,0.65)',cursor:'pointer' }}>{link}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Office hours */}
+            <div>
+              <h4 style={{ color:'#fff',fontWeight:'700',fontSize:'14px',marginBottom:'14px',textTransform:'uppercase',letterSpacing:'1px' }}>Office Hours</h4>
+              {[
+                ['Agnes Berko', 'Tue, Fri, Sat — 2:00–3:00 PM'],
+                ['Weekly Meeting', 'Every Saturday — 4:00 PM'],
+                ['Location', 'Kumasi and Accra, Ghana'],
+                ['Email', 'a.berko1@alustudent.com'],
+              ].map(([label,val],i)=>(
+                <div key={i} style={{ marginBottom:'9px' }}>
+                  <span style={{ fontSize:'12px',fontWeight:'700',color:'rgba(255,255,255,0.45)',display:'block' }}>{label}</span>
+                  <span style={{ fontSize:'13px',color:'rgba(255,255,255,0.75)' }}>{val}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Research / ethics */}
+            <div>
+              <h4 style={{ color:'#fff',fontWeight:'700',fontSize:'14px',marginBottom:'14px',textTransform:'uppercase',letterSpacing:'1px' }}>Research</h4>
+              <div style={{ background:'rgba(255,255,255,0.07)',padding:'14px',borderRadius:'10px',border:'1px solid rgba(255,255,255,0.12)',marginBottom:'14px' }}>
+                <div style={{ fontSize:'11px',fontWeight:'700',color:'rgba(255,255,255,0.5)',textTransform:'uppercase',letterSpacing:'1px',marginBottom:'4px' }}>Institution</div>
+                <div style={{ fontSize:'13px',color:'#fff',fontWeight:'600' }}>African Leadership University</div>
+                <div style={{ fontSize:'12px',color:'rgba(255,255,255,0.55)',marginTop:'3px' }}>School of Software Engineering</div>
+              </div>
+              <div style={{ background:'rgba(255,255,255,0.07)',padding:'14px',borderRadius:'10px',border:'1px solid rgba(255,255,255,0.12)' }}>
+                <div style={{ fontSize:'11px',fontWeight:'700',color:'rgba(255,255,255,0.5)',textTransform:'uppercase',letterSpacing:'1px',marginBottom:'4px' }}>Ethics Approval</div>
+                <div style={{ fontSize:'13px',color:'#fff',fontWeight:'600' }}>ALU Research Ethics Committee</div>
+                <div style={{ fontSize:'12px',color:'rgba(255,255,255,0.55)',marginTop:'3px' }}>REC Approved — 2026</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div style={{ height:'1px',background:'rgba(255,255,255,0.1)',marginBottom:'22px' }}></div>
+
+          {/* Bottom row */}
+          <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'12px' }}>
+            <p style={{ fontSize:'12px',margin:0 }}>Pool of Grace &copy; 2026 — Agnes Adepa Berko — ALU Capstone Project</p>
+            <div style={{ display:'flex',gap:'16px' }}>
+              <span style={{ fontSize:'12px',cursor:'pointer' }} onClick={()=>go('login')}>Login</span>
+              <span style={{ fontSize:'12px',cursor:'pointer' }} onClick={()=>go('register')}>Register</span>
+              <span style={{ fontSize:'12px' }}>|</span>
+              <span style={{ fontSize:'12px',color:'rgba(255,255,255,0.4)' }}>Ghana Time (GMT+0)</span>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
@@ -2249,15 +2317,37 @@ function Admin({ openAdminPanel, lang }) {
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'12px',marginBottom:'18px' }}>
           <div>
             <h3 style={{ color:'var(--primary)',fontSize:'16px',fontWeight:'700',marginBottom:'3px' }}>SUS Survey Results</h3>
-            <p style={{ color:'var(--text-muted)',fontSize:'13px' }}>System Usability Scale responses from participants \u2014 screenshot for supervisor</p>
+            <p style={{ color:'var(--text-muted)',fontSize:'13px' }}>System Usability Scale responses from participants — for supervisor</p>
           </div>
-          {avgScore !== null && (
-            <div style={{ textAlign:'center',background:'var(--primary-pale)',padding:'12px 20px',borderRadius:'12px' }}>
-              <div style={{ fontSize:'clamp(22px,3vw,28px)',fontWeight:'800',color:'var(--primary)' }}>{avgScore}</div>
-              <div style={{ fontSize:'11px',color:'var(--text-muted)',fontWeight:'600' }}>Average SUS Score</div>
-              <div style={{ fontSize:'11px',color:getGrade(avgScore).color,fontWeight:'700' }}>{getGrade(avgScore).label}</div>
-            </div>
-          )}
+          <div style={{ display:'flex',gap:'10px',alignItems:'center',flexWrap:'wrap' }}>
+            {susResults.length > 0 && (
+              <button
+                style={{ background:'var(--secondary)',color:'#fff',border:'none',padding:'9px 18px',borderRadius:'20px',fontWeight:'700',fontSize:'13px',cursor:'pointer' }}
+                onClick={()=>{
+                  const header = 'No,Name,Cohort,Date,Score,Grade';
+                  const rows = susResults.map((r,i)=>{
+                    const g = getGrade(r.score).label;
+                    return `${i+1},"${r.name}","${r.cohort||''}","${r.date}",${r.score},"${g}"`;
+                  });
+                  const csv = [header,...rows].join('\n');
+                  const blob = new Blob([csv],{type:'text/csv'});
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href=url; a.download='PoolOfGrace_SUS_Results.csv'; a.click();
+                  URL.revokeObjectURL(url);
+                }}
+              >
+                Export CSV
+              </button>
+            )}
+            {avgScore !== null && (
+              <div style={{ textAlign:'center',background:'var(--primary-pale)',padding:'12px 20px',borderRadius:'12px' }}>
+                <div style={{ fontSize:'clamp(22px,3vw,28px)',fontWeight:'800',color:'var(--primary)' }}>{avgScore}</div>
+                <div style={{ fontSize:'11px',color:'var(--text-muted)',fontWeight:'600' }}>Avg SUS Score</div>
+                <div style={{ fontSize:'11px',color:getGrade(avgScore).color,fontWeight:'700' }}>{getGrade(avgScore).label}</div>
+              </div>
+            )}
+          </div>
         </div>
 
         {susResults.length === 0 ? (
@@ -2893,9 +2983,27 @@ function CertificatePage({ user, modules, lang }) {
               </div>
             )}
             {selected && (
-              <button className="btn-primary" style={{ width:'100%',marginTop:'14px' }} onClick={() => window.print()}>
-                Print / Save Certificate
-              </button>
+              <div style={{ display:'flex',gap:'10px',marginTop:'14px',flexWrap:'wrap' }}>
+                <button className="btn-primary" style={{ flex:1 }} onClick={()=>{
+                  // Print only the certificate div
+                  const el = document.getElementById('cert-preview');
+                  if (!el) return;
+                  const w = window.open('','_blank','width=900,height=650');
+                  w.document.write(`<!DOCTYPE html><html><head><title>Certificate - ${selected.title}</title><style>body{margin:0;padding:32px;font-family:Outfit,sans-serif;background:#fff;}@media print{body{padding:0;}}</style></head><body>${el.outerHTML}<script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
+                  w.document.close();
+                }}>
+                  Download / Print Certificate
+                </button>
+                <button className="btn-outline" onClick={()=>{
+                  const el = document.getElementById('cert-preview');
+                  if (!el) return;
+                  const blob = new Blob([`<!DOCTYPE html><html><head><title>Certificate</title><style>body{margin:32px;font-family:Arial,sans-serif;}</style></head><body>${el.outerHTML}</body></html>`], {type:'text/html'});
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url; a.download = `Certificate-Stage-${selected.order}.html`; a.click();
+                  URL.revokeObjectURL(url);
+                }}>Save as File</button>
+              </div>
             )}
           </div>
         </div>
