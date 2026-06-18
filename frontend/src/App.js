@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   registerUser,
   loginUser,
@@ -125,6 +125,55 @@ const Icons = {
       <path d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/>
     </svg>
   ),
+  Code: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+    </svg>
+  ),
+  Trophy: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+      <path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/>
+      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/>
+      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+    </svg>
+  ),
+  Share: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+  ),
+  Timer: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+    </svg>
+  ),
+  Star: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
+  ),
+  Zap: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+  ),
+  Play: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </svg>
+  ),
+  Pause: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+    </svg>
+  ),
+  Reset: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+    </svg>
+  ),
 };
 
 /* =========================================================
@@ -140,6 +189,18 @@ export default function App() {
   const [completionsCount, setCompletionsCount] = useState(0);
   const [toast, setToast]                 = useState(null);
   const [darkMode, setDarkMode]           = useState(false);
+  const [isOnline, setIsOnline]           = useState(window.navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Apply dark mode to root CSS variables
   React.useEffect(() => {
@@ -311,11 +372,15 @@ export default function App() {
   const navItems = user && user.role !== 'admin' ? [
     { key: 'dashboard',     label: t('common.dashboard', lang), icon: <Icons.Dashboard /> },
     { key: 'modules',       label: 'Modules',                   icon: <Icons.Modules /> },
+    { key: 'practiceLab',   label: 'Practice Lab',              icon: <Icons.Code /> },
+    { key: 'achievements',  label: 'Achievements',              icon: <Icons.Trophy /> },
     { key: 'schedule',      label: 'Mentorship',                icon: <Icons.Mentorship /> },
     { key: 'forum',         label: 'Community',                 icon: <Icons.Forum /> },
     { key: 'career',        label: 'Career Board',              icon: <Icons.Career /> },
     { key: 'grades',        label: 'Grades',                    icon: <Icons.Grades /> },
     { key: 'certificates',  label: 'Certificates',              icon: <Icons.Grades /> },
+    { key: 'cvBuilder',     label: 'CV Builder',                icon: <Icons.Career /> },
+    { key: 'discover',      label: 'Share & Grow',              icon: <Icons.Share /> },
     { key: 'recordings',    label: 'Recordings',                icon: <Icons.Video2 /> },
     { key: 'announcements', label: 'Announcements',             icon: <Icons.Inbox /> },
     { key: 'calendar',      label: 'Calendar',                  icon: <Icons.Calendar /> },
@@ -400,7 +465,14 @@ export default function App() {
 
       {/* Main */}
       <main className="portal-main">
-        <header style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '24px' }}>
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '10px' }}>
+          {/* Online/Offline Status Indicator */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: isOnline ? 'var(--primary-pale)' : '#fff0f0', border: `1px solid ${isOnline ? 'var(--primary-light)' : '#ffccd0'}`, padding: '6px 14px', borderRadius: '20px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: isOnline ? 'var(--primary-light)' : '#e74c3c', display: 'inline-block' }}></span>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: isOnline ? 'var(--primary)' : '#c0392b' }}>
+              {isOnline ? 'Online Mode' : 'Offline Mode'}
+            </span>
+          </div>
           <LanguageToggle />
         </header>
         {children}
@@ -433,12 +505,16 @@ export default function App() {
 
   if (page === 'dashboard')     return <><ToastBar/><AuthenticatedPortal><Dashboard user={user} go={setPage} completionsCount={completionsCount} sessionsCount={sessionsCount} lang={lang} /></AuthenticatedPortal></>;
   if (page === 'modules')       return <><ToastBar/><AuthenticatedPortal><ModulesList openModule={openModule} lang={lang} modules={modules} /></AuthenticatedPortal></>;
-  if (page === 'moduleView')    return <><ToastBar/><AuthenticatedPortal><ModuleView module={selectedModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} showToast={showToast} /></AuthenticatedPortal></>;
+  if (page === 'moduleView')    return <><ToastBar/><AuthenticatedPortal><ModuleView module={selectedModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} showToast={showToast} isOnline={isOnline} /></AuthenticatedPortal></>;
   if (page === 'schedule')      return <><ToastBar/><AuthenticatedPortal><Schedule go={setPage} lang={lang} onBooked={()=>{ fetchStats(); showToast('Session booked! Check your inbox for details.'); }} /></AuthenticatedPortal></>;
   if (page === 'forum')         return <><ToastBar/><AuthenticatedPortal><Forum lang={lang} /></AuthenticatedPortal></>;
   if (page === 'career')        return <AuthenticatedPortal><CareerResources lang={lang} /></AuthenticatedPortal>;
   if (page === 'grades')        return <AuthenticatedPortal><Grades modules={modules} lang={lang} /></AuthenticatedPortal>;
   if (page === 'certificates')  return <AuthenticatedPortal><CertificatePage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
+  if (page === 'cvBuilder')     return <AuthenticatedPortal><CVBuilder user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
+  if (page === 'practiceLab')   return <><ToastBar/><AuthenticatedPortal><PracticeLab lang={lang} modules={modules} showToast={showToast} /></AuthenticatedPortal></>;
+  if (page === 'achievements')  return <AuthenticatedPortal><AchievementsPage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
+  if (page === 'discover')      return <AuthenticatedPortal><DiscoverPage lang={lang} go={setPage} /></AuthenticatedPortal>;
   if (page === 'recordings')    return <AuthenticatedPortal><RecordingsPage lang={lang} user={user} /></AuthenticatedPortal>;
   if (page === 'announcements') return <AuthenticatedPortal><AnnouncementsPage lang={lang} user={user} /></AuthenticatedPortal>;
   if (page === 'calendar')      return <AuthenticatedPortal><CalendarPage lang={lang} /></AuthenticatedPortal>;
@@ -982,13 +1058,15 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
       {/* Stats */}
       <div className="stat-grid" style={{ marginBottom:'32px' }}>
         {[
-          { value:completionsCount,       label:t('dashboard.statModulesLbl',lang),  sub:t('dashboard.statModulesSub',lang) },
-          { value:`${progressPercent}%`,  label:t('dashboard.statProgressLbl',lang), sub:t('dashboard.statProgressSub',lang) },
-          { value:sessionsCount,          label:t('dashboard.statSessionsLbl',lang), sub:t('dashboard.statSessionsSub',lang) },
-          { value:'1',                    label:t('dashboard.statDaysLbl',lang),      sub:t('dashboard.statDaysSub',lang) },
+          { value:completionsCount,       label:t('dashboard.statModulesLbl',lang),  sub:t('dashboard.statModulesSub',lang), color:'var(--primary-light)' },
+          { value:`${progressPercent}%`,  label:t('dashboard.statProgressLbl',lang), sub:t('dashboard.statProgressSub',lang), color:'var(--primary-light)' },
+          { value:sessionsCount,          label:t('dashboard.statSessionsLbl',lang), sub:t('dashboard.statSessionsSub',lang), color:'var(--primary-light)' },
+          { value: (() => { try { return JSON.parse(localStorage.getItem('pog_practice_xp')) || 0; } catch { return 0; } })(), label:'Practice XP', sub:'Code challenges', color:'#f1c40f' },
+          { value: (() => { try { return (JSON.parse(localStorage.getItem('pog_practice_streak')) || {}).count || 0; } catch { return 0; } })(), label:'Day Streak', sub:'Keep it going!', color:'#e67e22' },
+          { value: (() => { try { return (JSON.parse(localStorage.getItem('pog_practice_completed')) || []).length; } catch { return 0; } })(), label:'Challenges Done', sub:'Practice Lab', color:'#9b59b6' },
         ].map((s,i)=>(
-          <div key={i} className="premium-card" style={{ padding:'22px',textAlign:'center',borderTop:'4px solid var(--primary-light)' }}>
-            <div style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:'800',color:'var(--primary)',marginBottom:'4px' }}>{s.value}</div>
+          <div key={i} className="premium-card" style={{ padding:'22px',textAlign:'center',borderTop:`4px solid ${s.color}` }}>
+            <div style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:'800',color:s.color,marginBottom:'4px' }}>{s.value}</div>
             <div style={{ fontSize:'13px',fontWeight:'700',marginBottom:'3px' }}>{s.label}</div>
             <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>{s.sub}</div>
           </div>
@@ -1042,6 +1120,8 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
       <div className="card-grid-4">
         {[
           { title:t('dashboard.card1Title',lang), desc:t('dashboard.card1Desc',lang), btn:t('dashboard.card1Btn',lang), action:()=>go('modules') },
+          { title:'Practice Lab', desc:'Interactive Ghana-contextualized coding challenges with XP, badges, and streaks. Build real skills!', btn:'Start Coding', action:()=>go('practiceLab') },
+          { title:'Achievements', desc:'View your trophy room — badges for modules, coding challenges, streaks, and community engagement.', btn:'View Badges', action:()=>go('achievements') },
           { title:t('dashboard.card2Title',lang), desc:t('dashboard.card2Desc',lang), btn:t('dashboard.card2Btn',lang), action:()=>go('schedule') },
           { title:t('dashboard.card3Title',lang), desc:t('dashboard.card3Desc',lang), btn:t('dashboard.card3Btn',lang), action:()=>go('forum') },
           { title:t('dashboard.card4Title',lang), desc:t('dashboard.card4Desc',lang), btn:t('dashboard.card4Btn',lang), action:()=>go('career') },
@@ -1183,10 +1263,99 @@ function ModulesList({ openModule, lang, modules }) {
 /* =========================================================
    MODULE VIEW  (Canvas-style tabs)
    ========================================================= */
-function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showToast }) {
+function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showToast, isOnline }) {
 
   const [activeTab, setActiveTab] = useState('notes');
   const [answers, setAnswers]     = useState({});
+  const [downloading, setDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+
+  // Study Timer (Pomodoro)
+  const [timerSeconds, setTimerSeconds] = useState(25 * 60);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [isBreak, setIsBreak] = useState(false);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    if (timerRunning) {
+      timerRef.current = setInterval(() => {
+        setTimerSeconds(prev => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current);
+            setTimerRunning(false);
+            if (!isBreak) {
+              setIsBreak(true);
+              setTimerSeconds(5 * 60);
+              if (showToast) showToast('Focus session complete! Take a 5-minute break.');
+            } else {
+              setIsBreak(false);
+              setTimerSeconds(25 * 60);
+              if (showToast) showToast('Break over! Ready for another focus session?');
+            }
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [timerRunning, isBreak, showToast]);
+
+  // Celebration
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [confettiPieces, setConfettiPieces] = useState([]);
+
+  const launchCelebration = () => {
+    const colors = ['#f1c40f','#e74c3c','#3498db','#2ecc71','#9b59b6','#e67e22','#1abc9c'];
+    const pieces = Array.from({length:40}).map((_,i) => ({
+      id:i, left:Math.random()*100, color:colors[i%colors.length],
+      delay:Math.random()*1.5, duration:2+Math.random()*2,
+      shape:Math.random()>0.5?'50%':'0'
+    }));
+    setConfettiPieces(pieces);
+    setShowCelebration(true);
+    setTimeout(()=>setShowCelebration(false), 4000);
+  };
+
+  useEffect(() => {
+    if ('caches' in window && module) {
+      const audioUrl = (module.content && module.content.audioUrl) || `/audio/stage_${module.order}.mp3`;
+      const pdfUrl = (module.content && module.content.pdfUrl) || `/pdf/stage_${module.order}.pdf`;
+      caches.open('pool-of-grace-media-v1').then((cache) => {
+        Promise.all([
+          cache.match(new Request(audioUrl)),
+          cache.match(new Request(pdfUrl))
+        ]).then(([audioMatch, pdfMatch]) => {
+          if (audioMatch && pdfMatch) {
+            setDownloaded(true);
+          } else {
+            setDownloaded(false);
+          }
+        });
+      });
+    }
+  }, [module]);
+
+  const triggerDownload = async () => {
+    if (!('caches' in window) || !module) return;
+    setDownloading(true);
+    try {
+      const audioUrl = (module.content && module.content.audioUrl) || `/audio/stage_${module.order}.mp3`;
+      const pdfUrl = (module.content && module.content.pdfUrl) || `/pdf/stage_${module.order}.pdf`;
+      
+      await Promise.all([
+        fetch(audioUrl),
+        fetch(pdfUrl)
+      ]);
+      
+      setDownloaded(true);
+      if (showToast) showToast('Study materials downloaded! Available offline.');
+    } catch (err) {
+      console.error('Failed to download media:', err);
+      if (showToast) showToast('Download failed. Try again when online.', 'error');
+    }
+    setDownloading(false);
+  };
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [score, setScore]         = useState(0);
   const [noteContent, setNoteContent] = useState('');
@@ -1211,6 +1380,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
       try {
         await completeModuleQuiz(module.id, correct);
         onQuizPassed();
+        launchCelebration();
         if (showToast) showToast(`Module complete! You scored ${correct}/${content.quiz.length} — well done!`);
       }
       catch(err) { console.error(err); }
@@ -1257,14 +1427,73 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
     { key:'grades',     label:'Grades' },
   ];
 
+  const timerMin = Math.floor(timerSeconds / 60);
+  const timerSec = timerSeconds % 60;
+
   return (
-    <div className="animate-fade-in" style={{ maxWidth:'940px',margin:'0 auto' }}>
+    <div className="animate-fade-in" style={{ maxWidth:'940px',margin:'0 auto',position:'relative' }}>
+
+      {/* Confetti Celebration Overlay */}
+      {showCelebration && (
+        <div style={{ position:'fixed',top:0,left:0,width:'100vw',height:'100vh',pointerEvents:'none',zIndex:9999,overflow:'hidden' }}>
+          {confettiPieces.map(p => (
+            <div key={p.id} className="confetti-piece" style={{
+              left:`${p.left}%`,
+              background:p.color,
+              borderRadius:p.shape,
+              animationDelay:`${p.delay}s`,
+              animationDuration:`${p.duration}s`
+            }} />
+          ))}
+          <div style={{ position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',textAlign:'center',animation:'celebration-pop 0.6s ease-out' }}>
+            <div style={{ fontSize:'72px',marginBottom:'12px' }}>🎉</div>
+            <div style={{ background:'rgba(255,255,255,0.95)',padding:'18px 36px',borderRadius:'16px',boxShadow:'0 8px 32px rgba(0,0,0,0.15)' }}>
+              <div style={{ fontSize:'22px',fontWeight:'800',color:'var(--primary)',marginBottom:'4px' }}>Module Complete!</div>
+              <div style={{ fontSize:'14px',color:'var(--text-muted)' }}>Amazing work — keep going! 🌟</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top nav */}
       <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px',flexWrap:'wrap',gap:'8px' }}>
         <button className="btn-outline" onClick={()=>go('modules')} style={{ fontSize:'13px',padding:'8px 16px' }}>Back to Modules</button>
         <div style={{ display:'flex',gap:'8px' }}>
           {prevMod && <button className="btn-outline" style={{ fontSize:'13px',padding:'8px 16px' }} onClick={()=>openModule(prevMod)}>Stage {prevMod.order}</button>}
           {nextMod && <button className="btn-primary" style={{ fontSize:'13px',padding:'8px 16px',background:catColor() }} onClick={()=>openModule(nextMod)}>Stage {nextMod.order}</button>}
+        </div>
+      </div>
+
+      {/* Study Timer (Pomodoro) */}
+      <div style={{ background:'linear-gradient(135deg,#1a3a5c,#2d6a9f)',borderRadius:'12px',padding:'14px 22px',marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'12px',color:'#fff' }}>
+        <div style={{ display:'flex',alignItems:'center',gap:'12px' }}>
+          <div style={{ width:'38px',height:'38px',borderRadius:'50%',background:'rgba(255,255,255,0.15)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'18px' }}>
+            <Icons.Timer />
+          </div>
+          <div>
+            <div style={{ fontSize:'13px',fontWeight:'700',marginBottom:'2px' }}>{isBreak ? '☕ Break Time' : '🎯 Focus Session'}</div>
+            <div style={{ fontSize:'11px',color:'rgba(255,255,255,0.7)' }}>{isBreak ? '5-minute rest' : '25-minute Pomodoro'}</div>
+          </div>
+        </div>
+        <div style={{ display:'flex',alignItems:'center',gap:'14px' }}>
+          <div style={{ fontFamily:'monospace',fontSize:'28px',fontWeight:'800',letterSpacing:'2px',minWidth:'80px',textAlign:'center',color:timerSeconds < 60 ? '#ff6b6b' : '#fff' }}>
+            {String(timerMin).padStart(2,'0')}:{String(timerSec).padStart(2,'0')}
+          </div>
+          <div style={{ display:'flex',gap:'6px' }}>
+            <button onClick={()=>setTimerRunning(!timerRunning)} style={{
+              background:timerRunning ? 'rgba(255,107,107,0.25)' : 'rgba(46,204,113,0.25)',
+              border:`1px solid ${timerRunning ? 'rgba(255,107,107,0.5)' : 'rgba(46,204,113,0.5)'}`,
+              color:'#fff',padding:'6px 16px',borderRadius:'20px',cursor:'pointer',fontSize:'12px',fontWeight:'700',fontFamily:'inherit'
+            }}>
+              {timerRunning ? 'Pause' : 'Start'}
+            </button>
+            <button onClick={()=>{ setTimerRunning(false); setIsBreak(false); setTimerSeconds(25*60); }} style={{
+              background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.2)',
+              color:'#fff',padding:'6px 12px',borderRadius:'20px',cursor:'pointer',fontSize:'12px',fontWeight:'600',fontFamily:'inherit'
+            }}>
+              Reset
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1314,6 +1543,17 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                 <p style={{ color:'var(--text-main)',fontSize:'14px',lineHeight:'1.8',margin:0,paddingLeft:'40px' }}>{s.body}</p>
               </div>
             ))}
+            {/* Try It Yourself — Practice Lab Link (for tech modules) */}
+            {module.category === 'technical-skills' && (
+              <div style={{ background:'linear-gradient(135deg,#f3e8ff,#ede0ff)',border:'2px solid #d4bfff',borderRadius:'12px',padding:'18px 22px',marginTop:'22px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'12px' }}>
+                <div style={{ flex:1,minWidth:'180px' }}>
+                  <div style={{ fontSize:'15px',fontWeight:'700',color:'#5a3e8a',marginBottom:'4px' }}>⚡ Try It Yourself!</div>
+                  <div style={{ fontSize:'13px',color:'#7c5cbf',lineHeight:'1.5' }}>Practice what you learned with Ghana-contextualized coding challenges in the Practice Lab.</div>
+                </div>
+                <button className="btn-primary" style={{ background:'#7c5cbf',fontSize:'13px',padding:'9px 20px' }} onClick={()=>go('practiceLab')}>Open Practice Lab →</button>
+              </div>
+            )}
+
             {/* Personal notes */}
             <div style={{ marginTop:'26px',paddingTop:'22px',borderTop:'2px solid var(--primary-pale)' }}>
               <h3 style={{ color:'var(--primary)',fontSize:'15px',fontWeight:'700',marginBottom:'10px' }}>Personal Notes</h3>
@@ -1335,21 +1575,86 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
         {/* RESOURCES */}
         {activeTab === 'resources' && (
           <div>
+            {/* Offline study pack control */}
+            <div className="premium-card" style={{ padding:'18px 22px', marginBottom:'24px', borderLeft:'5px solid var(--primary)', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'12px' }}>
+              <div style={{ flex: 1, minWidth: '220px' }}>
+                <h4 style={{ color:'var(--primary)', margin:'0 0 4px', fontSize:'15px', fontWeight:'700' }}>Offline Study Pack</h4>
+                <p style={{ color:'var(--text-muted)', fontSize:'12.5px', margin:0 }}>Download this module's audio lecture and PDF study notes to learn without internet.</p>
+              </div>
+              <button 
+                className="btn-primary" 
+                onClick={triggerDownload} 
+                disabled={downloading || downloaded || !isOnline}
+                style={{ padding:'8px 18px', fontSize:'12.5px', background: downloaded ? 'var(--primary)' : 'linear-gradient(135deg, var(--primary-light), var(--primary))', boxShadow: 'none' }}
+              >
+                {downloaded ? 'Downloaded ✓' : downloading ? 'Downloading...' : !isOnline ? 'Online Required' : 'Download for Offline Study'}
+              </button>
+            </div>
+
+            {/* Offline Alert Warning */}
+            {!isOnline && (
+              <div className="alert-warning" style={{ marginBottom:'22px' }}>
+                <h4 style={{ fontWeight:'700', marginBottom:'6px', fontSize:'14px' }}>Offline Mode Active</h4>
+                <p style={{ margin:0, fontSize:'13px', lineHeight:'1.5' }}>
+                  YouTube video links are disabled. You can listen to the pre-downloaded Audio Lecture or download the PDF Study Guide below to continue learning offline.
+                </p>
+              </div>
+            )}
+
+            {/* Audio Lecture Player Section */}
+            <div className="premium-card" style={{ padding:'22px', marginBottom:'28px' }}>
+              <h3 className="section-heading" style={{ fontSize:'15px', display:'flex', alignItems:'center', gap:'8px', marginBottom:'14px' }}>
+                <Icons.Video2 /> Audio Lecture Guide
+              </h3>
+              <p style={{ color:'var(--text-muted)', fontSize:'13px', marginBottom:'16px' }}>
+                Listen to Agnes' voice lecture for Stage {module.order} (useful for low-bandwidth or offline learning).
+              </p>
+              
+              <audio 
+                controls 
+                style={{ width: '100%', outline: 'none' }}
+                src={content.audioUrl || `/audio/stage_${module.order}.mp3`}
+              >
+                Your browser does not support the audio player.
+              </audio>
+              
+              <div style={{ marginTop:'14px', display:'flex', gap:'10px' }}>
+                <a 
+                  href={content.pdfUrl || `/pdf/stage_${module.order}.pdf`} 
+                  download={`Stage_${module.order}_Notes.pdf`} 
+                  className="btn-outline" 
+                  style={{ padding:'8px 18px', fontSize:'12.5px', display:'inline-flex', alignItems:'center', gap:'6px' }}
+                >
+                  Download PDF Study Guide
+                </a>
+              </div>
+            </div>
+
             <h2 className="section-heading">Educational Video Resources</h2>
             <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'22px' }}>
-              Curated videos for <strong>{module.title}</strong>. Click any link to watch on YouTube.
+              Curated videos for <strong>{module.title}</strong>. {isOnline ? 'Click any link to watch on YouTube.' : 'Requires internet to watch.'}
             </p>
-            <div style={{ display:'flex',flexDirection:'column',gap:'10px',marginBottom:'30px' }}>
+            <div style={{ display:'flex',flexDirection:'column',gap:'10px',marginBottom:'30px', opacity: isOnline ? 1 : 0.65 }}>
               {videoLinks.map((v,i)=>(
-                <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" className="video-link-item">
+                <a 
+                  key={i} 
+                  href={isOnline ? v.url : undefined} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="video-link-item" 
+                  style={{ cursor: isOnline ? 'pointer' : 'not-allowed' }}
+                  onClick={e => { if(!isOnline) e.preventDefault(); }}
+                >
                   <div className="video-icon-box">
                     <Icons.Video2 />
                   </div>
                   <div style={{ flex:1,minWidth:0 }}>
                     <div style={{ fontWeight:'600',fontSize:'14px',color:'var(--primary)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis' }}>{v.title}</div>
-                    <div style={{ fontSize:'12px',color:'var(--text-muted)',marginTop:'2px' }}>YouTube — Click to watch</div>
+                    <div style={{ fontSize:'12px',color:'var(--text-muted)',marginTop:'2px' }}>
+                      {isOnline ? 'YouTube — Click to watch' : 'YouTube — Internet Required'}
+                    </div>
                   </div>
-                  <Icons.ExternalLink />
+                  {isOnline && <Icons.ExternalLink />}
                 </a>
               ))}
             </div>
@@ -2014,6 +2319,175 @@ function CareerResources({ lang }) {
             </a>
           </div>
         ))}
+      </div>
+
+      {/* ============ Ghana Tech Hubs & Pathways ============ */}
+      <div style={{ marginTop:'40px' }}>
+        <div className="page-header" style={{ marginBottom:'24px' }}>
+          <h2 style={{ fontSize:'clamp(18px,3vw,22px)' }}>Ghana Tech Hubs & Career Pathways</h2>
+          <p>Connect with Ghana's leading tech organizations for training, workspace, and community</p>
+        </div>
+
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:'20px' }}>
+
+          {/* AmaliTech */}
+          <div className="premium-card" style={{ padding:'26px', borderTop:'4px solid #2d7a2d', position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', top:'0', right:'0', background:'linear-gradient(135deg, #2d7a2d, #1e5a2c)', color:'#fff', padding:'4px 14px', borderRadius:'0 0 0 12px', fontSize:'11px', fontWeight:'700' }}>TRAINING PROGRAM</div>
+            <h3 style={{ color:'var(--primary)', margin:'0 0 8px', fontSize:'17px', fontWeight:'800' }}>AmaliTech Trainee Program</h3>
+            <p style={{ fontSize:'13px', color:'var(--text-muted)', margin:'0 0 4px', fontWeight:'600' }}>Takoradi, Kumasi & Accra</p>
+            <p style={{ fontSize:'13px', color:'var(--text-main)', lineHeight:'1.6', margin:'12px 0' }}>
+              AmaliTech offers a fully-funded 6-month intensive training program in Software Development, Data Analytics, and IT Service Management. After training, top graduates are placed in paid client projects with international companies.
+            </p>
+            <div style={{ background:'var(--primary-pale)', padding:'14px', borderRadius:'10px', marginBottom:'14px' }}>
+              <h4 style={{ color:'var(--primary)', fontSize:'13px', fontWeight:'700', margin:'0 0 8px' }}>How to Apply</h4>
+              <ol style={{ margin:'0', paddingLeft:'18px', fontSize:'12.5px', lineHeight:'1.8', color:'var(--text-main)' }}>
+                <li>Visit <strong>amalitech.org/careers</strong> and select "Trainee Programs"</li>
+                <li>Complete the online application form with your CV and motivation letter</li>
+                <li>Pass the aptitude test (basic logic and problem-solving)</li>
+                <li>Attend an in-person or virtual interview</li>
+              </ol>
+            </div>
+            <a href="https://amalitech.org/careers" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize:'13px', padding:'10px 20px', borderRadius:'18px', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+              Apply Now <Icons.ExternalLink />
+            </a>
+          </div>
+
+          {/* MEST Africa */}
+          <div className="premium-card" style={{ padding:'26px', borderTop:'4px solid #e8a838', position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', top:'0', right:'0', background:'linear-gradient(135deg, #e8a838, #c98b20)', color:'#fff', padding:'4px 14px', borderRadius:'0 0 0 12px', fontSize:'11px', fontWeight:'700' }}>ENTREPRENEURSHIP</div>
+            <h3 style={{ color:'var(--primary)', margin:'0 0 8px', fontSize:'17px', fontWeight:'800' }}>MEST Africa</h3>
+            <p style={{ fontSize:'13px', color:'var(--text-muted)', margin:'0 0 4px', fontWeight:'600' }}>East Legon, Accra</p>
+            <p style={{ fontSize:'13px', color:'var(--text-main)', lineHeight:'1.6', margin:'12px 0' }}>
+              MEST (Meltwater Entrepreneurial School of Technology) offers a fully-funded 12-month program combining software development, business training, and entrepreneurship. Graduates can pitch for seed funding to launch their own startups.
+            </p>
+            <div style={{ background:'var(--primary-pale)', padding:'14px', borderRadius:'10px', marginBottom:'14px' }}>
+              <h4 style={{ color:'var(--primary)', fontSize:'13px', fontWeight:'700', margin:'0 0 8px' }}>How to Apply</h4>
+              <ol style={{ margin:'0', paddingLeft:'18px', fontSize:'12.5px', lineHeight:'1.8', color:'var(--text-main)' }}>
+                <li>Visit <strong>meltwater.org/mest</strong> and click "Apply Now"</li>
+                <li>Submit your application with academic transcripts and personal essay</li>
+                <li>Pass the online assessment (reasoning and aptitude)</li>
+                <li>Attend the selection bootcamp in Accra</li>
+              </ol>
+            </div>
+            <a href="https://meltwater.org/mest/" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize:'13px', padding:'10px 20px', borderRadius:'18px', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+              Learn More <Icons.ExternalLink />
+            </a>
+          </div>
+
+          {/* Kumasi Hive */}
+          <div className="premium-card" style={{ padding:'26px', borderTop:'4px solid #6c5ce7', position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', top:'0', right:'0', background:'linear-gradient(135deg, #6c5ce7, #5a4bd1)', color:'#fff', padding:'4px 14px', borderRadius:'0 0 0 12px', fontSize:'11px', fontWeight:'700' }}>CO-WORKING HUB</div>
+            <h3 style={{ color:'var(--primary)', margin:'0 0 8px', fontSize:'17px', fontWeight:'800' }}>Kumasi Hive</h3>
+            <p style={{ fontSize:'13px', color:'var(--text-muted)', margin:'0 0 4px', fontWeight:'600' }}>KNUST Campus Area, Kumasi</p>
+            <p style={{ fontSize:'13px', color:'var(--text-main)', lineHeight:'1.6', margin:'12px 0' }}>
+              Kumasi Hive is the Ashanti Region's premier tech hub. It provides co-working space with reliable internet, hosts regular workshops and hackathons, and connects young developers with mentors and job opportunities in the Kumasi tech scene.
+            </p>
+            <div style={{ background:'var(--primary-pale)', padding:'14px', borderRadius:'10px', marginBottom:'14px' }}>
+              <h4 style={{ color:'var(--primary)', fontSize:'13px', fontWeight:'700', margin:'0 0 8px' }}>How to Connect</h4>
+              <ul style={{ margin:'0', paddingLeft:'18px', fontSize:'12.5px', lineHeight:'1.8', color:'var(--text-main)' }}>
+                <li>Visit in person at the KNUST campus area for a free tour</li>
+                <li>Follow them on Twitter/X <strong>@KumasiHive</strong> for event announcements</li>
+                <li>Attend their monthly Tech Meetup (free entry for students)</li>
+                <li>Ask about their Women in Tech mentoring circle</li>
+              </ul>
+            </div>
+            <a href="https://kumasihive.com" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize:'13px', padding:'10px 20px', borderRadius:'18px', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+              Visit Website <Icons.ExternalLink />
+            </a>
+          </div>
+
+          {/* iSpace */}
+          <div className="premium-card" style={{ padding:'26px', borderTop:'4px solid #00b894', position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', top:'0', right:'0', background:'linear-gradient(135deg, #00b894, #00a381)', color:'#fff', padding:'4px 14px', borderRadius:'0 0 0 12px', fontSize:'11px', fontWeight:'700' }}>INNOVATION HUB</div>
+            <h3 style={{ color:'var(--primary)', margin:'0 0 8px', fontSize:'17px', fontWeight:'800' }}>iSpace Foundation</h3>
+            <p style={{ fontSize:'13px', color:'var(--text-muted)', margin:'0 0 4px', fontWeight:'600' }}>Osu, Accra</p>
+            <p style={{ fontSize:'13px', color:'var(--text-main)', lineHeight:'1.6', margin:'12px 0' }}>
+              iSpace is one of Accra's oldest innovation hubs, fostering startups and tech talent. They run accelerator programs, coding bootcamps, and community events. Their She Leads Africa partnership focuses specifically on empowering women in technology.
+            </p>
+            <div style={{ background:'var(--primary-pale)', padding:'14px', borderRadius:'10px', marginBottom:'14px' }}>
+              <h4 style={{ color:'var(--primary)', fontSize:'13px', fontWeight:'700', margin:'0 0 8px' }}>How to Connect</h4>
+              <ul style={{ margin:'0', paddingLeft:'18px', fontSize:'12.5px', lineHeight:'1.8', color:'var(--text-main)' }}>
+                <li>Visit at <strong>44 Kofi Annan Street, Osu, Accra</strong></li>
+                <li>Join their community on Slack via the website</li>
+                <li>Attend their quarterly Demo Day to see startup pitches</li>
+                <li>Apply for their startup incubator if you have a tech idea</li>
+              </ul>
+            </div>
+            <a href="https://ispacegh.com" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize:'13px', padding:'10px 20px', borderRadius:'18px', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+              Visit Website <Icons.ExternalLink />
+            </a>
+          </div>
+
+          {/* Mobile Web Ghana */}
+          <div className="premium-card" style={{ padding:'26px', borderTop:'4px solid #fd79a8', position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', top:'0', right:'0', background:'linear-gradient(135deg, #fd79a8, #e84393)', color:'#fff', padding:'4px 14px', borderRadius:'0 0 0 12px', fontSize:'11px', fontWeight:'700' }}>TRAINING & COMMUNITY</div>
+            <h3 style={{ color:'var(--primary)', margin:'0 0 8px', fontSize:'17px', fontWeight:'800' }}>Mobile Web Ghana</h3>
+            <p style={{ fontSize:'13px', color:'var(--text-muted)', margin:'0 0 4px', fontWeight:'600' }}>Accra (with nationwide outreach)</p>
+            <p style={{ fontSize:'13px', color:'var(--text-main)', lineHeight:'1.6', margin:'12px 0' }}>
+              Mobile Web Ghana focuses on mobile-first web technologies and digital skills training for young Ghanaians. They run free bootcamps, Google Developer Student Club partnerships, and provide pathways to Google certifications.
+            </p>
+            <div style={{ background:'var(--primary-pale)', padding:'14px', borderRadius:'10px', marginBottom:'14px' }}>
+              <h4 style={{ color:'var(--primary)', fontSize:'13px', fontWeight:'700', margin:'0 0 8px' }}>How to Connect</h4>
+              <ul style={{ margin:'0', paddingLeft:'18px', fontSize:'12.5px', lineHeight:'1.8', color:'var(--text-main)' }}>
+                <li>Follow <strong>@maboroshi</strong> and <strong>@nicofee</strong> on Twitter/X</li>
+                <li>Join their WhatsApp or Telegram community for bootcamp announcements</li>
+                <li>Attend their free weekend coding workshops in Accra</li>
+                <li>Ask about Google Developer certification sponsorship</li>
+              </ul>
+            </div>
+            <a href="https://mobilewebghana.org" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize:'13px', padding:'10px 20px', borderRadius:'18px', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+              Visit Website <Icons.ExternalLink />
+            </a>
+          </div>
+
+          {/* DevCongress Ghana */}
+          <div className="premium-card" style={{ padding:'26px', borderTop:'4px solid #0984e3', position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', top:'0', right:'0', background:'linear-gradient(135deg, #0984e3, #0652DD)', color:'#fff', padding:'4px 14px', borderRadius:'0 0 0 12px', fontSize:'11px', fontWeight:'700' }}>DEVELOPER COMMUNITY</div>
+            <h3 style={{ color:'var(--primary)', margin:'0 0 8px', fontSize:'17px', fontWeight:'800' }}>DevCongress Ghana</h3>
+            <p style={{ fontSize:'13px', color:'var(--text-muted)', margin:'0 0 4px', fontWeight:'600' }}>Accra (annual conference + online community)</p>
+            <p style={{ fontSize:'13px', color:'var(--text-main)', lineHeight:'1.6', margin:'12px 0' }}>
+              DevCongress is Ghana's largest developer community. Their annual conference brings together hundreds of software engineers, designers, and entrepreneurs. Membership gives you access to mentors, job postings, and a strong network of Ghanaian developers.
+            </p>
+            <div style={{ background:'var(--primary-pale)', padding:'14px', borderRadius:'10px', marginBottom:'14px' }}>
+              <h4 style={{ color:'var(--primary)', fontSize:'13px', fontWeight:'700', margin:'0 0 8px' }}>How to Join</h4>
+              <ol style={{ margin:'0', paddingLeft:'18px', fontSize:'12.5px', lineHeight:'1.8', color:'var(--text-main)' }}>
+                <li>Visit <strong>devcongress.org</strong> and register for a free membership</li>
+                <li>Join their Slack channel to connect with 2,000+ Ghanaian developers</li>
+                <li>Attend the annual DevCongress Conference (usually held in Accra)</li>
+                <li>Participate in their monthly developer meetups and lightning talks</li>
+              </ol>
+            </div>
+            <a href="https://www.devcongress.org" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize:'13px', padding:'10px 20px', borderRadius:'18px', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+              Register Now <Icons.ExternalLink />
+            </a>
+          </div>
+
+        </div>
+
+        {/* Quick Action Steps */}
+        <div className="premium-card" style={{ marginTop:'28px', padding:'clamp(20px,4vw,28px)', background:'linear-gradient(135deg, var(--primary-pale), #f0faf0)', borderLeft:'5px solid var(--primary)' }}>
+          <h3 style={{ color:'var(--primary)', fontSize:'16px', fontWeight:'800', margin:'0 0 14px' }}>Your Next Steps to a Tech Career in Ghana</h3>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(250px, 1fr))', gap:'14px' }}>
+            {[
+              { step: '1', title: 'Complete Your Modules', desc: 'Finish all 20 Pool of Grace modules to earn your certificate and build your CV.' },
+              { step: '2', title: 'Build Your CV', desc: 'Use the CV Builder page to create a professional resume from your achievements.' },
+              { step: '3', title: 'Apply to a Training Hub', desc: 'Submit your application to AmaliTech or MEST for structured professional training.' },
+              { step: '4', title: 'Visit a Local Hub', desc: 'Walk into Kumasi Hive or iSpace for co-working, workshops, and networking.' },
+              { step: '5', title: 'Join the Community', desc: 'Register at DevCongress and Mobile Web Ghana to expand your professional network.' },
+              { step: '6', title: 'Apply for Roles', desc: 'Use the Career Board above to apply for internships, jobs, and scholarships.' },
+            ].map((item, i) => (
+              <div key={i} style={{ display:'flex', gap:'12px', alignItems:'flex-start' }}>
+                <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:'var(--primary)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'800', fontSize:'14px', flexShrink:0 }}>
+                  {item.step}
+                </div>
+                <div>
+                  <div style={{ fontWeight:'700', fontSize:'13px', color:'var(--primary)', marginBottom:'3px' }}>{item.title}</div>
+                  <div style={{ fontSize:'12.5px', color:'var(--text-muted)', lineHeight:'1.5' }}>{item.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -3981,6 +4455,706 @@ function ConsentFormPage({ lang }) {
               <button className="btn-outline" onClick={handlePrint}>Print Form</button>
               <button className="btn-primary" disabled={!agreed||!name} onClick={()=>setSigned(true)}>Submit Consent</button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   PRACTICE LAB — Interactive Coding Playground
+   ========================================================= */
+function PracticeLab({ lang, modules, showToast }) {
+  void lang;
+  const [activeChallenge, setActiveChallenge] = useState(null);
+  const [code, setCode] = useState('');
+  const [output, setOutput] = useState('');
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [filterCat, setFilterCat] = useState('All');
+  const [filterDiff, setFilterDiff] = useState('All');
+
+  // Persistence
+  const getStorage = (key, def) => { try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; } };
+  const setStorage = (key, val) => localStorage.setItem(key, JSON.stringify(val));
+
+  const [completed, setCompleted] = useState(() => getStorage('pog_practice_completed', []));
+  const [xp, setXp] = useState(() => getStorage('pog_practice_xp', 0));
+  const [streak, setStreak] = useState(() => getStorage('pog_practice_streak', { count: 0, lastDate: '' }));
+
+  const today = new Date().toISOString().split('T')[0];
+  const isStreakActive = streak.lastDate === today || streak.lastDate === new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+  const xpForLevel = (lvl) => lvl * 100;
+  const currentLevel = Math.floor(xp / 100) + 1;
+  const xpInLevel = xp % 100;
+
+  const challenges = [
+    // HTML/CSS — Easy
+    { id:'html1', cat:'HTML/CSS', diff:'Easy', xp:10, title:'Ghana Flag with CSS', desc:'Create the Ghana flag using 3 colored divs (red, gold, green) and a black star in the center.', starter:'<div style="width:300px">\n  <!-- Red stripe -->\n  <div style="height:60px; background:red;"></div>\n  <!-- Gold stripe with star -->\n  <div style="height:60px; background:#FFD700; text-align:center; line-height:60px;">\n    <!-- Add black star here -->\n  </div>\n  <!-- Green stripe -->\n  <div style="height:60px; background:green;"></div>\n</div>', hints:['Use a span with color:black and font-size:40px for the star','The star character is ★ (&#9733;)','<span style="color:black;font-size:40px">★</span>'], type:'html', solution:'star' },
+    { id:'html2', cat:'HTML/CSS', diff:'Easy', xp:10, title:'Profile Card', desc:'Create a styled profile card with a name, title, and a green border. Use CSS to make it look professional.', starter:'<div style="border:3px solid green; border-radius:12px; padding:24px; max-width:300px; text-align:center; font-family:sans-serif;">\n  <h2>Your Name</h2>\n  <p style="color:gray;">Junior Developer</p>\n  <p>Kumasi, Ghana</p>\n</div>', hints:['Add a background-color to make it stand out','Add box-shadow for depth: box-shadow:0 4px 12px rgba(0,0,0,0.1)','Add a colored circle as an avatar using border-radius:50%'], type:'html', solution:'name' },
+    { id:'html3', cat:'HTML/CSS', diff:'Medium', xp:25, title:'Responsive Navigation Bar', desc:'Build a horizontal navigation bar with 4 links that uses flexbox and changes color on hover.', starter:'<nav style="display:flex; background:#1e5a2c; padding:12px 20px; gap:20px;">\n  <a href="#" style="color:#fff; text-decoration:none;">Home</a>\n  <!-- Add 3 more links -->\n  <!-- Add hover effect hint: use onmouseover -->\n</nav>', hints:['Add links for About, Modules, Contact','Use gap property for spacing between links','For hover: onmouseover="this.style.color=\'#FFD700\'" onmouseout="this.style.color=\'#fff\'"'], type:'html', solution:'modules' },
+    { id:'html4', cat:'HTML/CSS', diff:'Medium', xp:25, title:'Product Card Grid', desc:'Create a 2-column grid of product cards for a Ghanaian shea butter shop using CSS Grid.', starter:'<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:500px;">\n  <div style="border:1px solid #ddd; border-radius:10px; padding:16px;">\n    <h3>Shea Butter (Raw)</h3>\n    <p style="color:green; font-weight:bold;">GH₵ 25.00</p>\n  </div>\n  <!-- Add 3 more product cards -->\n</div>', hints:['Copy the first card div and change the product name and price','Try products like: Shea Soap, Body Lotion, Hair Cream','Add a button: <button style="background:green;color:#fff;border:none;padding:8px 16px;border-radius:6px;">Buy Now</button>'], type:'html', solution:'butter' },
+    { id:'html5', cat:'HTML/CSS', diff:'Hard', xp:50, title:'Landing Page Hero Section', desc:'Build a complete hero section for a tech school landing page with a gradient background, heading, subtext, and CTA button.', starter:'<div style="background:linear-gradient(135deg, #1e5a2c, #3cb371); color:#fff; padding:60px 30px; text-align:center; border-radius:16px; font-family:sans-serif;">\n  <h1 style="font-size:32px; margin-bottom:12px;">Learn to Code in Ghana</h1>\n  <!-- Add subtitle paragraph -->\n  <!-- Add CTA button -->\n</div>', hints:['Add: <p style="opacity:0.85;font-size:16px;max-width:500px;margin:0 auto 24px">Free coding education for young women in Kumasi, Accra, and Takoradi</p>','Add a white button: <button style="background:#fff;color:#1e5a2c;border:none;padding:14px 32px;border-radius:30px;font-size:16px;font-weight:bold;cursor:pointer">Start Learning Free</button>','Add metrics below: <div style="display:flex;justify-content:center;gap:40px;margin-top:32px"><div><div style="font-size:28px;font-weight:800">500+</div><div style="opacity:0.7;font-size:12px">Students</div></div></div>'], type:'html', solution:'learning' },
+
+    // JavaScript — Easy
+    { id:'js1', cat:'JavaScript', diff:'Easy', xp:10, title:'Cedi to Dollar Converter', desc:'Write a function that converts Ghana Cedis (GHS) to US Dollars. Use the rate: 1 USD = 15.5 GHS.', starter:'function cediToDollar(cedis) {\n  // 1 USD = 15.5 GHS\n  // Return the dollar amount rounded to 2 decimal places\n  \n}\n\n// Test it:\nconsole.log(cediToDollar(100));\nconsole.log(cediToDollar(250));', hints:['Divide cedis by the exchange rate: cedis / 15.5','Use Math.round(value * 100) / 100 to round to 2 decimals','return Math.round((cedis / 15.5) * 100) / 100;'], type:'js', solution:'6.45' },
+    { id:'js2', cat:'JavaScript', diff:'Easy', xp:10, title:'Greeting Generator', desc:'Write a function that returns a personalized greeting based on the time of day (morning, afternoon, evening).', starter:'function greet(name, hour) {\n  // hour is 0-23\n  // 5-11 = morning, 12-16 = afternoon, 17+ = evening\n  \n}\n\nconsole.log(greet("Ama", 9));\nconsole.log(greet("Kwame", 14));\nconsole.log(greet("Efua", 20));', hints:['Use if/else if/else to check the hour ranges','Morning: hour >= 5 && hour < 12','Return template literal: `Good morning, ${name}!`'], type:'js', solution:'Good morning' },
+    { id:'js3', cat:'JavaScript', diff:'Medium', xp:25, title:'Ghana Regions Quiz Scorer', desc:'Write a function that takes an array of quiz answers and scores them against correct answers. Return the score out of 5.', starter:'function scoreQuiz(answers) {\n  const correct = ["Accra", "Kumasi", "Tamale", "Sekondi-Takoradi", "Cape Coast"];\n  // Compare each answer to correct array\n  // Return count of matches\n  \n}\n\nconsole.log(scoreQuiz(["Accra", "Kumasi", "Tamale", "Sunyani", "Cape Coast"]));\nconsole.log(scoreQuiz(["Accra", "Accra", "Accra", "Accra", "Accra"]));', hints:['Use a loop or .filter() to count matches','answers.filter((a, i) => a === correct[i]).length','let score = 0; for(let i=0; i<answers.length; i++) { if(answers[i] === correct[i]) score++; } return score;'], type:'js', solution:'4' },
+    { id:'js4', cat:'JavaScript', diff:'Medium', xp:25, title:'Mobile Money Transaction Logger', desc:'Create a function that logs mobile money transactions and calculates the balance. Start with GH₵ 500.', starter:'function mobileMoneyLog(transactions) {\n  let balance = 500;\n  // Each transaction: { type: "send" or "receive", amount: number, to/from: string }\n  // Process each and log it\n  // Return final balance\n  \n}\n\nconst txns = [\n  { type: "receive", amount: 200, from: "Ama" },\n  { type: "send", amount: 50, to: "Kwame" },\n  { type: "send", amount: 100, to: "MTN Bill" },\n  { type: "receive", amount: 75, from: "Salary" }\n];\nconsole.log("Final balance: GH₵", mobileMoneyLog(txns));', hints:['Loop through transactions: for(const tx of transactions)','If type is "receive", add to balance; if "send", subtract','Use console.log inside the loop to show each transaction detail'], type:'js', solution:'625' },
+    { id:'js5', cat:'JavaScript', diff:'Hard', xp:50, title:'Student Grade Calculator', desc:'Build a grade calculator that takes an array of student objects with names and scores, and returns each student with a letter grade (A: 80+, B: 60-79, C: 40-59, F: below 40).', starter:'function calculateGrades(students) {\n  // For each student, add a "grade" property\n  // A: 80-100, B: 60-79, C: 40-59, F: 0-39\n  // Return the modified array\n  \n}\n\nconst students = [\n  { name: "Abena", score: 92 },\n  { name: "Kwaku", score: 67 },\n  { name: "Yaa", score: 45 },\n  { name: "Kofi", score: 33 }\n];\n\nconst results = calculateGrades(students);\nresults.forEach(s => console.log(`${s.name}: ${s.score} → Grade ${s.grade}`));', hints:['Use .map() to create a new array with the grade added','Use ternary or if/else: score >= 80 ? "A" : score >= 60 ? "B" : ...','return students.map(s => ({...s, grade: s.score >= 80 ? "A" : s.score >= 60 ? "B" : s.score >= 40 ? "C" : "F"}));'], type:'js', solution:'Grade A' },
+
+    // Python (conceptual)
+    { id:'py1', cat:'Python', diff:'Easy', xp:10, title:'List Ghana Regions', desc:'Write a Python script that creates a list of all 16 Ghana regions and prints each one with its number.', starter:'# Create a list of Ghana regions\nregions = [\n    "Greater Accra",\n    "Ashanti",\n    # Add 14 more regions...\n]\n\n# Print each region with its number\nfor i, region in enumerate(regions, 1):\n    print(f"{i}. {region}")', hints:['Regions include: Western, Central, Eastern, Volta, Northern, etc.','The new regions: Bono East, Ahafo, Western North, Oti, Savannah, North East','Use enumerate(regions, 1) to start counting from 1'], type:'python', solution:'16 regions' },
+    { id:'py2', cat:'Python', diff:'Medium', xp:25, title:'Market Price Calculator', desc:'Write a Python function that calculates the total cost of market items with a 5% NHIL tax.', starter:'# Market price calculator with NHIL tax\ndef calculate_total(items):\n    """\n    items = [(name, price, quantity), ...]\n    Apply 5% NHIL tax to subtotal\n    """\n    subtotal = 0\n    for name, price, qty in items:\n        subtotal += price * qty\n        print(f"  {name}: {qty} x GH₵{price} = GH₵{price*qty}")\n    \n    tax = subtotal * 0.05\n    total = subtotal + tax\n    print(f"  Subtotal: GH₵{subtotal}")\n    print(f"  NHIL (5%): GH₵{tax}")\n    print(f"  Total: GH₵{total}")\n    return total\n\n# Test\nitems = [("Rice (5kg)", 85, 2), ("Cooking Oil", 45, 1), ("Tomatoes", 15, 3)]', hints:['Loop through items and multiply price × quantity for each','Tax = subtotal × 0.05','Total = subtotal + tax'], type:'python', solution:'GH₵' },
+    { id:'py3', cat:'Python', diff:'Hard', xp:50, title:'Student Dictionary Manager', desc:'Create a dictionary-based student management system that stores students by ID and supports add, search, and grade average operations.', starter:'# Student management with dictionaries\nstudents = {}\n\ndef add_student(sid, name, grades):\n    students[sid] = {"name": name, "grades": grades}\n\ndef get_average(sid):\n    if sid in students:\n        grades = students[sid]["grades"]\n        return sum(grades) / len(grades)\n    return None\n\ndef top_student():\n    # Find student with highest average\n    # Return their name and average\n    pass\n\n# Test\nadd_student("POG001", "Abena Asante", [85, 92, 78, 95])\nadd_student("POG002", "Kwame Mensah", [70, 65, 80, 75])\nadd_student("POG003", "Ama Darko", [95, 98, 92, 88])\n\nprint(f"Abena avg: {get_average(\'POG001\')}")\nprint(f"Top: {top_student()}")', hints:['For top_student, iterate through students.items()','Use max() with a key function on the averages','best = max(students.items(), key=lambda x: sum(x[1]["grades"])/len(x[1]["grades"]))'], type:'python', solution:'average' },
+
+    // SQL
+    { id:'sql1', cat:'SQL', diff:'Easy', xp:10, title:'Query Student Records', desc:'Write a SQL SELECT statement to get all students from the "students" table who scored above 70.', starter:'-- Table: students (id, name, region, score, enrolled_date)\n-- Write a query to find all students with score > 70\n-- Order by score descending\n\nSELECT \n  \nFROM students\nWHERE \nORDER BY ;', hints:['SELECT name, region, score','WHERE score > 70','ORDER BY score DESC'], type:'sql', solution:'SELECT' },
+    { id:'sql2', cat:'SQL', diff:'Medium', xp:25, title:'Join Students with Courses', desc:'Write a JOIN query to combine the students table with the enrollments table to show which courses each student is taking.', starter:'-- Tables:\n-- students (id, name, region)\n-- enrollments (id, student_id, course_name, grade)\n\n-- Show each student with their courses and grades\n\nSELECT \n  \nFROM students\n  JOIN enrollments\nWHERE ;', hints:['SELECT s.name, e.course_name, e.grade','JOIN enrollments e ON s.id = e.student_id','Use table aliases: FROM students s JOIN enrollments e ON s.id = e.student_id'], type:'sql', solution:'JOIN' },
+    { id:'sql3', cat:'SQL', diff:'Hard', xp:50, title:'Regional Statistics Report', desc:'Write a SQL query using GROUP BY and aggregate functions to show how many students are in each Ghana region and their average score.', starter:'-- Generate a regional education report\n-- Show: region, student_count, avg_score, max_score\n-- Only show regions with more than 5 students\n-- Order by average score descending\n\nSELECT\n  \nFROM students\nGROUP BY \nHAVING \nORDER BY ;', hints:['SELECT region, COUNT(*) as student_count, AVG(score) as avg_score, MAX(score) as max_score','GROUP BY region','HAVING COUNT(*) > 5 and ORDER BY avg_score DESC'], type:'sql', solution:'GROUP BY' },
+  ];
+
+  const filtered = challenges.filter(c =>
+    (filterCat === 'All' || c.cat === filterCat) &&
+    (filterDiff === 'All' || c.diff === filterDiff)
+  );
+
+  const completeChallenge = (challengeId, earnedXp) => {
+    if (completed.includes(challengeId)) return;
+    const newCompleted = [...completed, challengeId];
+    const newXp = xp + earnedXp;
+    const newStreak = today === streak.lastDate ? streak :
+      (streak.lastDate === new Date(Date.now() - 86400000).toISOString().split('T')[0])
+        ? { count: streak.count + 1, lastDate: today }
+        : { count: 1, lastDate: today };
+
+    setCompleted(newCompleted);
+    setXp(newXp);
+    setStreak(newStreak);
+    setStorage('pog_practice_completed', newCompleted);
+    setStorage('pog_practice_xp', newXp);
+    setStorage('pog_practice_streak', newStreak);
+    if (showToast) showToast(`+${earnedXp} XP earned! Challenge complete.`);
+  };
+
+  const runCode = (ch) => {
+    if (ch.type === 'js') {
+      try {
+        let logs = [];
+        const mockConsole = { log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')) };
+        const fn = new Function('console', code);
+        fn(mockConsole);
+        const out = logs.join('\n');
+        setOutput(out);
+        if (ch.solution && out.includes(ch.solution)) {
+          completeChallenge(ch.id, ch.xp);
+        }
+      } catch (err) {
+        setOutput('Error: ' + err.message);
+      }
+    } else if (ch.type === 'html') {
+      if (ch.solution && code.toLowerCase().includes(ch.solution.toLowerCase())) {
+        completeChallenge(ch.id, ch.xp);
+      }
+    } else {
+      if (ch.solution && code.toLowerCase().includes(ch.solution.toLowerCase())) {
+        completeChallenge(ch.id, ch.xp);
+      }
+    }
+  };
+
+  const practBadges = [
+    { id:'code_starter', name:'Code Starter', icon:'🌱', need:1, desc:'Complete 1 challenge' },
+    { id:'loop_master', name:'Loop Master', icon:'🔄', need:5, desc:'Complete 5 challenges' },
+    { id:'debug_queen', name:'Debug Queen', icon:'🐛', need:10, desc:'Complete 10 challenges' },
+    { id:'full_stack', name:'Full Stack Warrior', icon:'⚔️', need:15, desc:'Complete 15 challenges' },
+    { id:'ghana_coder', name:'Ghana Coder', icon:'🇬🇭', need:18, desc:'Complete 18 challenges' },
+  ];
+
+  return (
+    <div className="animate-fade-in">
+      <div className="page-header">
+        <h2>Practice Lab</h2>
+        <p>Interactive Ghana-contextualized coding challenges. Earn XP, badges, and build your skills.</p>
+      </div>
+
+      {/* XP & Streak Bar */}
+      <div className="xp-bar" style={{ marginBottom:'22px' }}>
+        <div style={{ display:'flex',alignItems:'center',gap:'8px' }}>
+          <span style={{ color:'#f1c40f' }}><Icons.Star /></span>
+          <span style={{ fontWeight:'800',fontSize:'18px' }}>{xp} XP</span>
+          <span style={{ fontSize:'12px',opacity:0.7 }}>Level {currentLevel}</span>
+        </div>
+        <div style={{ flex:1,background:'rgba(255,255,255,0.1)',borderRadius:'8px',height:'8px',margin:'0 16px' }}>
+          <div className="xp-fill" style={{ width:`${(xpInLevel/100)*100}%` }}></div>
+        </div>
+        {isStreakActive && streak.count > 0 && (
+          <div className="streak-flame"><Icons.Zap /> {streak.count} Day Streak</div>
+        )}
+        <div style={{ fontSize:'13px',opacity:0.7 }}>{completed.length}/{challenges.length} done</div>
+      </div>
+
+      {/* Practice Badges Preview */}
+      <div style={{ display:'flex',gap:'10px',marginBottom:'22px',flexWrap:'wrap' }}>
+        {practBadges.map(b => (
+          <div key={b.id} style={{ display:'flex',alignItems:'center',gap:'6px',padding:'6px 14px',borderRadius:'20px', background:completed.length>=b.need?'var(--primary-pale)':'#f5f5f5', border:`2px solid ${completed.length>=b.need?'var(--primary-light)':'#e0e0e0'}`, opacity:completed.length>=b.need?1:0.5 }}>
+            <span style={{ fontSize:'16px' }}>{b.icon}</span>
+            <span style={{ fontSize:'12px',fontWeight:'700',color:completed.length>=b.need?'var(--primary)':'#999' }}>{b.name}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div style={{ display:'flex',gap:'10px',marginBottom:'22px',flexWrap:'wrap' }}>
+        <div>
+          <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Category</label>
+          <select className="premium-input" style={{ marginBottom:0,padding:'8px 12px',minWidth:'130px' }} value={filterCat} onChange={e=>setFilterCat(e.target.value)}>
+            {['All','HTML/CSS','JavaScript','Python','SQL'].map(o=><option key={o} value={o}>{o}</option>)}
+          </select>
+        </div>
+        <div>
+          <label style={{ fontSize:'12px',fontWeight:'700',display:'block',marginBottom:'4px' }}>Difficulty</label>
+          <select className="premium-input" style={{ marginBottom:0,padding:'8px 12px',minWidth:'130px' }} value={filterDiff} onChange={e=>setFilterDiff(e.target.value)}>
+            {['All','Easy','Medium','Hard'].map(o=><option key={o} value={o}>{o}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div className="two-col-panel" style={{ alignItems:'flex-start' }}>
+        {/* Challenge List */}
+        <div style={{ display:'flex',flexDirection:'column',gap:'10px' }}>
+          {filtered.map(ch => (
+            <div key={ch.id} className={`challenge-card${activeChallenge?.id===ch.id?' active':''}`} onClick={()=>{setActiveChallenge(ch);setCode(ch.starter);setOutput('');setHintsUsed(0);}}>
+              <div style={{ padding:'16px 20px' }}>
+                <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'6px' }}>
+                  <span className={`badge difficulty-${ch.diff.toLowerCase()}`}>{ch.diff}</span>
+                  <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
+                    <span style={{ fontSize:'11px',color:'var(--text-muted)' }}>{ch.cat}</span>
+                    {completed.includes(ch.id) && <span className="badge badge-green">Done</span>}
+                  </div>
+                </div>
+                <h4 style={{ color:'var(--primary)',margin:'0 0 4px',fontSize:'14px',fontWeight:'700' }}>{ch.title}</h4>
+                <p style={{ color:'var(--text-muted)',fontSize:'12px',margin:0 }}>+{ch.xp} XP</p>
+              </div>
+            </div>
+          ))}
+          {filtered.length === 0 && <p style={{ color:'var(--text-muted)',padding:'20px',textAlign:'center' }}>No challenges match your filters.</p>}
+        </div>
+
+        {/* Editor Panel */}
+        <div>
+          {activeChallenge ? (
+            <div className="premium-card" style={{ padding:'24px' }}>
+              <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'14px',flexWrap:'wrap',gap:'8px' }}>
+                <div>
+                  <span className={`badge difficulty-${activeChallenge.diff.toLowerCase()}`} style={{ marginBottom:'6px' }}>{activeChallenge.diff} • {activeChallenge.cat}</span>
+                  <h3 style={{ color:'var(--primary)',fontSize:'18px',fontWeight:'800',margin:'6px 0 0' }}>{activeChallenge.title}</h3>
+                </div>
+                <div style={{ display:'flex',alignItems:'center',gap:'6px',color:'#f1c40f' }}>
+                  <Icons.Star /><span style={{ fontWeight:'800',fontSize:'15px' }}>+{activeChallenge.xp} XP</span>
+                </div>
+              </div>
+              <p style={{ color:'var(--text-main)',fontSize:'14px',lineHeight:'1.7',marginBottom:'18px' }}>{activeChallenge.desc}</p>
+
+              {/* Code Editor */}
+              <textarea className="code-editor-area" value={code} onChange={e=>setCode(e.target.value)} spellCheck="false" />
+
+              {/* Action buttons */}
+              <div style={{ display:'flex',gap:'10px',marginTop:'12px',flexWrap:'wrap' }}>
+                <button className="btn-primary" style={{ padding:'10px 22px',fontSize:'13px' }} onClick={()=>runCode(activeChallenge)}>
+                  <Icons.Play /> Run Code
+                </button>
+                <button className="btn-outline" style={{ padding:'10px 18px',fontSize:'13px' }} onClick={()=>{setCode(activeChallenge.starter);setOutput('');}}>
+                  <Icons.Reset /> Reset
+                </button>
+                {hintsUsed < activeChallenge.hints.length && (
+                  <button className="btn-outline" style={{ padding:'10px 18px',fontSize:'13px',borderColor:'#fbbf24',color:'#92400e' }} onClick={()=>setHintsUsed(h=>h+1)}>
+                    Hint {hintsUsed+1}/{activeChallenge.hints.length}
+                  </button>
+                )}
+                {completed.includes(activeChallenge.id) && <span className="badge badge-green" style={{ padding:'8px 16px' }}>Completed ✓</span>}
+              </div>
+
+              {/* Hints */}
+              {hintsUsed > 0 && (
+                <div style={{ marginTop:'14px',display:'flex',flexDirection:'column',gap:'8px' }}>
+                  {activeChallenge.hints.slice(0, hintsUsed).map((h,i) => (
+                    <div key={i} className="hint-box"><strong>Hint {i+1}:</strong> {h}</div>
+                  ))}
+                </div>
+              )}
+
+              {/* Output / Preview */}
+              {activeChallenge.type === 'html' ? (
+                <div style={{ marginTop:'18px' }}>
+                  <h4 style={{ fontSize:'13px',fontWeight:'700',marginBottom:'8px',color:'var(--text-muted)' }}>Live Preview</h4>
+                  <iframe title="preview" className="code-preview-frame" srcDoc={code} sandbox="allow-scripts" style={{ minHeight:'220px' }} />
+                </div>
+              ) : output && (
+                <div style={{ marginTop:'18px' }}>
+                  <h4 style={{ fontSize:'13px',fontWeight:'700',marginBottom:'8px',color:'var(--text-muted)' }}>Console Output</h4>
+                  <div className="code-output-box">{output || 'No output yet. Click "Run Code".'}</div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="premium-card" style={{ padding:'48px',textAlign:'center',color:'var(--text-muted)' }}>
+              <Icons.Code />
+              <h3 style={{ color:'var(--primary)',margin:'16px 0 8px' }}>Select a Challenge</h3>
+              <p style={{ fontSize:'14px' }}>Click any challenge from the list to start coding!</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   ACHIEVEMENTS — Trophy Room & Badge System
+   ========================================================= */
+function AchievementsPage({ user, modules, lang }) {
+  void lang;
+  const getStorage = (key, def) => { try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; } };
+  const completed = modules ? modules.filter(m => m.completed) : [];
+  const practiceCompleted = getStorage('pog_practice_completed', []);
+  const practiceXp = getStorage('pog_practice_xp', 0);
+  const streak = getStorage('pog_practice_streak', { count: 0 });
+  const forumPosts = getStorage('pog_forum_posts_count', 0);
+
+  const selfWorthDone = completed.filter(m => m.category === 'self-worth').length;
+  const techDone = completed.filter(m => m.category === 'technical-skills').length;
+  const careerDone = completed.filter(m => m.category === 'professional-development').length;
+
+  const allBadges = [
+    // Module badges
+    { id:'first_module', name:'First Step', icon:'👣', color:'#2d7a2d', desc:'Complete your first module', earned: completed.length >= 1, category:'Learning' },
+    { id:'halfway', name:'Halfway Hero', icon:'⚡', color:'#e67e22', desc:'Complete 10 modules', earned: completed.length >= 10, category:'Learning' },
+    { id:'sw_champion', name:'Self-Worth Champion', icon:'💎', color:'#9b59b6', desc:'Complete all 7 self-worth modules', earned: selfWorthDone >= 7, category:'Learning' },
+    { id:'tech_pioneer', name:'Tech Pioneer', icon:'💻', color:'#3498db', desc:'Complete all 7 tech modules', earned: techDone >= 7, category:'Learning' },
+    { id:'career_ready', name:'Career Ready', icon:'🚀', color:'#e74c3c', desc:'Complete all 6 career modules', earned: careerDone >= 6, category:'Learning' },
+    { id:'graduate', name:'Pool of Grace Graduate', icon:'👑', color:'#f1c40f', desc:'Complete all 20 modules', earned: completed.length >= 20, category:'Learning' },
+
+    // Practice badges
+    { id:'code_starter', name:'Code Starter', icon:'🌱', color:'#27ae60', desc:'Complete 1 practice challenge', earned: practiceCompleted.length >= 1, category:'Practice' },
+    { id:'loop_master', name:'Loop Master', icon:'🔄', color:'#2980b9', desc:'Complete 5 practice challenges', earned: practiceCompleted.length >= 5, category:'Practice' },
+    { id:'debug_queen', name:'Debug Queen', icon:'🐛', color:'#8e44ad', desc:'Complete 10 practice challenges', earned: practiceCompleted.length >= 10, category:'Practice' },
+    { id:'full_stack_warrior', name:'Full Stack Warrior', icon:'⚔️', color:'#c0392b', desc:'Complete 15 practice challenges', earned: practiceCompleted.length >= 15, category:'Practice' },
+    { id:'xp_collector', name:'XP Collector', icon:'⭐', color:'#f39c12', desc:'Earn 500 XP in Practice Lab', earned: practiceXp >= 500, category:'Practice' },
+
+    // Streak badges
+    { id:'streak_3', name:'3-Day Streak', icon:'🔥', color:'#e67e22', desc:'Maintain a 3-day learning streak', earned: streak.count >= 3, category:'Dedication' },
+    { id:'streak_7', name:'Week Warrior', icon:'🔥', color:'#d35400', desc:'Maintain a 7-day learning streak', earned: streak.count >= 7, category:'Dedication' },
+    { id:'streak_14', name:'Streak Queen', icon:'👸', color:'#c0392b', desc:'Maintain a 14-day learning streak', earned: streak.count >= 14, category:'Dedication' },
+
+    // Community badges
+    { id:'first_post', name:'Voice Heard', icon:'💬', color:'#1abc9c', desc:'Make your first forum post', earned: forumPosts >= 1, category:'Community' },
+    { id:'community_builder', name:'Community Builder', icon:'🤝', color:'#16a085', desc:'Make 5+ forum posts', earned: forumPosts >= 5, category:'Community' },
+
+    // Special
+    { id:'offline_warrior', name:'Offline Warrior', icon:'📱', color:'#7f8c8d', desc:'Used the platform in offline mode', earned: getStorage('pog_used_offline', false), category:'Special' },
+    { id:'cv_builder', name:'Career Crafter', icon:'📄', color:'#34495e', desc:'Used the CV Builder', earned: getStorage('pog_used_cv', false), category:'Special' },
+  ];
+
+  const earnedCount = allBadges.filter(b => b.earned).length;
+  const categories = ['Learning', 'Practice', 'Dedication', 'Community', 'Special'];
+
+  return (
+    <div className="animate-fade-in">
+      <div className="page-header">
+        <h2>Achievements & Badges</h2>
+        <p>Your trophy room — collect badges by completing modules, practicing code, and engaging with the community.</p>
+      </div>
+
+      {/* Stats */}
+      <div className="stat-grid" style={{ marginBottom:'28px' }}>
+        <div className="premium-card" style={{ padding:'22px',textAlign:'center',borderTop:'4px solid #f1c40f' }}>
+          <div style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:'800',color:'#f1c40f' }}>{earnedCount}</div>
+          <div style={{ fontSize:'13px',fontWeight:'700' }}>Badges Earned</div>
+          <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>out of {allBadges.length}</div>
+        </div>
+        <div className="premium-card" style={{ padding:'22px',textAlign:'center',borderTop:'4px solid var(--primary-light)' }}>
+          <div style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:'800',color:'var(--primary)' }}>{practiceXp}</div>
+          <div style={{ fontSize:'13px',fontWeight:'700' }}>Total XP</div>
+          <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Practice Lab</div>
+        </div>
+        <div className="premium-card" style={{ padding:'22px',textAlign:'center',borderTop:'4px solid #e67e22' }}>
+          <div style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:'800',color:'#e67e22' }}>{streak.count}</div>
+          <div style={{ fontSize:'13px',fontWeight:'700' }}>Day Streak</div>
+          <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Best streak</div>
+        </div>
+        <div className="premium-card" style={{ padding:'22px',textAlign:'center',borderTop:'4px solid #9b59b6' }}>
+          <div style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:'800',color:'#9b59b6' }}>{completed.length}/20</div>
+          <div style={{ fontSize:'13px',fontWeight:'700' }}>Modules Done</div>
+          <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Course progress</div>
+        </div>
+      </div>
+
+      {/* Progress to next badge */}
+      {earnedCount < allBadges.length && (() => {
+        const next = allBadges.find(b => !b.earned);
+        return next ? (
+          <div className="premium-card" style={{ padding:'20px 24px',marginBottom:'28px',borderLeft:'5px solid #f1c40f',display:'flex',alignItems:'center',gap:'16px',flexWrap:'wrap' }}>
+            <div style={{ width:'48px',height:'48px',borderRadius:'50%',background:`${next.color}22`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'24px',flexShrink:0 }}>{next.icon}</div>
+            <div style={{ flex:1,minWidth:'180px' }}>
+              <div style={{ fontWeight:'700',fontSize:'14px',color:'var(--primary)' }}>Next Badge: {next.name}</div>
+              <div style={{ fontSize:'13px',color:'var(--text-muted)' }}>{next.desc}</div>
+            </div>
+          </div>
+        ) : null;
+      })()}
+
+      {/* Badge Categories */}
+      {categories.map(cat => {
+        const catBadges = allBadges.filter(b => b.category === cat);
+        return (
+          <div key={cat} style={{ marginBottom:'32px' }}>
+            <h3 style={{ color:'var(--primary)',fontSize:'17px',fontWeight:'700',marginBottom:'16px',display:'flex',alignItems:'center',gap:'8px' }}>
+              {cat === 'Learning' ? <Icons.Modules /> : cat === 'Practice' ? <Icons.Code /> : cat === 'Dedication' ? <Icons.Zap /> : cat === 'Community' ? <Icons.Forum /> : <Icons.Star />}
+              {cat} Badges
+              <span style={{ fontSize:'12px',color:'var(--text-muted)',fontWeight:'400' }}>({catBadges.filter(b=>b.earned).length}/{catBadges.length})</span>
+            </h3>
+            <div className="badge-grid">
+              {catBadges.map(badge => (
+                <div key={badge.id} className={`badge-card ${badge.earned ? 'earned' : 'locked'}`}>
+                  <div className="badge-icon" style={{ background: badge.earned ? `${badge.color}22` : '#eee', color: badge.earned ? badge.color : '#ccc' }}>
+                    <span style={{ fontSize:'28px' }}>{badge.icon}</span>
+                  </div>
+                  <div className="badge-name" style={{ color: badge.earned ? badge.color : '#999' }}>{badge.name}</div>
+                  <div className="badge-desc">{badge.desc}</div>
+                  {badge.earned && <div style={{ position:'absolute',top:'8px',right:'8px',color:badge.color }}><Icons.Check /></div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* =========================================================
+   DISCOVER & SHARE — How Ghana Finds Pool of Grace
+   ========================================================= */
+function DiscoverPage({ lang, go }) {
+  void lang;
+  const [copied, setCopied] = useState(false);
+  const [referralName, setReferralName] = useState('');
+  const [referrals, setReferrals] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('pog_referrals')) || []; } catch { return []; }
+  });
+
+  const siteUrl = 'https://poolofgrace.org';
+  const whatsappMsg = encodeURIComponent(`🌿 *Pool of Grace* — Free Tech Training for Young Women in Ghana!\n\n💻 Learn HTML, CSS, JavaScript, Python & SQL\n🎓 Earn certificates & build your CV\n🤝 Get mentorship from Ghanaian tech professionals\n📱 Works offline!\n\n👉 Join free: ${siteUrl}\n\n#PoolOfGrace #WomenInTech #GhanaTech`);
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(siteUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const addReferral = () => {
+    if (!referralName.trim()) return;
+    const newList = [...referrals, { name: referralName.trim(), date: new Date().toLocaleDateString() }];
+    setReferrals(newList);
+    localStorage.setItem('pog_referrals', JSON.stringify(newList));
+    setReferralName('');
+  };
+
+  const outreachPartners = [
+    { name:'Ghana Education Service Schools', desc:'Pool of Grace partners with GES to reach senior high school girls through ICT clubs and career counseling programs across all 16 regions.', color:'#2d7a2d', icon:'🏫', action:'Contact your school ICT teacher to request Pool of Grace access' },
+    { name:'Churches & Faith Organizations', desc:'Many young women in Ghana attend church regularly. Pool of Grace shares program flyers through youth groups and Sunday school announcements.', color:'#7c5cbf', icon:'⛪', action:'Ask your church youth leader to announce Pool of Grace during service' },
+    { name:'KNUST, UCC & UG Student Groups', desc:'University student organizations like WIT (Women in Tech) clubs help spread Pool of Grace to female students studying computer science and engineering.', color:'#e67e22', icon:'🎓', action:'Join your university WIT group and share Pool of Grace with members' },
+    { name:'Community Libraries & Internet Cafés', desc:'Public libraries in Kumasi, Accra, and Takoradi host Pool of Grace access points where girls can use computers to study offline modules.', color:'#3498db', icon:'📚', action:'Visit your local community library and ask about Pool of Grace computer access' },
+    { name:'MTN/Vodafone WiFi Zones', desc:'Pool of Grace works on low-bandwidth connections. Students can access the platform at MTN WiFi hotspots or Vodafone community internet points.', color:'#f1c40f', icon:'📶', action:'Find your nearest MTN WiFi zone and register for Pool of Grace there' },
+    { name:'Radio & Community Announcements', desc:'Local FM stations in Kumasi (Luv FM, Angel FM) and Accra (Citi FM, Joy FM) broadcast Pool of Grace community announcements in English and Twi.', color:'#e74c3c', icon:'📻', action:'Listen for Pool of Grace announcements on your local radio station' },
+  ];
+
+  return (
+    <div className="animate-fade-in">
+      <div className="page-header">
+        <h2>Share Pool of Grace</h2>
+        <p>Help more young women in Ghana discover free tech education. Every share creates an opportunity.</p>
+      </div>
+
+      {/* Share Card */}
+      <div className="share-card" style={{ marginBottom:'28px' }}>
+        <h3 style={{ fontSize:'20px',fontWeight:'800',marginBottom:'6px' }}>Share Pool of Grace</h3>
+        <p style={{ opacity:0.8,fontSize:'14px',marginBottom:'18px' }}>Share this link with any young woman in Ghana who wants to learn technology for free</p>
+
+        {/* QR Code area */}
+        <div className="qr-placeholder">
+          <div style={{ textAlign:'center' }}>
+            <div style={{ fontSize:'11px',color:'#999',marginBottom:'6px',fontWeight:'600' }}>SCAN TO JOIN</div>
+            <div style={{ display:'grid',gridTemplateColumns:'repeat(8,1fr)',gap:'2px',width:'120px',margin:'0 auto' }}>
+              {Array.from({length:64}).map((_,i) => (
+                <div key={i} style={{ width:'13px',height:'13px',background: [0,1,2,5,6,7,8,15,16,23,24,31,32,39,40,47,48,55,56,57,58,61,62,63].includes(i)?'#000':'#fff',borderRadius:'1px' }}></div>
+              ))}
+            </div>
+            <div style={{ fontSize:'9px',color:'#666',marginTop:'6px' }}>poolofgrace.org</div>
+          </div>
+        </div>
+
+        <div style={{ display:'flex',gap:'12px',justifyContent:'center',flexWrap:'wrap' }}>
+          <button className="btn-primary" style={{ background:'#fff',color:'var(--primary)' }} onClick={copyLink}>
+            {copied ? 'Copied!' : 'Copy Link'}
+          </button>
+          <a href={`https://wa.me/?text=${whatsappMsg}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration:'none' }}>
+            <button className="whatsapp-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.111.547 4.099 1.504 5.832L0 24l6.335-1.652A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818c-1.876 0-3.63-.508-5.14-1.392l-.37-.218-3.821.998 1.018-3.714-.24-.38A9.78 9.78 0 012.182 12c0-5.423 4.395-9.818 9.818-9.818S21.818 6.577 21.818 12s-4.395 9.818-9.818 9.818z"/></svg>
+              Share on WhatsApp
+            </button>
+          </a>
+        </div>
+      </div>
+
+      {/* Bring a Sister */}
+      <div className="premium-card" style={{ padding:'clamp(20px,4vw,28px)',marginBottom:'28px',borderLeft:'5px solid #e74c3c' }}>
+        <h3 style={{ color:'#e74c3c',fontSize:'17px',fontWeight:'800',marginBottom:'6px',display:'flex',alignItems:'center',gap:'8px' }}>
+          <span style={{ fontSize:'22px' }}>🤝</span> Bring a Sister Program
+        </h3>
+        <p style={{ color:'var(--text-muted)',fontSize:'14px',lineHeight:'1.7',marginBottom:'18px' }}>
+          For every friend you invite to Pool of Grace, you earn the <strong>"Sister Keeper"</strong> badge and help close the gender gap in Ghana's tech industry. Track your referrals below.
+        </p>
+        <div style={{ display:'flex',gap:'10px',marginBottom:'14px' }}>
+          <input className="premium-input" style={{ marginBottom:0,flex:1 }} placeholder="Your friend's name (e.g., Ama Mensah)" value={referralName} onChange={e=>setReferralName(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addReferral()} />
+          <button className="btn-primary" style={{ padding:'10px 22px',fontSize:'13px' }} onClick={addReferral}>Add Referral</button>
+        </div>
+        {referrals.length > 0 && (
+          <div style={{ display:'flex',flexWrap:'wrap',gap:'8px' }}>
+            {referrals.map((r,i) => (
+              <span key={i} className="badge badge-green" style={{ padding:'6px 14px',fontSize:'12px' }}>
+                {r.name} — {r.date}
+              </span>
+            ))}
+          </div>
+        )}
+        {referrals.length === 0 && <p style={{ color:'var(--text-muted)',fontSize:'13px' }}>No referrals yet. Invite your first sister!</p>}
+      </div>
+
+      {/* How People Access Pool of Grace */}
+      <div style={{ marginBottom:'28px' }}>
+        <h3 className="section-heading" style={{ marginBottom:'18px' }}>How People in Ghana Access Pool of Grace</h3>
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',gap:'18px' }}>
+          {outreachPartners.map((p,i) => (
+            <div key={i} className="partner-card" style={{ borderTop:`4px solid ${p.color}` }}>
+              <div style={{ display:'flex',alignItems:'center',gap:'12px',marginBottom:'12px' }}>
+                <span style={{ fontSize:'28px' }}>{p.icon}</span>
+                <h4 style={{ color:p.color,fontSize:'15px',fontWeight:'700',margin:0 }}>{p.name}</h4>
+              </div>
+              <p style={{ color:'var(--text-main)',fontSize:'13px',lineHeight:'1.7',marginBottom:'12px' }}>{p.desc}</p>
+              <div style={{ background:`${p.color}12`,padding:'10px 14px',borderRadius:'8px',fontSize:'12.5px',color:p.color,fontWeight:'600' }}>
+                Action: {p.action}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Radio Script Template */}
+      <div className="premium-card" style={{ padding:'clamp(20px,4vw,28px)',marginBottom:'28px' }}>
+        <h3 style={{ color:'var(--primary)',fontSize:'16px',fontWeight:'800',marginBottom:'14px',display:'flex',alignItems:'center',gap:'8px' }}>
+          <span style={{ fontSize:'20px' }}>📻</span> Community Radio Announcement Template
+        </h3>
+        <div className="code-block" style={{ background:'#f8fdf8',color:'var(--text-main)',border:'2px solid var(--primary-pale)',fontFamily:'Outfit, sans-serif' }}>
+          <p style={{ fontWeight:'700',marginBottom:'8px' }}>🎙️ FOR IMMEDIATE BROADCAST</p>
+          <p style={{ lineHeight:'1.8',fontSize:'13px' }}>
+            <em>"Attention all young women in [YOUR TOWN]. Are you interested in learning computer programming, web development, and technology skills — completely FREE?</em><br/><br/>
+            <em>Pool of Grace is a new digital learning platform designed specifically for young women in Ghana. You will learn HTML, CSS, JavaScript, Python, and SQL. You will receive certificates, mentorship from professional Ghanaian tech women, and career placement support.</em><br/><br/>
+            <em>The platform works OFFLINE — so even if your internet is slow, you can still learn.</em><br/><br/>
+            <em>Visit poolofgrace.org on any phone or computer to register for FREE. Pool of Grace — empowering young women through technology."</em>
+          </p>
+        </div>
+        <button className="btn-outline" style={{ marginTop:'14px',fontSize:'13px' }} onClick={()=>{window.print();}}>Print This Template</button>
+      </div>
+
+      {/* What Makes Us Unique */}
+      <div className="premium-card" style={{ padding:'clamp(20px,4vw,28px)',background:'linear-gradient(135deg, var(--primary-pale), #f0faf0)',borderLeft:'5px solid var(--primary)' }}>
+        <h3 style={{ color:'var(--primary)',fontSize:'17px',fontWeight:'800',marginBottom:'18px' }}>What Makes Pool of Grace Different</h3>
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))',gap:'14px' }}>
+          {[
+            { icon:'💎', title:'Self-Worth First', desc:'We build your confidence BEFORE teaching code. No other platform does this.' },
+            { icon:'🇬🇭', title:'Made for Ghana', desc:'All examples use Ghanaian data — Cedis, regions, local businesses. Plus Twi language support.' },
+            { icon:'💰', title:'100% Free Forever', desc:'SheCodes charges $99+. We charge nothing. Your dreams should not have a price tag.' },
+            { icon:'📱', title:'Works Offline', desc:'Download modules and study without internet. Perfect for areas with unreliable connectivity.' },
+            { icon:'🏆', title:'Earn Real Badges', desc:'Interactive practice challenges with XP, badges, and certificates to build your portfolio.' },
+            { icon:'🤝', title:'Ghanaian Mentors', desc:'Real mentorship from women working at MTN, Vodafone, Hubtel, and GCB Bank.' },
+          ].map((item,i) => (
+            <div key={i} style={{ display:'flex',gap:'12px',alignItems:'flex-start' }}>
+              <span style={{ fontSize:'24px',flexShrink:0 }}>{item.icon}</span>
+              <div>
+                <div style={{ fontWeight:'700',fontSize:'14px',color:'var(--primary)',marginBottom:'3px' }}>{item.title}</div>
+                <div style={{ fontSize:'12.5px',color:'var(--text-muted)',lineHeight:'1.5' }}>{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   CV BUILDER COMPONENT
+   ========================================================= */
+function CVBuilder({ user, modules, lang }) {
+  void lang;
+  
+  // Fetch bio and location from profile
+  const savedProfile = JSON.parse(localStorage.getItem('pog_profile') || '{}');
+  const bio = savedProfile.bio || 'Young woman tech professional in training, seeking software engineering opportunities in Ghana.';
+  const location = savedProfile.location || 'Accra, Ghana';
+  const phone = savedProfile.phone || '';
+  const firstName = savedProfile.firstName || (user ? user.firstName : 'Participant');
+  const lastName = savedProfile.lastName || (user ? user.lastName : '');
+  const email = user ? user.email : '';
+  
+  const completed = modules ? modules.filter(m => m.completed) : [];
+  const selfWorthCompletions = completed.filter(m => m.category === 'self-worth');
+  const techCompletions = completed.filter(m => m.category === 'technical-skills');
+  
+  const getSkillsList = () => {
+    const skills = [];
+    if (completed.some(m => m.id === 8)) skills.push('HTML5 & CSS3', 'Web Design');
+    if (completed.some(m => m.id === 9)) skills.push('JavaScript (ES6+)');
+    if (completed.some(m => m.id === 10)) skills.push('DOM Manipulation', 'Responsive UI');
+    if (completed.some(m => m.id === 11)) skills.push('Python programming');
+    if (completed.some(m => m.id === 12)) skills.push('SQL & Relational Databases');
+    if (completed.some(m => m.id === 13)) skills.push('Full-Stack Web Development');
+    if (completed.some(m => m.id === 14)) skills.push('Git & GitHub Version Control');
+    
+    // Add default core soft skills from self worth
+    skills.push('Goal Setting', 'Self-Efficacy', 'Problem Solving', 'Team Collaboration');
+    return skills;
+  };
+  
+  const skills = getSkillsList();
+  
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <div className="animate-fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div className="page-header no-print">
+        <h2>Professional CV Builder</h2>
+        <p>Your dynamic, job-ready resume generated from your learning achievements at Pool of Grace.</p>
+        <div style={{ marginTop: '14px' }}>
+          <button className="btn-primary" onClick={handlePrint} style={{ padding: '10px 22px', fontSize: '13px' }}>
+            Print / Save as PDF
+          </button>
+        </div>
+      </div>
+
+      <div className="premium-card cv-print-container" style={{ padding: '40px', background: '#fff', border: '1px solid #e0e0e0', color: '#333', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', fontFamily: 'Outfit, sans-serif' }}>
+        {/* Header Section */}
+        <div className="cv-print-header" style={{ borderBottom: '2px solid var(--primary)', paddingBottom: '16px', marginBottom: '20px', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 'bold', margin: '0 0 6px', color: '#111', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            {firstName} {lastName}
+          </h1>
+          <div style={{ fontSize: '13px', color: '#666', display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', fontStyle: 'italic' }}>
+            <span>Email: {email}</span>
+            {phone && <span>Phone: {phone}</span>}
+            <span>Location: {location}</span>
+          </div>
+        </div>
+
+        {/* Executive Summary */}
+        <div>
+          <h3 className="cv-section-title" style={{ fontSize: '14px', color: 'var(--primary)', borderBottom: '1px solid #ccc', paddingBottom: '4px', margin: '18px 0 8px', fontWeight: 'bold', textTransform: 'uppercase' }}>
+            Professional Summary
+          </h3>
+          <p style={{ margin: '0', fontSize: '13px', lineHeight: '1.6', textAlign: 'justify' }}>
+            {bio}
+          </p>
+        </div>
+
+        {/* Education & Platform Certification */}
+        <div>
+          <h3 className="cv-section-title" style={{ fontSize: '14px', color: 'var(--primary)', borderBottom: '1px solid #ccc', paddingBottom: '4px', margin: '18px 0 8px', fontWeight: 'bold', textTransform: 'uppercase' }}>
+            Education & Certifications
+          </h3>
+          <div style={{ marginBottom: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '13px' }}>
+              <span>Pool of Grace Learning Platform (Capacitation Program)</span>
+              <span>2026</span>
+            </div>
+            <div style={{ fontStyle: 'italic', fontSize: '12px', color: '#666' }}>
+              Empowering Young Women through Technical Skills, Mentorship, and Self-Worth (ALU Capstone Cohort, Ghana)
+            </div>
+            <ul style={{ margin: '6px 0 0 18px', padding: '0', fontSize: '12.5px', lineHeight: '1.5' }}>
+              <li>Completed <strong>{completed.length}/20 Modules</strong> spanning Self-Worth Development, Technical Foundations, and Professional Skills.</li>
+              {selfWorthCompletions.length > 0 && (
+                <li><strong>Self-Worth Foundation:</strong> Mastered cognitive strategies to challenge tech gender stereotypes, set SMART career goals, and build technical self-efficacy.</li>
+              )}
+              {techCompletions.length > 0 && (
+                <li><strong>Technical Track:</strong> Acquired hands-on experience in frontend web technologies, logic scripting, and database querying.</li>
+              )}
+            </ul>
+          </div>
+        </div>
+
+        {/* Technical & Soft Skills */}
+        <div>
+          <h3 className="cv-section-title" style={{ fontSize: '14px', color: 'var(--primary)', borderBottom: '1px solid #ccc', paddingBottom: '4px', margin: '18px 0 8px', fontWeight: 'bold', textTransform: 'uppercase' }}>
+            Skills & Competencies
+          </h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '0', padding: '0' }}>
+            {skills.map((skill, index) => (
+              <span key={index} style={{ background: '#f4f4f4', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', border: '1px solid #e0e0e0', color: '#444' }}>
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Practical Projects */}
+        <div>
+          <h3 className="cv-section-title" style={{ fontSize: '14px', color: 'var(--primary)', borderBottom: '1px solid #ccc', paddingBottom: '4px', margin: '18px 0 8px', fontWeight: 'bold', textTransform: 'uppercase' }}>
+            Projects
+          </h3>
+          
+          {/* Project 1: HTML & CSS Landing Page */}
+          {completed.some(m => m.id === 10) ? (
+            <div style={{ marginBottom: '10px' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '13px' }}>Ghanaian Local Enterprise Product Showcase Page</div>
+              <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#555', textAlign: 'justify' }}>
+                Developed a responsive landing page highlighting a small business in Ghana (e.g. Shea Butter / Kente weaving). Structured with HTML5 semantic elements, styled using dynamic CSS layout schemes, and features an interactive order validation script.
+              </p>
+            </div>
+          ) : null}
+
+          {/* Project 2: Full Stack Directory */}
+          {completed.some(m => m.id === 13) ? (
+            <div style={{ marginBottom: '10px' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '13px' }}>Community Resource Directory Web Application</div>
+              <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#555', textAlign: 'justify' }}>
+                Built a full-stack directory system connecting users to local Ghanaian community services. Engineered using React, styled with clean components, backend powered by Node.js/Express APIs, with a PostgreSQL database layer.
+              </p>
+            </div>
+          ) : null}
+
+          {completed.length === 0 && (
+            <p style={{ fontStyle: 'italic', fontSize: '12px', color: '#777', margin: '0' }}>
+              Projects will be displayed here as you complete Module 10 (Building Your First Website) and Module 13 (Web Development Project).
+            </p>
+          )}
+        </div>
+
+        {/* Mentorship & Professional Reference */}
+        <div>
+          <h3 className="cv-section-title" style={{ fontSize: '14px', color: 'var(--primary)', borderBottom: '1px solid #ccc', paddingBottom: '4px', margin: '18px 0 8px', fontWeight: 'bold', textTransform: 'uppercase' }}>
+            Mentorship and References
+          </h3>
+          <div style={{ fontSize: '12.5px', lineHeight: '1.6' }}>
+            <p style={{ margin: '0 0 4px' }}>
+              <strong>Mentored by:</strong> Agnes Adepa Berko (Founder & Lead Instructor) and the Pool of Grace network of Ghanaian tech leaders.
+            </p>
+            <p style={{ margin: '0' }}>
+              <strong>References:</strong> Available upon request. (Verification ID: POG-2026-{user ? user.id : 'USR'})
+            </p>
           </div>
         </div>
       </div>

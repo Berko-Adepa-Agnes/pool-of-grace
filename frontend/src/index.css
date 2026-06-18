@@ -699,9 +699,63 @@ textarea.premium-input { resize: vertical; min-height: 90px; }
    PRINT FRIENDLY
    ========================================================= */
 @media print {
-  .portal-sidebar { display: none; }
-  .portal-main { margin-left: 0; padding: 20px; }
-  .btn-primary, .btn-outline { display: none; }
+  /* Hide UI elements */
+  .portal-sidebar,
+  .sidebar-logo-block,
+  header,
+  .tab-bar,
+  .page-header,
+  .btn-primary,
+  .btn-outline,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Reset container styles for full page */
+  body, .portal-main, .portal-container {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+  
+  .portal-main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Reset cards to look like normal flat layout */
+  .premium-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    transform: none !important;
+    padding: 0 !important;
+  }
+  
+  /* Specific styling for printed CV */
+  .cv-print-container {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    color: #333 !important;
+  }
+  
+  .cv-print-header {
+    border-bottom: 2px solid var(--primary, #1e5a2c) !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .cv-section-title {
+    color: var(--primary, #1e5a2c) !important;
+    border-bottom: 1px solid #ddd !important;
+    padding-bottom: 4px !important;
+    margin-top: 18px !important;
+    margin-bottom: 8px !important;
+    text-transform: uppercase !important;
+    font-size: 14px !important;
+  }
 }
 
 /* =========================================================
@@ -831,5 +885,401 @@ textarea.premium-input { resize: vertical; min-height: 90px; }
     overflow-x: auto;
     flex-wrap: nowrap;
     padding-bottom: 4px;
+  }
+}
+
+/* =========================================================
+   PRACTICE LAB — CODE EDITOR & CHALLENGES
+   ========================================================= */
+.code-editor-area {
+  width: 100%;
+  min-height: 180px;
+  padding: 16px;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  border: 2px solid #313244;
+  border-radius: 10px;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 13.5px;
+  line-height: 1.65;
+  resize: vertical;
+  outline: none;
+  tab-size: 2;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  transition: border-color 0.2s;
+}
+.code-editor-area:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 4px rgba(45, 122, 45, 0.12);
+}
+.code-editor-area::placeholder {
+  color: #585b70;
+}
+.code-preview-frame {
+  width: 100%;
+  min-height: 200px;
+  border: 2px solid var(--primary-pale);
+  border-radius: 10px;
+  background: #fff;
+}
+.code-output-box {
+  background: #1e1e2e;
+  color: #a6e3a1;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 80px;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 2px solid #313244;
+  white-space: pre-wrap;
+}
+.challenge-card {
+  border: 2px solid var(--primary-pale);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: var(--transition);
+  background: #fff;
+  cursor: pointer;
+}
+.challenge-card:hover {
+  border-color: var(--primary-light);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.challenge-card.active {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.xp-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: 12px;
+  color: #fff;
+}
+.xp-fill {
+  height: 8px;
+  background: linear-gradient(90deg, #f1c40f, #e67e22);
+  border-radius: 8px;
+  transition: width 0.5s ease;
+}
+.streak-flame {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: #fff;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 13px;
+  animation: pulse 2s infinite;
+}
+.hint-box {
+  background: #fffbeb;
+  border: 2px solid #fbbf24;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: #92400e;
+  margin-top: 12px;
+  animation: fadeInUp 0.3s ease;
+}
+.difficulty-easy { background: #dcfce7; color: #166534; }
+.difficulty-medium { background: #fef9c3; color: #854d0e; }
+.difficulty-hard { background: #fce7f3; color: #9d174d; }
+
+/* =========================================================
+   ACHIEVEMENT & BADGE SYSTEM
+   ========================================================= */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+.badge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 14px;
+  border-radius: 16px;
+  text-align: center;
+  transition: var(--transition);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+.badge-card.earned {
+  background: linear-gradient(135deg, #f0faf0, #e8f5e8);
+  border-color: var(--primary-light);
+  box-shadow: 0 4px 16px rgba(45, 122, 45, 0.12);
+}
+.badge-card.locked {
+  background: #f8f8f8;
+  border-color: #e0e0e0;
+  opacity: 0.6;
+  filter: grayscale(0.8);
+}
+.badge-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.badge-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.badge-card.earned .badge-icon {
+  animation: pulse 2.5s infinite;
+}
+.badge-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.badge-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* =========================================================
+   CONFETTI CELEBRATION ANIMATION
+   ========================================================= */
+@keyframes confetti-fall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+@keyframes celebrate-scale {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes celebration-pop {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.1); }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+.confetti-piece {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  z-index: 9999;
+  animation: confetti-fall linear forwards;
+  pointer-events: none;
+}
+.celebration-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  animation: fadeInUp 0.3s ease;
+}
+.celebration-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 48px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: celebrate-scale 0.5s ease both;
+  max-width: 420px;
+  width: 90%;
+}
+
+/* =========================================================
+   VISUAL LEARNING PATH
+   ========================================================= */
+.learning-path {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding: 20px 0;
+}
+.path-phase {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  margin-bottom: 4px;
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+}
+.path-phase:hover {
+  background: var(--primary-pale);
+}
+.path-connector {
+  width: 3px;
+  height: 20px;
+  margin-left: 30px;
+  border-radius: 3px;
+}
+.path-dot {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transition: var(--transition);
+}
+
+/* =========================================================
+   CODE SNIPPET DISPLAY
+   ========================================================= */
+.code-block {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 18px 22px;
+  border-radius: 10px;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: auto;
+  margin: 14px 0;
+  border: 1px solid #313244;
+  position: relative;
+}
+.code-block .kw { color: #cba6f7; }
+.code-block .str { color: #a6e3a1; }
+.code-block .fn { color: #89b4fa; }
+.code-block .cm { color: #6c7086; font-style: italic; }
+.code-block .num { color: #fab387; }
+.code-block .tag { color: #f38ba8; }
+.code-block .attr { color: #89dceb; }
+
+/* =========================================================
+   STUDY TIMER (POMODORO)
+   ========================================================= */
+.study-timer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, var(--primary-pale), #f0faf0);
+  border: 2px solid var(--primary-light);
+  border-radius: 14px;
+}
+.timer-display {
+  font-size: 28px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary);
+  letter-spacing: 1px;
+}
+.timer-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-light);
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  transition: var(--transition);
+}
+.timer-btn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* =========================================================
+   DISCOVER PAGE
+   ========================================================= */
+.share-card {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  text-align: center;
+}
+.qr-placeholder {
+  width: 180px;
+  height: 180px;
+  background: #fff;
+  border-radius: 12px;
+  margin: 18px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+}
+.whatsapp-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+.partner-card {
+  padding: 22px;
+  border-radius: 14px;
+  border: 2px solid var(--primary-pale);
+  background: #fff;
+  transition: var(--transition);
+}
+.partner-card:hover {
+  border-color: var(--primary-light);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 767px) {
+  .badge-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+  }
+  .badge-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+  .code-editor-area {
+    font-size: 12px;
+    min-height: 140px;
+    padding: 12px;
+  }
+  .celebration-card {
+    padding: 28px 22px;
   }
 }

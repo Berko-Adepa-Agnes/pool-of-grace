@@ -40,6 +40,35 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
 
+  // Handle PDF and MP3 files (cache first, fallback to network)
+  const isMedia = requestUrl.pathname.endsWith('.mp3') || requestUrl.pathname.endsWith('.pdf');
+  if (isMedia) {
+    const MEDIA_CACHE = 'pool-of-grace-media-v1';
+    event.respondWith(
+      caches.open(MEDIA_CACHE).then((cache) => {
+        return cache.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // Fetch full resource (remove range header to force 200 response for caching)
+          const fetchRequest = event.request.headers.has('range')
+            ? new Request(event.request.url, { method: 'GET' })
+            : event.request;
+
+          return fetch(fetchRequest).then((response) => {
+            if (response.status === 200) {
+              cache.put(event.request, response.clone());
+            }
+            return response;
+          }).catch(() => {
+            return new Response('Offline media resource not available', { status: 503 });
+          });
+        });
+      })
+    );
+    return;
+  }
+
   // Handle API requests (network first, fallback to cache)
   if (requestUrl.pathname.startsWith('/api/')) {
     event.respondWith(

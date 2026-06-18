@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 const db = require('./db');
 const seed = require('./seed');
@@ -9,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({ message: 'Pool of Grace API is running!' });
 });
 
@@ -19,6 +20,14 @@ app.use('/api/modules', require('./routes/modules'));
 // New persistent routes
 app.use('/api/mentorship', require('./routes/mentorship'));
 app.use('/api/forum', require('./routes/forum'));
+
+// Serve React frontend in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
+  });
+}
 
 const PORT = process.env.PORT || 5000;
 

@@ -488,7 +488,15 @@ const seed = async () => {
     await db.saveMentors(mentorsSeed);
 
     console.log('Seeding modules...');
-    await db.saveModules(modulesSeed);
+    const modulesWithUrls = modulesSeed.map(m => ({
+      ...m,
+      content: {
+        ...m.content,
+        audioUrl: `/audio/stage_${m.order}.mp3`,
+        pdfUrl: `/pdf/stage_${m.order}.pdf`
+      }
+    }));
+    await db.saveModules(modulesWithUrls);
 
     console.log('Checking for admin user...');
     const existingAdmin = await db.getUserByEmail('admin@poolofgrace.com');

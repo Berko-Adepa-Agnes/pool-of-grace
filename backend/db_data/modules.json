@@ -77,7 +77,9 @@
           ],
           "answer": "Because building confidence is key to sustained learning and growth"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_1.mp3",
+      "pdfUrl": "/pdf/stage_1.pdf"
     }
   },
   {
@@ -158,7 +160,9 @@
           ],
           "answer": "The psychological capability to make choices and act on them"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_2.mp3",
+      "pdfUrl": "/pdf/stage_2.pdf"
     }
   },
   {
@@ -239,7 +243,9 @@
           ],
           "answer": "Break tasks into tiny, manageable steps and code daily"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_3.mp3",
+      "pdfUrl": "/pdf/stage_3.pdf"
     }
   },
   {
@@ -320,7 +326,9 @@
           ],
           "answer": "Adapt, use offline capabilities, save code regularly, and stay calm"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_4.mp3",
+      "pdfUrl": "/pdf/stage_4.pdf"
     }
   },
   {
@@ -401,7 +409,9 @@
           ],
           "answer": "Small, realistic, and consistent actions"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_5.mp3",
+      "pdfUrl": "/pdf/stage_5.pdf"
     }
   },
   {
@@ -482,7 +492,9 @@
           ],
           "answer": "iSpace / Mobile Web Ghana"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_6.mp3",
+      "pdfUrl": "/pdf/stage_6.pdf"
     }
   },
   {
@@ -563,7 +575,9 @@
           ],
           "answer": "Continues as a foundation as you build technical and career resources"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_7.mp3",
+      "pdfUrl": "/pdf/stage_7.pdf"
     }
   },
   {
@@ -644,7 +658,9 @@
           ],
           "answer": "color: blue;"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_8.mp3",
+      "pdfUrl": "/pdf/stage_8.pdf"
     }
   },
   {
@@ -725,7 +741,9 @@
           ],
           "answer": "To group reusable code together to perform a task"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_9.mp3",
+      "pdfUrl": "/pdf/stage_9.pdf"
     }
   },
   {
@@ -806,7 +824,9 @@
           ],
           "answer": "Inside <head>"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_10.mp3",
+      "pdfUrl": "/pdf/stage_10.pdf"
     }
   },
   {
@@ -887,7 +907,9 @@
           ],
           "answer": "my_list = [1, 2, 3]"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_11.mp3",
+      "pdfUrl": "/pdf/stage_11.pdf"
     }
   },
   {
@@ -968,7 +990,9 @@
           ],
           "answer": "INSERT INTO"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_12.mp3",
+      "pdfUrl": "/pdf/stage_12.pdf"
     }
   },
   {
@@ -1049,7 +1073,9 @@
           ],
           "answer": "An object that holds component data that can change over time"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_13.mp3",
+      "pdfUrl": "/pdf/stage_13.pdf"
     }
   },
   {
@@ -1130,7 +1156,9 @@
           ],
           "answer": "main (or master)"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_14.mp3",
+      "pdfUrl": "/pdf/stage_14.pdf"
     }
   },
   {
@@ -1191,7 +1219,9 @@
           ],
           "answer": "48,000 GHS"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_15.mp3",
+      "pdfUrl": "/pdf/stage_15.pdf"
     }
   },
   {
@@ -1252,7 +1282,9 @@
           ],
           "answer": "Detail the problem solved, tech used, and your implementation steps"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_16.mp3",
+      "pdfUrl": "/pdf/stage_16.pdf"
     }
   },
   {
@@ -1313,7 +1345,9 @@
           ],
           "answer": "What technologies does the engineering team use and what are the main goals?"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_17.mp3",
+      "pdfUrl": "/pdf/stage_17.pdf"
     }
   },
   {
@@ -1374,7 +1408,9 @@
           ],
           "answer": "Attend, listen to talks, and exchange GitHub links with peers and speakers"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_18.mp3",
+      "pdfUrl": "/pdf/stage_18.pdf"
     }
   },
   {
@@ -1435,7 +1471,9 @@
           ],
           "answer": "The Registrar General's Department"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_19.mp3",
+      "pdfUrl": "/pdf/stage_19.pdf"
     }
   },
   {
@@ -1496,7 +1534,9 @@
           ],
           "answer": "By becoming a peer mentor and joining the alumni directory to support new cohorts"
         }
-      ]
+      ],
+      "audioUrl": "/audio/stage_20.mp3",
+      "pdfUrl": "/pdf/stage_20.pdf"
     }
   }
 ]
