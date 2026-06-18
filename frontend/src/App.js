@@ -139,6 +139,25 @@ export default function App() {
   const [selectedAdminPanel, setSelectedAdminPanel] = useState(null);
   const [completionsCount, setCompletionsCount] = useState(0);
   const [toast, setToast]                 = useState(null);
+  const [darkMode, setDarkMode]           = useState(false);
+
+  // Apply dark mode to root CSS variables
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode) {
+      root.style.setProperty('--bg-main',   '#121c12');
+      root.style.setProperty('--card-bg',   '#1a2a1a');
+      root.style.setProperty('--text-main', '#e8f5e8');
+      root.style.setProperty('--text-muted','#8faa8f');
+      root.style.setProperty('--primary-pale','rgba(45,122,45,0.18)');
+    } else {
+      root.style.setProperty('--bg-main',   '#f6fbf6');
+      root.style.setProperty('--card-bg',   '#ffffff');
+      root.style.setProperty('--text-main', '#2b3a2b');
+      root.style.setProperty('--text-muted','#627262');
+      root.style.setProperty('--primary-pale','hsl(120, 40%, 95%)');
+    }
+  }, [darkMode]);
 
   const showToast = (msg, type='success') => {
     setToast({ msg, type });
@@ -304,7 +323,8 @@ export default function App() {
     { key: 'history',       label: 'History',                   icon: <Icons.History /> },
     { key: 'profile',       label: 'My Profile',                icon: <Icons.Dashboard /> },
     { key: 'survey',        label: 'Usability Survey',          icon: <Icons.Admin /> },
-    { key: 'privacy',       label: 'Privacy & Ethics',          icon: <Icons.Admin /> },
+    { key: 'consent',       label: 'Consent Form',              icon: <Icons.Admin /> },
+    { key: 'privacy',       label: 'Privacy and Ethics',        icon: <Icons.Admin /> },
   ] : [
     { key: 'admin',         label: t('nav.adminPanel', lang),   icon: <Icons.Admin /> },
     { key: 'modules',       label: 'Modules',                   icon: <Icons.Modules /> },
@@ -352,6 +372,18 @@ export default function App() {
           <div className="sidebar-text" style={{ padding: '0 6px 10px', fontSize: '12px', color: 'rgba(255,255,255,0.45)' }}>
             {user && user.firstName} — {user && user.role === 'admin' ? 'Admin' : 'Participant'}
           </div>
+          {/* Dark mode toggle */}
+          <button onClick={()=>setDarkMode(d=>!d)}
+            style={{
+              display:'flex',alignItems:'center',gap:'8px',width:'100%',
+              padding:'9px 14px',background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.12)',
+              color:'#ccc',borderRadius:'9px',cursor:'pointer',fontSize:'13px',
+              fontFamily:'inherit',fontWeight:'600',marginBottom:'8px'
+            }}
+          >
+            <span style={{fontSize:'15px'}}>{darkMode ? 'L' : 'D'}</span>
+            <span className="sidebar-text">{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
           <button onClick={logout}
             style={{
               display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
@@ -380,8 +412,10 @@ export default function App() {
   if (page === 'home')         return <Home go={setPage} lang={lang} LanguageToggle={LanguageToggle} />;
   if (page === 'register')     return <Register go={setPage} login={login} lang={lang} LanguageToggle={LanguageToggle} />;
   if (page === 'login')        return <Login go={setPage} login={login} lang={lang} LanguageToggle={LanguageToggle} />;
+  if (page === 'forgot')       return <ForgotPassword go={setPage} lang={lang} />;
   if (page === 'onboarding')   return <Onboarding user={user} completeOnboarding={completeOnboardingData} lang={lang} />;
   if (page === 'selfWorthIntro') return <SelfWorthIntro user={user} go={setPage} lang={lang} />;
+  if (page === 'consent')      return <AuthenticatedPortal><ConsentFormPage lang={lang} /></AuthenticatedPortal>;
 
   const ToastBar = () => toast ? (
     <div style={{
@@ -700,10 +734,10 @@ function Login({ go, login, lang, LanguageToggle }) {
           {loading ? 'Logging in...' : 'Login'}
         </button>
         <p style={{ textAlign:'center',marginTop:'18px',color:'var(--text-muted)',fontSize:'13px' }}>
-          Forgot your password? Contact{' '}
-          <a href="mailto:a.berko1@alustudent.com" style={{ color:'var(--primary)',fontWeight:'700' }}>support</a>.
+          Forgot your password?{' '}
+          <span style={{ color:'var(--primary)',fontWeight:'700',cursor:'pointer' }} onClick={()=>go('forgot')}>Reset it here</span>
         </p>
-        <p style={{ textAlign:'center',marginTop:'18px',color:'var(--text-muted)',fontSize:'14px' }}>
+        <p style={{ textAlign:'center',marginTop:'10px',color:'var(--text-muted)',fontSize:'14px' }}>
           No account?{' '}
           <span style={{ color:'var(--primary-light)',cursor:'pointer',fontWeight:'700' }} onClick={()=>go('register')}>Register free</span>
         </p>
@@ -938,6 +972,32 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
           <div className="progress-bar-fill" style={{ width:`${progressPercent}%` }}></div>
         </div>
       </div>
+
+      {/* Onboarding checklist */}
+      {completionsCount === 0 && (
+        <div className="premium-card" style={{ padding:'24px',marginBottom:'28px',borderLeft:'5px solid var(--secondary)' }}>
+          <h3 style={{ color:'var(--secondary)',fontSize:'16px',fontWeight:'700',marginBottom:'16px' }}>Getting Started Checklist</h3>
+          <div style={{ display:'flex',flexDirection:'column',gap:'10px' }}>
+            {[
+              { done: true,              label: 'Create your account and log in' },
+              { done: completionsCount>0, label: 'Complete your first learning module (Module 1: Self-Worth)' },
+              { done: false,              label: 'Book a mentorship session with Agnes or a mentor', action: ()=>go('schedule') },
+              { done: false,              label: 'Complete the Usability Survey to help improve the platform', action: ()=>go('survey') },
+              { done: false,              label: 'Join the Saturday General Meeting on Google Meet', action: ()=>window.open('https://meet.google.com/bii-jzew-udd','_blank') },
+            ].map((item,i)=>(
+              <div key={i} style={{ display:'flex',alignItems:'center',gap:'12px',padding:'10px 14px',borderRadius:'9px',background: item.done?'var(--primary-pale)':'var(--bg-main)',cursor:item.action?'pointer':'default' }}
+                onClick={item.action}>
+                <div style={{ width:'22px',height:'22px',borderRadius:'50%',flexShrink:0,display:'flex',alignItems:'center',justifyContent:'center',
+                  background:item.done?'var(--primary)':'transparent',border:`2px solid ${item.done?'var(--primary)':'#ccc'}` }}>
+                  {item.done && <Icons.Check />}
+                </div>
+                <span style={{ fontSize:'13px',color:item.done?'var(--primary)':'var(--text-main)',fontWeight:item.done?'600':'400',textDecoration:item.done?'line-through':'none' }}>{item.label}</span>
+                {item.action && !item.done && <span style={{ marginLeft:'auto',fontSize:'11px',color:'var(--secondary)',fontWeight:'700' }}>Go</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Quick action cards */}
       <div className="card-grid-4">
@@ -3539,6 +3599,159 @@ function SUSPage({ lang, showToast }) {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+/* =========================================================
+   FORGOT PASSWORD PAGE
+   ========================================================= */
+function ForgotPassword({ go }) {
+  const [email, setEmail] = useState('');
+  const [sent, setSent]   = useState(false);
+
+  return (
+    <div className="auth-wrapper">
+      <div className="premium-card auth-card animate-fade-in">
+        <div style={{ textAlign:'center',marginBottom:'26px' }}>
+          <h2 style={{ color:'var(--primary)',fontWeight:'800',fontSize:'clamp(20px,4vw,24px)' }}>Reset Password</h2>
+          <p style={{ color:'var(--text-muted)',fontSize:'14px',marginTop:'6px' }}>Enter your email and we will send instructions</p>
+        </div>
+
+        {sent ? (
+          <div>
+            <div className="alert-success" style={{ marginBottom:'22px',textAlign:'center' }}>
+              <strong>Email Sent!</strong><br/>
+              Password reset instructions have been sent to <strong>{email}</strong>.<br/>
+              Please check your inbox (including spam).
+            </div>
+            <div className="alert-info" style={{ marginBottom:'22px',fontSize:'13px' }}>
+              <strong>Note:</strong> If you do not receive an email within 5 minutes, please contact Agnes Berko directly at{' '}
+              <a href="mailto:a.berko1@alustudent.com" style={{ color:'var(--primary)',fontWeight:'700' }}>a.berko1@alustudent.com</a>.
+            </div>
+            <button className="btn-primary" style={{ width:'100%' }} onClick={()=>go('login')}>Back to Login</button>
+          </div>
+        ) : (
+          <div>
+            <label style={{ fontSize:'13px',fontWeight:'600',display:'block',marginBottom:'5px' }}>Your Email Address</label>
+            <input
+              className="premium-input"
+              placeholder="agnes@example.com"
+              type="email"
+              value={email}
+              onChange={e=>setEmail(e.target.value)}
+            />
+            <button className="btn-primary" style={{ width:'100%',marginTop:'6px' }}
+              disabled={!email}
+              onClick={()=>setSent(true)}>
+              Send Reset Instructions
+            </button>
+            <p style={{ textAlign:'center',marginTop:'18px',color:'var(--text-muted)',fontSize:'14px' }}>
+              Remembered it?{' '}
+              <span style={{ color:'var(--primary-light)',cursor:'pointer',fontWeight:'700' }} onClick={()=>go('login')}>Back to Login</span>
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   CONSENT FORM PAGE
+   ========================================================= */
+function ConsentFormPage({ lang }) {
+  void lang;
+  const [agreed, setAgreed] = useState(false);
+  const [name, setName]     = useState('');
+  const [signed, setSigned] = useState(false);
+  const dateStr = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  if (signed) return (
+    <div className="animate-fade-in" style={{ maxWidth:'700px',margin:'0 auto' }}>
+      <div className="premium-card" style={{ padding:'clamp(28px,5vw,44px)',textAlign:'center' }}>
+        <div style={{ width:'70px',height:'70px',background:'var(--primary)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 20px',color:'#fff',fontSize:'28px',fontWeight:'800' }}>C</div>
+        <h2 style={{ color:'var(--primary)',fontSize:'clamp(18px,3vw,22px)',fontWeight:'800',marginBottom:'10px' }}>Consent Recorded</h2>
+        <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'22px',lineHeight:'1.7' }}>
+          Thank you, <strong>{name}</strong>. Your informed consent has been recorded for the Pool of Grace research study.
+          Agnes Berko will keep this on file. You may withdraw your consent at any time by contacting the researcher.
+        </p>
+        <button className="btn-outline" onClick={handlePrint} style={{ marginRight:'10px' }}>Print this Page</button>
+        <button className="btn-primary" onClick={()=>setSigned(false)}>Back to Form</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="animate-fade-in" style={{ maxWidth:'760px',margin:'0 auto' }}>
+      <div className="page-header">
+        <h2>Participant Informed Consent Form</h2>
+        <p>Pool of Grace — ALU Capstone Research Study 2026</p>
+      </div>
+
+      <div className="premium-card" style={{ padding:'clamp(22px,4vw,36px)',marginBottom:'24px' }}>
+        {/* Study info */}
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:'12px',marginBottom:'24px' }}>
+          {[
+            ['Study Title',      'Pool of Grace — A Digital Learning Platform for Young Women in Technology'],
+            ['Researcher',       'Agnes Adepa Berko, ALU BSc. Software Engineering'],
+            ['Supervisor',       'Ndinelao Iitumba, African Leadership University'],
+            ['Ethics Reference', 'ALU Research Ethics Committee (REC) — 2026'],
+            ['Duration',         'June 2026 — approximately 4 weeks of participation'],
+            ['Contact',          'a.berko1@alustudent.com'],
+          ].map(([label,val],i)=>(
+            <div key={i} style={{ padding:'12px 14px',background:'var(--bg-main)',borderRadius:'9px',border:'1px solid var(--primary-pale)' }}>
+              <div style={{ fontSize:'11px',fontWeight:'700',color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'0.8px',marginBottom:'3px' }}>{label}</div>
+              <div style={{ fontSize:'13px',color:'var(--text-main)',fontWeight:'500' }}>{val}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Body */}
+        {[
+          ['Purpose of the Study', 'This study investigates the usability and effectiveness of the Pool of Grace digital learning platform designed to support young women in Ghana in gaining technology skills and career confidence. Your participation involves using the platform, completing learning modules, and providing feedback.'],
+          ['What You Will Do', 'You will: (1) Register on the Pool of Grace platform; (2) Complete at least one learning module; (3) Complete the System Usability Scale (SUS) survey; (4) Optionally participate in a mentorship session. Total time commitment: approximately 1-3 hours over 4 weeks.'],
+          ['Risks and Benefits', 'There are no known risks to participating in this study beyond normal computer use. Benefits include free access to all 20 learning modules, mentorship from Ghanaian tech professionals, and certificates of completion. Your participation also contributes to research improving access to technology education for young women in Ghana.'],
+          ['Confidentiality', 'All data is anonymized. Your name will never appear in research reports. Only the researcher and supervisor will have access to identifiable data. All electronic data is stored on encrypted, password-protected devices. Data will be retained for 5 years and then securely destroyed.'],
+          ['Voluntary Participation', 'Your participation is completely voluntary. You may withdraw at any time without penalty or negative consequence. If you wish to withdraw, simply contact Agnes Berko at a.berko1@alustudent.com and all your data will be removed.'],
+          ['Questions', 'If you have any questions about this research, please contact Agnes Adepa Berko at a.berko1@alustudent.com or the ALU Research Ethics Committee at ethics@alueducation.com.'],
+        ].map(([title,body],i)=>(
+          <div key={i} style={{ marginBottom:'18px',paddingBottom:'18px',borderBottom:'1px solid var(--primary-pale)' }}>
+            <h4 style={{ color:'var(--primary)',fontWeight:'700',marginBottom:'6px',fontSize:'14px' }}>{i+1}. {title}</h4>
+            <p style={{ color:'var(--text-main)',fontSize:'13px',lineHeight:'1.8',margin:0 }}>{body}</p>
+          </div>
+        ))}
+
+        {/* Signature block */}
+        <div style={{ background:'var(--bg-main)',padding:'20px',borderRadius:'12px',border:'2px solid var(--primary-pale)',marginTop:'8px' }}>
+          <h4 style={{ color:'var(--primary)',fontWeight:'700',marginBottom:'14px',fontSize:'15px' }}>Declaration of Consent</h4>
+          <p style={{ fontSize:'13px',color:'var(--text-main)',lineHeight:'1.7',marginBottom:'16px' }}>
+            I confirm that I have read and understood the information above. I understand what I am being asked to do, the possible risks and benefits, and that my participation is voluntary. I agree to take part in this research study.
+          </p>
+
+          <label style={{ fontSize:'13px',fontWeight:'700',display:'block',marginBottom:'5px' }}>Full Name *</label>
+          <input className="premium-input" style={{ marginBottom:'12px' }} placeholder="Your full name" value={name} onChange={e=>setName(e.target.value)} />
+
+          <label style={{ display:'flex',alignItems:'flex-start',gap:'10px',cursor:'pointer',marginBottom:'18px' }}>
+            <input type="checkbox" checked={agreed} onChange={e=>setAgreed(e.target.checked)} style={{ width:'16px',height:'16px',marginTop:'2px',accentColor:'var(--primary)',flexShrink:0 }} />
+            <span style={{ fontSize:'13px',color:'var(--text-main)',lineHeight:'1.6' }}>
+              I, <strong>{name || '(your name)'}</strong>, voluntarily agree to participate in this research study conducted by Agnes Adepa Berko at the African Leadership University. I understand I may withdraw at any time.
+            </span>
+          </label>
+
+          <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'10px' }}>
+            <p style={{ fontSize:'12px',color:'var(--text-muted)',margin:0 }}>Date: {dateStr}</p>
+            <div style={{ display:'flex',gap:'10px' }}>
+              <button className="btn-outline" onClick={handlePrint}>Print Form</button>
+              <button className="btn-primary" disabled={!agreed||!name} onClick={()=>setSigned(true)}>Submit Consent</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
