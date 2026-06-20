@@ -433,7 +433,7 @@ export default function App() {
         </div>
 
         {/* Footer */}
-        <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px', flexShrink: 0 }}>
+        <div className="sidebar-footer" style={{ marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px', flexShrink: 0 }}>
           <div className="sidebar-text" style={{ padding: '0 6px 10px', fontSize: '12px', color: 'rgba(255,255,255,0.45)' }}>
             {user && user.firstName} — {user && user.role === 'admin' ? 'Admin' : 'Participant'}
           </div>
@@ -473,7 +473,30 @@ export default function App() {
               {isOnline ? 'Online Mode' : 'Offline Mode'}
             </span>
           </div>
-          <LanguageToggle />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* Mobile-only controls */}
+            <div className="mobile-only-controls">
+              <button onClick={()=>setDarkMode(d=>!d)}
+                style={{
+                  padding:'6px 12px',background:'rgba(0,0,0,0.06)',border:'1px solid rgba(0,0,0,0.1)',
+                  borderRadius:'8px',cursor:'pointer',fontSize:'12px',fontFamily:'inherit',fontWeight:'600',
+                  color:'var(--text-muted)'
+                }}
+              >
+                {darkMode ? 'Light' : 'Dark'}
+              </button>
+              <button onClick={logout}
+                style={{
+                  padding:'6px 12px',background:'transparent',border:'1px solid rgba(255,80,80,0.4)',
+                  borderRadius:'8px',cursor:'pointer',fontSize:'12px',fontFamily:'inherit',fontWeight:'600',
+                  color:'#ff5555'
+                }}
+              >
+                Logout
+              </button>
+            </div>
+            <LanguageToggle />
+          </div>
         </header>
         {children}
       </main>

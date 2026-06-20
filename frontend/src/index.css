@@ -255,23 +255,66 @@ textarea.premium-input { resize: vertical; min-height: 90px; }
     position: sticky;
     width: 100%;
     height: auto;
+    max-height: none;
     flex-direction: row;
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 10px 14px;
+    padding: 8px 10px;
     box-shadow: 0 3px 12px rgba(0,0,0,0.15);
     top: 0;
     gap: 4px;
+    z-index: 300;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-  .portal-sidebar .sidebar-logo-block { display: none; }
+  .portal-sidebar::-webkit-scrollbar { display: none; }
+  /* Hide logo, footer controls (dark mode, logout, user name) in mobile nav bar */
+  .portal-sidebar .sidebar-logo-block { display: none !important; }
+  .portal-sidebar .sidebar-footer { display: none !important; }
+
+  /* Force the nav items wrapper to be horizontal */
+  .portal-sidebar > div {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 4px !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+  }
+
   .portal-main {
     margin-left: 0;
     padding: 20px 14px;
+    flex: 1;
+    min-height: 0;
   }
-  /* Show text labels again in horizontal mobile bar */
-  .sidebar-text { display: block !important; font-size: 11px !important; }
-  .portal-sidebar button { padding: 8px 10px !important; flex-direction: column; gap: 4px; font-size: 11px; }
+  /* Show text labels in horizontal mobile bar */
+  .sidebar-text { display: block !important; font-size: 10px !important; white-space: nowrap !important; }
+  .portal-sidebar button {
+    padding: 8px 10px !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    min-width: 64px !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* Mobile-only controls (dark mode, logout in header) */
+.mobile-only-controls {
+  display: none;
+}
+@media (max-width: 767px) {
+  .mobile-only-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 }
 
 /* =========================================================
