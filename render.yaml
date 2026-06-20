@@ -13,7 +13,7 @@ services:
     plan: free
     runtime: node
     buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install
-    startCommand: cd backend && node server.js
+    startCommand: cd backend && node seed.js && node server.js
     envVars:
       - key: NODE_ENV
         value: production
