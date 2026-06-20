@@ -31,16 +31,14 @@ if (process.env.NODE_ENV === 'production') {
 
 const PORT = process.env.PORT || 5000;
 
-// Initialize Database & Run Seed if empty before starting the server
+// Initialize Database & Run Seed on every startup to keep content fresh
 db.initDb().then(async () => {
   try {
-    const modules = await db.getModules();
-    if (modules.length === 0) {
-      console.log('Modules database is empty. Seeding defaults...');
-      await seed();
-    }
+    console.log('Running database seed (upsert)...');
+    await seed();
+    console.log('Database seed completed successfully!');
   } catch (err) {
-    console.error('Error during database checking/seeding:', err);
+    console.error('Error during database seeding:', err);
   }
 
   app.listen(PORT, () => {

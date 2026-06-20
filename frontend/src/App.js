@@ -1572,10 +1572,10 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
             }} />
           ))}
           <div style={{ position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',textAlign:'center',animation:'celebration-pop 0.6s ease-out' }}>
-            <div style={{ fontSize:'72px',marginBottom:'12px' }}>🎉</div>
+            <div style={{ fontSize:'72px',marginBottom:'12px' }}>*</div>
             <div style={{ background:'rgba(255,255,255,0.95)',padding:'18px 36px',borderRadius:'16px',boxShadow:'0 8px 32px rgba(0,0,0,0.15)' }}>
               <div style={{ fontSize:'22px',fontWeight:'800',color:'var(--primary)',marginBottom:'4px' }}>Module Complete!</div>
-              <div style={{ fontSize:'14px',color:'var(--text-muted)' }}>Amazing work — keep going! 🌟</div>
+              <div style={{ fontSize:'14px',color:'var(--text-muted)' }}>Amazing work — keep going! *</div>
             </div>
           </div>
         </div>
@@ -1597,7 +1597,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
             <Icons.Timer />
           </div>
           <div>
-            <div style={{ fontSize:'13px',fontWeight:'700',marginBottom:'2px' }}>{isBreak ? '☕ Break Time' : '🎯 Focus Session'}</div>
+            <div style={{ fontSize:'13px',fontWeight:'700',marginBottom:'2px' }}>{isBreak ? ' Break Time' : ' Focus Session'}</div>
             <div style={{ fontSize:'11px',color:'rgba(255,255,255,0.7)' }}>{isBreak ? '5-minute rest' : '25-minute Pomodoro'}</div>
           </div>
         </div>
@@ -1673,7 +1673,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
             {module.category === 'technical-skills' && (
               <div style={{ background:'linear-gradient(135deg,#f3e8ff,#ede0ff)',border:'2px solid #d4bfff',borderRadius:'12px',padding:'18px 22px',marginTop:'22px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'12px' }}>
                 <div style={{ flex:1,minWidth:'180px' }}>
-                  <div style={{ fontSize:'15px',fontWeight:'700',color:'#5a3e8a',marginBottom:'4px' }}>⚡ Try It Yourself!</div>
+                  <div style={{ fontSize:'15px',fontWeight:'700',color:'#5a3e8a',marginBottom:'4px' }}> Try It Yourself!</div>
                   <div style={{ fontSize:'13px',color:'#7c5cbf',lineHeight:'1.5' }}>Practice what you learned with Ghana-contextualized coding challenges in the Practice Lab.</div>
                 </div>
                 <button className="btn-primary" style={{ background:'#7c5cbf',fontSize:'13px',padding:'9px 20px' }} onClick={()=>go('practiceLab')}>Open Practice Lab →</button>
@@ -1713,7 +1713,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                 disabled={downloading || downloaded || !isOnline}
                 style={{ padding:'8px 18px', fontSize:'12.5px', background: downloaded ? 'var(--primary)' : 'linear-gradient(135deg, var(--primary-light), var(--primary))', boxShadow: 'none' }}
               >
-                {downloaded ? 'Downloaded ✓' : downloading ? 'Downloading...' : !isOnline ? 'Online Required' : 'Download for Offline Study'}
+                {downloaded ? 'Downloaded Done' : downloading ? 'Downloading...' : !isOnline ? 'Online Required' : 'Download for Offline Study'}
               </button>
             </div>
 
@@ -4617,7 +4617,7 @@ function PracticeLab({ lang, modules, showToast }) {
 
   const challenges = [
     // HTML/CSS — Easy
-    { id:'html1', cat:'HTML/CSS', diff:'Easy', xp:10, title:'Ghana Flag with CSS', desc:'Create the Ghana flag using 3 colored divs (red, gold, green) and a black star in the center.', starter:'<div style="width:300px">\n  <!-- Red stripe -->\n  <div style="height:60px; background:red;"></div>\n  <!-- Gold stripe with star -->\n  <div style="height:60px; background:#FFD700; text-align:center; line-height:60px;">\n    <!-- Add black star here -->\n  </div>\n  <!-- Green stripe -->\n  <div style="height:60px; background:green;"></div>\n</div>', hints:['Use a span with color:black and font-size:40px for the star','The star character is ★ (&#9733;)','<span style="color:black;font-size:40px">★</span>'], type:'html', solution:'star' },
+    { id:'html1', cat:'HTML/CSS', diff:'Easy', xp:10, title:'Ghana Flag with CSS', desc:'Create the Ghana flag using 3 colored divs (red, gold, green) and a black star in the center.', starter:'<div style="width:300px">\n  <!-- Red stripe -->\n  <div style="height:60px; background:red;"></div>\n  <!-- Gold stripe with star -->\n  <div style="height:60px; background:#FFD700; text-align:center; line-height:60px;">\n    <!-- Add black star here -->\n  </div>\n  <!-- Green stripe -->\n  <div style="height:60px; background:green;"></div>\n</div>', hints:['Use a span with color:black and font-size:40px for the star','The star character is  (&#9733;)','<span style="color:black;font-size:40px"></span>'], type:'html', solution:'star' },
     { id:'html2', cat:'HTML/CSS', diff:'Easy', xp:10, title:'Profile Card', desc:'Create a styled profile card with a name, title, and a green border. Use CSS to make it look professional.', starter:'<div style="border:3px solid green; border-radius:12px; padding:24px; max-width:300px; text-align:center; font-family:sans-serif;">\n  <h2>Your Name</h2>\n  <p style="color:gray;">Junior Developer</p>\n  <p>Kumasi, Ghana</p>\n</div>', hints:['Add a background-color to make it stand out','Add box-shadow for depth: box-shadow:0 4px 12px rgba(0,0,0,0.1)','Add a colored circle as an avatar using border-radius:50%'], type:'html', solution:'name' },
     { id:'html3', cat:'HTML/CSS', diff:'Medium', xp:25, title:'Responsive Navigation Bar', desc:'Build a horizontal navigation bar with 4 links that uses flexbox and changes color on hover.', starter:'<nav style="display:flex; background:#1e5a2c; padding:12px 20px; gap:20px;">\n  <a href="#" style="color:#fff; text-decoration:none;">Home</a>\n  <!-- Add 3 more links -->\n  <!-- Add hover effect hint: use onmouseover -->\n</nav>', hints:['Add links for About, Modules, Contact','Use gap property for spacing between links','For hover: onmouseover="this.style.color=\'#FFD700\'" onmouseout="this.style.color=\'#fff\'"'], type:'html', solution:'modules' },
     { id:'html4', cat:'HTML/CSS', diff:'Medium', xp:25, title:'Product Card Grid', desc:'Create a 2-column grid of product cards for a Ghanaian shea butter shop using CSS Grid.', starter:'<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:500px;">\n  <div style="border:1px solid #ddd; border-radius:10px; padding:16px;">\n    <h3>Shea Butter (Raw)</h3>\n    <p style="color:green; font-weight:bold;">GH₵ 25.00</p>\n  </div>\n  <!-- Add 3 more product cards -->\n</div>', hints:['Copy the first card div and change the product name and price','Try products like: Shea Soap, Body Lotion, Hair Cream','Add a button: <button style="background:green;color:#fff;border:none;padding:8px 16px;border-radius:6px;">Buy Now</button>'], type:'html', solution:'butter' },
@@ -4691,11 +4691,11 @@ function PracticeLab({ lang, modules, showToast }) {
   };
 
   const practBadges = [
-    { id:'code_starter', name:'Code Starter', icon:'🌱', need:1, desc:'Complete 1 challenge' },
-    { id:'loop_master', name:'Loop Master', icon:'🔄', need:5, desc:'Complete 5 challenges' },
-    { id:'debug_queen', name:'Debug Queen', icon:'🐛', need:10, desc:'Complete 10 challenges' },
-    { id:'full_stack', name:'Full Stack Warrior', icon:'⚔️', need:15, desc:'Complete 15 challenges' },
-    { id:'ghana_coder', name:'Ghana Coder', icon:'🇬🇭', need:18, desc:'Complete 18 challenges' },
+    { id:'code_starter', name:'Code Starter', icon:'*', need:1, desc:'Complete 1 challenge' },
+    { id:'loop_master', name:'Loop Master', icon:'*', need:5, desc:'Complete 5 challenges' },
+    { id:'debug_queen', name:'Debug Queen', icon:'*', need:10, desc:'Complete 10 challenges' },
+    { id:'full_stack', name:'Full Stack Warrior', icon:'*', need:15, desc:'Complete 15 challenges' },
+    { id:'ghana_coder', name:'Ghana Coder', icon:'GH', need:18, desc:'Complete 18 challenges' },
   ];
 
   return (
@@ -4799,7 +4799,7 @@ function PracticeLab({ lang, modules, showToast }) {
                     Hint {hintsUsed+1}/{activeChallenge.hints.length}
                   </button>
                 )}
-                {completed.includes(activeChallenge.id) && <span className="badge badge-green" style={{ padding:'8px 16px' }}>Completed ✓</span>}
+                {completed.includes(activeChallenge.id) && <span className="badge badge-green" style={{ padding:'8px 16px' }}>Completed Done</span>}
               </div>
 
               {/* Hints */}
@@ -4855,32 +4855,32 @@ function AchievementsPage({ user, modules, lang }) {
 
   const allBadges = [
     // Module badges
-    { id:'first_module', name:'First Step', icon:'👣', color:'#2d7a2d', desc:'Complete your first module', earned: completed.length >= 1, category:'Learning' },
-    { id:'halfway', name:'Halfway Hero', icon:'⚡', color:'#e67e22', desc:'Complete 10 modules', earned: completed.length >= 10, category:'Learning' },
-    { id:'sw_champion', name:'Self-Worth Champion', icon:'💎', color:'#9b59b6', desc:'Complete all 7 self-worth modules', earned: selfWorthDone >= 7, category:'Learning' },
-    { id:'tech_pioneer', name:'Tech Pioneer', icon:'💻', color:'#3498db', desc:'Complete all 7 tech modules', earned: techDone >= 7, category:'Learning' },
-    { id:'career_ready', name:'Career Ready', icon:'🚀', color:'#e74c3c', desc:'Complete all 6 career modules', earned: careerDone >= 6, category:'Learning' },
-    { id:'graduate', name:'Pool of Grace Graduate', icon:'👑', color:'#f1c40f', desc:'Complete all 20 modules', earned: completed.length >= 20, category:'Learning' },
+    { id:'first_module', name:'First Step', icon:'*', color:'#2d7a2d', desc:'Complete your first module', earned: completed.length >= 1, category:'Learning' },
+    { id:'halfway', name:'Halfway Hero', icon:'', color:'#e67e22', desc:'Complete 10 modules', earned: completed.length >= 10, category:'Learning' },
+    { id:'sw_champion', name:'Self-Worth Champion', icon:'*', color:'#9b59b6', desc:'Complete all 7 self-worth modules', earned: selfWorthDone >= 7, category:'Learning' },
+    { id:'tech_pioneer', name:'Tech Pioneer', icon:'*', color:'#3498db', desc:'Complete all 7 tech modules', earned: techDone >= 7, category:'Learning' },
+    { id:'career_ready', name:'Career Ready', icon:'*', color:'#e74c3c', desc:'Complete all 6 career modules', earned: careerDone >= 6, category:'Learning' },
+    { id:'graduate', name:'Pool of Grace Graduate', icon:'*', color:'#f1c40f', desc:'Complete all 20 modules', earned: completed.length >= 20, category:'Learning' },
 
     // Practice badges
-    { id:'code_starter', name:'Code Starter', icon:'🌱', color:'#27ae60', desc:'Complete 1 practice challenge', earned: practiceCompleted.length >= 1, category:'Practice' },
-    { id:'loop_master', name:'Loop Master', icon:'🔄', color:'#2980b9', desc:'Complete 5 practice challenges', earned: practiceCompleted.length >= 5, category:'Practice' },
-    { id:'debug_queen', name:'Debug Queen', icon:'🐛', color:'#8e44ad', desc:'Complete 10 practice challenges', earned: practiceCompleted.length >= 10, category:'Practice' },
-    { id:'full_stack_warrior', name:'Full Stack Warrior', icon:'⚔️', color:'#c0392b', desc:'Complete 15 practice challenges', earned: practiceCompleted.length >= 15, category:'Practice' },
+    { id:'code_starter', name:'Code Starter', icon:'*', color:'#27ae60', desc:'Complete 1 practice challenge', earned: practiceCompleted.length >= 1, category:'Practice' },
+    { id:'loop_master', name:'Loop Master', icon:'*', color:'#2980b9', desc:'Complete 5 practice challenges', earned: practiceCompleted.length >= 5, category:'Practice' },
+    { id:'debug_queen', name:'Debug Queen', icon:'*', color:'#8e44ad', desc:'Complete 10 practice challenges', earned: practiceCompleted.length >= 10, category:'Practice' },
+    { id:'full_stack_warrior', name:'Full Stack Warrior', icon:'*', color:'#c0392b', desc:'Complete 15 practice challenges', earned: practiceCompleted.length >= 15, category:'Practice' },
     { id:'xp_collector', name:'XP Collector', icon:'⭐', color:'#f39c12', desc:'Earn 500 XP in Practice Lab', earned: practiceXp >= 500, category:'Practice' },
 
     // Streak badges
-    { id:'streak_3', name:'3-Day Streak', icon:'🔥', color:'#e67e22', desc:'Maintain a 3-day learning streak', earned: streak.count >= 3, category:'Dedication' },
-    { id:'streak_7', name:'Week Warrior', icon:'🔥', color:'#d35400', desc:'Maintain a 7-day learning streak', earned: streak.count >= 7, category:'Dedication' },
-    { id:'streak_14', name:'Streak Queen', icon:'👸', color:'#c0392b', desc:'Maintain a 14-day learning streak', earned: streak.count >= 14, category:'Dedication' },
+    { id:'streak_3', name:'3-Day Streak', icon:'*', color:'#e67e22', desc:'Maintain a 3-day learning streak', earned: streak.count >= 3, category:'Dedication' },
+    { id:'streak_7', name:'Week Warrior', icon:'*', color:'#d35400', desc:'Maintain a 7-day learning streak', earned: streak.count >= 7, category:'Dedication' },
+    { id:'streak_14', name:'Streak Queen', icon:'*', color:'#c0392b', desc:'Maintain a 14-day learning streak', earned: streak.count >= 14, category:'Dedication' },
 
     // Community badges
-    { id:'first_post', name:'Voice Heard', icon:'💬', color:'#1abc9c', desc:'Make your first forum post', earned: forumPosts >= 1, category:'Community' },
-    { id:'community_builder', name:'Community Builder', icon:'🤝', color:'#16a085', desc:'Make 5+ forum posts', earned: forumPosts >= 5, category:'Community' },
+    { id:'first_post', name:'Voice Heard', icon:'*', color:'#1abc9c', desc:'Make your first forum post', earned: forumPosts >= 1, category:'Community' },
+    { id:'community_builder', name:'Community Builder', icon:'*', color:'#16a085', desc:'Make 5+ forum posts', earned: forumPosts >= 5, category:'Community' },
 
     // Special
-    { id:'offline_warrior', name:'Offline Warrior', icon:'📱', color:'#7f8c8d', desc:'Used the platform in offline mode', earned: getStorage('pog_used_offline', false), category:'Special' },
-    { id:'cv_builder', name:'Career Crafter', icon:'📄', color:'#34495e', desc:'Used the CV Builder', earned: getStorage('pog_used_cv', false), category:'Special' },
+    { id:'offline_warrior', name:'Offline Warrior', icon:'*', color:'#7f8c8d', desc:'Used the platform in offline mode', earned: getStorage('pog_used_offline', false), category:'Special' },
+    { id:'cv_builder', name:'Career Crafter', icon:'*', color:'#34495e', desc:'Used the CV Builder', earned: getStorage('pog_used_cv', false), category:'Special' },
   ];
 
   const earnedCount = allBadges.filter(b => b.earned).length;
@@ -4972,7 +4972,7 @@ function DiscoverPage({ lang, go }) {
   });
 
   const siteUrl = 'https://poolofgrace.org';
-  const whatsappMsg = encodeURIComponent(`🌿 *Pool of Grace* — Free Tech Training for Young Women in Ghana!\n\n💻 Learn HTML, CSS, JavaScript, Python & SQL\n🎓 Earn certificates & build your CV\n🤝 Get mentorship from Ghanaian tech professionals\n📱 Works offline!\n\n👉 Join free: ${siteUrl}\n\n#PoolOfGrace #WomenInTech #GhanaTech`);
+  const whatsappMsg = encodeURIComponent(` *Pool of Grace* — Free Tech Training for Young Women in Ghana!\n\n* Learn HTML, CSS, JavaScript, Python & SQL\n* Earn certificates & build your CV\n* Get mentorship from Ghanaian tech professionals\n* Works offline!\n\n Join free: ${siteUrl}\n\n#PoolOfGrace #WomenInTech #GhanaTech`);
 
   const copyLink = () => {
     navigator.clipboard.writeText(siteUrl).then(() => {
@@ -4990,12 +4990,12 @@ function DiscoverPage({ lang, go }) {
   };
 
   const outreachPartners = [
-    { name:'Ghana Education Service Schools', desc:'Pool of Grace partners with GES to reach senior high school girls through ICT clubs and career counseling programs across all 16 regions.', color:'#2d7a2d', icon:'🏫', action:'Contact your school ICT teacher to request Pool of Grace access' },
-    { name:'Churches & Faith Organizations', desc:'Many young women in Ghana attend church regularly. Pool of Grace shares program flyers through youth groups and Sunday school announcements.', color:'#7c5cbf', icon:'⛪', action:'Ask your church youth leader to announce Pool of Grace during service' },
-    { name:'KNUST, UCC & UG Student Groups', desc:'University student organizations like WIT (Women in Tech) clubs help spread Pool of Grace to female students studying computer science and engineering.', color:'#e67e22', icon:'🎓', action:'Join your university WIT group and share Pool of Grace with members' },
-    { name:'Community Libraries & Internet Cafés', desc:'Public libraries in Kumasi, Accra, and Takoradi host Pool of Grace access points where girls can use computers to study offline modules.', color:'#3498db', icon:'📚', action:'Visit your local community library and ask about Pool of Grace computer access' },
-    { name:'MTN/Vodafone WiFi Zones', desc:'Pool of Grace works on low-bandwidth connections. Students can access the platform at MTN WiFi hotspots or Vodafone community internet points.', color:'#f1c40f', icon:'📶', action:'Find your nearest MTN WiFi zone and register for Pool of Grace there' },
-    { name:'Radio & Community Announcements', desc:'Local FM stations in Kumasi (Luv FM, Angel FM) and Accra (Citi FM, Joy FM) broadcast Pool of Grace community announcements in English and Twi.', color:'#e74c3c', icon:'📻', action:'Listen for Pool of Grace announcements on your local radio station' },
+    { name:'Ghana Education Service Schools', desc:'Pool of Grace partners with GES to reach senior high school girls through ICT clubs and career counseling programs across all 16 regions.', color:'#2d7a2d', icon:'', action:'Contact your school ICT teacher to request Pool of Grace access' },
+    { name:'Churches & Faith Organizations', desc:'Many young women in Ghana attend church regularly. Pool of Grace shares program flyers through youth groups and Sunday school announcements.', color:'#7c5cbf', icon:'', action:'Ask your church youth leader to announce Pool of Grace during service' },
+    { name:'KNUST, UCC & UG Student Groups', desc:'University student organizations like WIT (Women in Tech) clubs help spread Pool of Grace to female students studying computer science and engineering.', color:'#e67e22', icon:'*', action:'Join your university WIT group and share Pool of Grace with members' },
+    { name:'Community Libraries & Internet Cafés', desc:'Public libraries in Kumasi, Accra, and Takoradi host Pool of Grace access points where girls can use computers to study offline modules.', color:'#3498db', icon:'', action:'Visit your local community library and ask about Pool of Grace computer access' },
+    { name:'MTN/Vodafone WiFi Zones', desc:'Pool of Grace works on low-bandwidth connections. Students can access the platform at MTN WiFi hotspots or Vodafone community internet points.', color:'#f1c40f', icon:'', action:'Find your nearest MTN WiFi zone and register for Pool of Grace there' },
+    { name:'Radio & Community Announcements', desc:'Local FM stations in Kumasi (Luv FM, Angel FM) and Accra (Citi FM, Joy FM) broadcast Pool of Grace community announcements in English and Twi.', color:'#e74c3c', icon:'', action:'Listen for Pool of Grace announcements on your local radio station' },
   ];
 
   return (
@@ -5039,7 +5039,7 @@ function DiscoverPage({ lang, go }) {
       {/* Bring a Sister */}
       <div className="premium-card" style={{ padding:'clamp(20px,4vw,28px)',marginBottom:'28px',borderLeft:'5px solid #e74c3c' }}>
         <h3 style={{ color:'#e74c3c',fontSize:'17px',fontWeight:'800',marginBottom:'6px',display:'flex',alignItems:'center',gap:'8px' }}>
-          <span style={{ fontSize:'22px' }}>🤝</span> Bring a Sister Program
+          <span style={{ fontSize:'22px' }}>*</span> Bring a Sister Program
         </h3>
         <p style={{ color:'var(--text-muted)',fontSize:'14px',lineHeight:'1.7',marginBottom:'18px' }}>
           For every friend you invite to Pool of Grace, you earn the <strong>"Sister Keeper"</strong> badge and help close the gender gap in Ghana's tech industry. Track your referrals below.
@@ -5082,10 +5082,10 @@ function DiscoverPage({ lang, go }) {
       {/* Radio Script Template */}
       <div className="premium-card" style={{ padding:'clamp(20px,4vw,28px)',marginBottom:'28px' }}>
         <h3 style={{ color:'var(--primary)',fontSize:'16px',fontWeight:'800',marginBottom:'14px',display:'flex',alignItems:'center',gap:'8px' }}>
-          <span style={{ fontSize:'20px' }}>📻</span> Community Radio Announcement Template
+          <span style={{ fontSize:'20px' }}></span> Community Radio Announcement Template
         </h3>
         <div className="code-block" style={{ background:'#f8fdf8',color:'var(--text-main)',border:'2px solid var(--primary-pale)',fontFamily:'Outfit, sans-serif' }}>
-          <p style={{ fontWeight:'700',marginBottom:'8px' }}>🎙️ FOR IMMEDIATE BROADCAST</p>
+          <p style={{ fontWeight:'700',marginBottom:'8px' }}> FOR IMMEDIATE BROADCAST</p>
           <p style={{ lineHeight:'1.8',fontSize:'13px' }}>
             <em>"Attention all young women in [YOUR TOWN]. Are you interested in learning computer programming, web development, and technology skills — completely FREE?</em><br/><br/>
             <em>Pool of Grace is a new digital learning platform designed specifically for young women in Ghana. You will learn HTML, CSS, JavaScript, Python, and SQL. You will receive certificates, mentorship from professional Ghanaian tech women, and career placement support.</em><br/><br/>
@@ -5101,12 +5101,12 @@ function DiscoverPage({ lang, go }) {
         <h3 style={{ color:'var(--primary)',fontSize:'17px',fontWeight:'800',marginBottom:'18px' }}>What Makes Pool of Grace Different</h3>
         <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))',gap:'14px' }}>
           {[
-            { icon:'💎', title:'Self-Worth First', desc:'We build your confidence BEFORE teaching code. No other platform does this.' },
-            { icon:'🇬🇭', title:'Made for Ghana', desc:'All examples use Ghanaian data — Cedis, regions, local businesses. Plus Twi language support.' },
-            { icon:'💰', title:'100% Free Forever', desc:'SheCodes charges $99+. We charge nothing. Your dreams should not have a price tag.' },
-            { icon:'📱', title:'Works Offline', desc:'Download modules and study without internet. Perfect for areas with unreliable connectivity.' },
-            { icon:'🏆', title:'Earn Real Badges', desc:'Interactive practice challenges with XP, badges, and certificates to build your portfolio.' },
-            { icon:'🤝', title:'Ghanaian Mentors', desc:'Real mentorship from women working at MTN, Vodafone, Hubtel, and GCB Bank.' },
+            { icon:'*', title:'Self-Worth First', desc:'We build your confidence BEFORE teaching code. No other platform does this.' },
+            { icon:'GH', title:'Made for Ghana', desc:'All examples use Ghanaian data — Cedis, regions, local businesses. Plus Twi language support.' },
+            { icon:'*', title:'100% Free Forever', desc:'SheCodes charges $99+. We charge nothing. Your dreams should not have a price tag.' },
+            { icon:'*', title:'Works Offline', desc:'Download modules and study without internet. Perfect for areas with unreliable connectivity.' },
+            { icon:'*', title:'Earn Real Badges', desc:'Interactive practice challenges with XP, badges, and certificates to build your portfolio.' },
+            { icon:'*', title:'Ghanaian Mentors', desc:'Real mentorship from women working at MTN, Vodafone, Hubtel, and GCB Bank.' },
           ].map((item,i) => (
             <div key={i} style={{ display:'flex',gap:'12px',alignItems:'flex-start' }}>
               <span style={{ fontSize:'24px',flexShrink:0 }}>{item.icon}</span>

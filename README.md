@@ -1,9 +1,9 @@
 # Pool of Grace: A Web-Based Platform for Empowering Young Women Through Integrated Technology Education and Mentorship in Ghana
 
-> **BSc. in Software Engineering — Capstone Project**  
-> **African Leadership University (ALU)**  
-> **Researcher:** Agnes Adepa Berko  
-> **Supervisor:** Ndinelao Iitumba  
+> **BSc. in Software Engineering — Capstone Project** 
+> **African Leadership University (ALU)** 
+> **Researcher:** Agnes Adepa Berko 
+> **Supervisor:** Ndinelao Iitumba 
 > **Date:** June 2026
 
 ---
@@ -53,22 +53,22 @@ Gender inequality in education remains a critical barrier to economic developmen
 
 | Feature | Pool of Grace | SheCodes | She Leads Africa | Andela |
 |---------|:---:|:---:|:---:|:---:|
-| Self-worth foundation before coding | ✅ | ❌ | ❌ | ❌ |
-| Ghana-specific curriculum & examples | ✅ | ❌ | Partial | ❌ |
-| Twi language support | ✅ | ❌ | ❌ | ❌ |
-| 100% free (no paywall) | ✅ | ❌ ($99+) | ❌ | ❌ |
-| Offline learning mode (PWA) | ✅ | ❌ | ❌ | ❌ |
-| Ghana tech hub directory | ✅ | ❌ | ❌ | ❌ |
-| Built-in CV builder | ✅ | ❌ | ❌ | ❌ |
-| Interactive Practice Lab with XP | ✅ | ❌ | ❌ | ❌ |
-| Per-module certificates | ✅ | Limited | ❌ | ❌ |
-| Research-backed (ALU Capstone) | ✅ | ❌ | ❌ | ❌ |
+| Self-worth foundation before coding | Yes | No | No | No |
+| Ghana-specific curriculum & examples | Yes | No | Partial | No |
+| Twi language support | Yes | No | No | No |
+| 100% free (no paywall) | Yes | No ($99+) | No | No |
+| Offline learning mode (PWA) | Yes | No | No | No |
+| Ghana tech hub directory | Yes | No | No | No |
+| Built-in CV builder | Yes | No | No | No |
+| Interactive Practice Lab with XP | Yes | No | No | No |
+| Per-module certificates | Yes | Limited | No | No |
+| Research-backed (ALU Capstone) | Yes | No | No | No |
 
 ---
 
 ## 2. Demo Video
 
-🎬 **5-Minute Demo Video:** [Watch on YouTube/Loom — LINK TO BE ADDED]
+ **5-Minute Demo Video:** [Watch on YouTube/Loom — LINK TO BE ADDED]
 
 > The video demonstrates all core functionalities: Dashboard, Learning Modules (Notes, Resources, Quiz, Grades), Practice Lab, Achievements, Mentorship Booking, Community Forum, Career Resources, CV Builder, Discover & Share page, Admin Panel, Offline Mode, and Mobile Responsiveness.
 
@@ -76,13 +76,13 @@ Gender inequality in education remains a critical barrier to economic developmen
 
 ## 3. Live Deployed Version
 
-🌐 **Deployed Application:** [https://pool-of-grace.onrender.com](https://pool-of-grace.onrender.com)
+ **Deployed Application:** [https://pool-of-grace.onrender.com](https://pool-of-grace.onrender.com)
 
-> **Production Architecture (per proposal):** AWS EC2 (application hosting) + RDS (PostgreSQL database) + S3 (media storage) + CloudFront (CDN).  
-> **Current Beta Hosting:** Render.com (free tier) for the capstone demo and beta validation phase.  
+> **Production Architecture (per proposal):** AWS EC2 (application hosting) + RDS (PostgreSQL database) + S3 (media storage) + CloudFront (CDN). 
+> **Current Beta Hosting:** Render.com (free tier) for the capstone demo and beta validation phase. 
 > See [Section 13: Deployment Plan](#13-deployment-plan) for full AWS deployment documentation.
 
-> ⚠️ **Note:** Free tier may take 50 seconds to wake up on first visit (spin-down on inactivity). Wait a moment and refresh if the page loads slowly.
+> Note: **Note:** Free tier may take 50 seconds to wake up on first visit (spin-down on inactivity). Wait a moment and refresh if the page loads slowly.
 
 ---
 
@@ -240,39 +240,39 @@ NODE_ENV=production node server.js
 
 ```
 pool-of-grace/
-├── README.md                    # This file — project documentation
-├── render.yaml                  # Render.com deployment configuration
-├── .gitignore                   # Git ignore rules
+├── README.md # This file — project documentation
+├── render.yaml # Render.com deployment configuration
+├── .gitignore # Git ignore rules
 │
 ├── backend/
-│   ├── server.js                # Express app entry point + production static serving
-│   ├── db.js                    # Database abstraction (PostgreSQL + JSON fallback)
-│   ├── seed.js                  # Database seeding (20 modules, mentors, sample data)
-│   ├── .env.example             # Environment variable template
-│   ├── .env                     # Environment variables (not in repo)
-│   ├── package.json             # Backend dependencies
-│   ├── routes/
-│   │   ├── auth.js              # Registration, login, onboarding (JWT + bcrypt)
-│   │   ├── modules.js           # Module content, quiz submission, completions
-│   │   ├── mentorship.js        # Mentor listing, session booking
-│   │   └── forum.js             # Forum posts and comments
-│   └── db_data/                 # JSON file fallback storage (auto-created)
+│ ├── server.js # Express app entry point + production static serving
+│ ├── db.js # Database abstraction (PostgreSQL + JSON fallback)
+│ ├── seed.js # Database seeding (20 modules, mentors, sample data)
+│ ├── .env.example # Environment variable template
+│ ├── .env # Environment variables (not in repo)
+│ ├── package.json # Backend dependencies
+│ ├── routes/
+│ │ ├── auth.js # Registration, login, onboarding (JWT + bcrypt)
+│ │ ├── modules.js # Module content, quiz submission, completions
+│ │ ├── mentorship.js # Mentor listing, session booking
+│ │ └── forum.js # Forum posts and comments
+│ └── db_data/ # JSON file fallback storage (auto-created)
 │
 └── frontend/
-    ├── package.json             # Frontend dependencies
-    ├── public/
-    │   ├── index.html           # HTML template with SEO meta tags
-    │   ├── manifest.json        # PWA manifest
-    │   ├── service-worker.js    # Service worker for offline caching
-    │   ├── agnes.jpg            # Founder photo
-    │   └── favicon.ico          # App icon
-    └── src/
-        ├── App.js               # Main React app (all components — 5,163 lines)
-        ├── api.js               # Axios API client with JWT interceptor
-        ├── index.js             # React DOM entry point
-        ├── index.css            # Global styles and design system (1,286 lines)
-        ├── translations.js      # English/Twi localization strings
-        └── service-worker.js    # CRA service worker manifest reference
+ ├── package.json # Frontend dependencies
+ ├── public/
+ │ ├── index.html # HTML template with SEO meta tags
+ │ ├── manifest.json # PWA manifest
+ │ ├── service-worker.js # Service worker for offline caching
+ │ ├── agnes.jpg # Founder photo
+ │ └── favicon.ico # App icon
+ └── src/
+ ├── App.js # Main React app (all components — 5,163 lines)
+ ├── api.js # Axios API client with JWT interceptor
+ ├── index.js # React DOM entry point
+ ├── index.css # Global styles and design system (1,286 lines)
+ ├── translations.js # English/Twi localization strings
+ └── service-worker.js # CRA service worker manifest reference
 ```
 
 ---
@@ -324,26 +324,26 @@ All core functionalities were tested manually to verify correct behavior:
 
 | # | Feature Tested | Test Action | Expected Result | Actual Result | Status |
 |---|---------------|------------|-----------------|---------------|--------|
-| 1 | User Registration | Register with valid name, email, password | Account created, redirected to onboarding | Account created successfully, onboarding survey displayed | ✅ Pass |
-| 2 | User Login | Login with registered credentials | JWT token issued, dashboard displayed | Token stored in localStorage, dashboard loaded | ✅ Pass |
-| 3 | Onboarding Survey | Complete all 4 steps (consent, barriers, demographics, confirmation) | Data saved, user enters platform | Onboarding data persisted, platform accessible | ✅ Pass |
-| 4 | Module Notes | Open any module → Notes tab | Module intro and sections displayed | Content rendered correctly with styled sections | ✅ Pass |
-| 5 | Module Resources | Open module → Resources tab | Video links, audio player, PDF download, offline pack | All resources functional; offline download works | ✅ Pass |
-| 6 | Module Quiz | Answer 5 questions, submit | Score calculated, pass/fail determined | Score shown; ≥3/5 marks module complete with confetti | ✅ Pass |
-| 7 | Confetti Celebration | Pass a quiz with ≥3/5 | Confetti animation + "Module Complete!" popup | 40-piece confetti overlay displayed for 4 seconds | ✅ Pass |
-| 8 | Pomodoro Timer | Click Start → wait/pause/reset | 25:00 countdown, pause/resume, reset to 25:00 | Timer counts down, auto-switches to 5-min break | ✅ Pass |
-| 9 | Practice Lab | Select challenge, write code, run | Code executes, output displayed, XP awarded | HTML/CSS preview renders; JS output shown; XP incremented | ✅ Pass |
-| 10 | Achievements | Complete modules and challenges | Badges appear as earned in trophy room | Earned badges show with green highlight; locked badges greyed | ✅ Pass |
-| 11 | Mentorship Booking | Select mentor, type, date, time → confirm | Booking saved, confirmation shown | Booking persisted to database, confirmation card displayed | ✅ Pass |
-| 12 | Community Forum | Create post with title, category, content | Post appears in forum list | Post created with author name and timestamp | ✅ Pass |
-| 13 | Forum Comments | Add comment to existing post | Comment appears under post | Comment saved with author and creation time | ✅ Pass |
-| 14 | Career Resources | Navigate to career page | Ghana tech hubs, job listings, career pathways | AmaliTech, MEST, iSpace, DevCongress all displayed | ✅ Pass |
-| 15 | CV Builder | Fill in profile data → Print | CV generated with sections; print dialog opens | CV renders with skills, projects, certifications; printable | ✅ Pass |
-| 16 | Discover Page | Open share/discover page | QR code, WhatsApp share, partner cards | QR code generated, WhatsApp link functional | ✅ Pass |
-| 17 | Twi Toggle | Switch language to Twi | UI labels change to Twi | Dashboard, modules, buttons translated to Twi | ✅ Pass |
-| 18 | Offline Mode | Disconnect internet | Offline indicator shown; cached content accessible | Red "Offline" badge; audio/PDF available; YouTube locked | ✅ Pass |
-| 19 | Admin Panel | Login as admin | Admin dashboard with stats, user table, analytics | All 7 admin features functional | ✅ Pass |
-| 20 | Certificates | Complete module → view certificate | Printable certificate with name, module, date | Certificate rendered with correct data; print works | ✅ Pass |
+| 1 | User Registration | Register with valid name, email, password | Account created, redirected to onboarding | Account created successfully, onboarding survey displayed | Yes Pass |
+| 2 | User Login | Login with registered credentials | JWT token issued, dashboard displayed | Token stored in localStorage, dashboard loaded | Yes Pass |
+| 3 | Onboarding Survey | Complete all 4 steps (consent, barriers, demographics, confirmation) | Data saved, user enters platform | Onboarding data persisted, platform accessible | Yes Pass |
+| 4 | Module Notes | Open any module → Notes tab | Module intro and sections displayed | Content rendered correctly with styled sections | Yes Pass |
+| 5 | Module Resources | Open module → Resources tab | Video links, audio player, PDF download, offline pack | All resources functional; offline download works | Yes Pass |
+| 6 | Module Quiz | Answer 5 questions, submit | Score calculated, pass/fail determined | Score shown; ≥3/5 marks module complete with confetti | Yes Pass |
+| 7 | Confetti Celebration | Pass a quiz with ≥3/5 | Confetti animation + "Module Complete!" popup | 40-piece confetti overlay displayed for 4 seconds | Yes Pass |
+| 8 | Pomodoro Timer | Click Start → wait/pause/reset | 25:00 countdown, pause/resume, reset to 25:00 | Timer counts down, auto-switches to 5-min break | Yes Pass |
+| 9 | Practice Lab | Select challenge, write code, run | Code executes, output displayed, XP awarded | HTML/CSS preview renders; JS output shown; XP incremented | Yes Pass |
+| 10 | Achievements | Complete modules and challenges | Badges appear as earned in trophy room | Earned badges show with green highlight; locked badges greyed | Yes Pass |
+| 11 | Mentorship Booking | Select mentor, type, date, time → confirm | Booking saved, confirmation shown | Booking persisted to database, confirmation card displayed | Yes Pass |
+| 12 | Community Forum | Create post with title, category, content | Post appears in forum list | Post created with author name and timestamp | Yes Pass |
+| 13 | Forum Comments | Add comment to existing post | Comment appears under post | Comment saved with author and creation time | Yes Pass |
+| 14 | Career Resources | Navigate to career page | Ghana tech hubs, job listings, career pathways | AmaliTech, MEST, iSpace, DevCongress all displayed | Yes Pass |
+| 15 | CV Builder | Fill in profile data → Print | CV generated with sections; print dialog opens | CV renders with skills, projects, certifications; printable | Yes Pass |
+| 16 | Discover Page | Open share/discover page | QR code, WhatsApp share, partner cards | QR code generated, WhatsApp link functional | Yes Pass |
+| 17 | Twi Toggle | Switch language to Twi | UI labels change to Twi | Dashboard, modules, buttons translated to Twi | Yes Pass |
+| 18 | Offline Mode | Disconnect internet | Offline indicator shown; cached content accessible | Red "Offline" badge; audio/PDF available; YouTube locked | Yes Pass |
+| 19 | Admin Panel | Login as admin | Admin dashboard with stats, user table, analytics | All 7 admin features functional | Yes Pass |
+| 20 | Certificates | Complete module → view certificate | Printable certificate with name, module, date | Certificate rendered with correct data; print works | Yes Pass |
 
 **Result:** 20/20 features passed functional testing.
 
@@ -353,24 +353,24 @@ Testing the application with boundary values, edge cases, and invalid inputs:
 
 | # | Test Case | Input Data | Expected Behavior | Actual Behavior | Status |
 |---|-----------|-----------|-------------------|-----------------|--------|
-| 1 | Empty registration fields | First name: "", Email: "", Password: "" | Form validation prevents submission | Submit button disabled; fields highlighted | ✅ Pass |
-| 2 | Invalid email format | Email: "notanemail" | Rejected with error message | "Please provide a valid email" error shown | ✅ Pass |
-| 3 | Duplicate email registration | Email: already registered email | Error: "User already exists" | 400 error returned, message displayed | ✅ Pass |
-| 4 | Short password | Password: "ab" | Rejected (minimum length) | "Password must be at least 6 characters" | ✅ Pass |
-| 5 | Wrong login password | Correct email, wrong password | "Invalid credentials" error | 401 error, "Invalid email or password" displayed | ✅ Pass |
-| 6 | Quiz — all correct (5/5) | Select all correct answers | Score: 5/5, module complete, "Excellent work!" | Correct score, confetti, celebration message | ✅ Pass |
-| 7 | Quiz — minimum pass (3/5) | Select 3 correct, 2 wrong | Score: 3/5, module complete, "Good job" | Module marked complete, encouraging message | ✅ Pass |
-| 8 | Quiz — fail (2/5) | Select 2 correct, 3 wrong | Score: 2/5, "Try again", module not complete | Retry button shown, module stays incomplete | ✅ Pass |
-| 9 | Quiz — all wrong (0/5) | Select all wrong answers | Score: 0/5, "Review the notes" | Correct answers revealed, retry available | ✅ Pass |
-| 10 | Quiz — partial answers | Answer only 3 of 5 questions | Submit button disabled | "Submit (3/5 answered)" — disabled state | ✅ Pass |
-| 11 | Forum post — empty fields | Title: "", Content: "" | Cannot submit | Submit button disabled | ✅ Pass |
-| 12 | Forum post — long content | 2000+ character post | Post created and displayed | Content saved and rendered correctly | ✅ Pass |
-| 13 | Forum post — special characters | Title: "What's <script>alert('xss')</script>?" | Content escaped, no XSS | React's JSX auto-escapes; content shown as text | ✅ Pass |
-| 14 | Mentorship — no date selected | Leave date field empty | Cannot confirm booking | Confirm button disabled | ✅ Pass |
-| 15 | Practice Lab — empty code | Submit with no code written | Output shows appropriate message | "No output" or empty preview displayed | ✅ Pass |
-| 16 | Practice Lab — syntax error | Write invalid JavaScript | Error caught and displayed | Error message shown in output box | ✅ Pass |
-| 17 | Module search — no results | Search: "xyznonexistent" | "No modules found" or empty list | Empty filtered list displayed | ✅ Pass |
-| 18 | Twi — missing translations | Switch to Twi for newer features | Falls back to English keys | English text shown for untranslated strings | ✅ Pass |
+| 1 | Empty registration fields | First name: "", Email: "", Password: "" | Form validation prevents submission | Submit button disabled; fields highlighted | Yes Pass |
+| 2 | Invalid email format | Email: "notanemail" | Rejected with error message | "Please provide a valid email" error shown | Yes Pass |
+| 3 | Duplicate email registration | Email: already registered email | Error: "User already exists" | 400 error returned, message displayed | Yes Pass |
+| 4 | Short password | Password: "ab" | Rejected (minimum length) | "Password must be at least 6 characters" | Yes Pass |
+| 5 | Wrong login password | Correct email, wrong password | "Invalid credentials" error | 401 error, "Invalid email or password" displayed | Yes Pass |
+| 6 | Quiz — all correct (5/5) | Select all correct answers | Score: 5/5, module complete, "Excellent work!" | Correct score, confetti, celebration message | Yes Pass |
+| 7 | Quiz — minimum pass (3/5) | Select 3 correct, 2 wrong | Score: 3/5, module complete, "Good job" | Module marked complete, encouraging message | Yes Pass |
+| 8 | Quiz — fail (2/5) | Select 2 correct, 3 wrong | Score: 2/5, "Try again", module not complete | Retry button shown, module stays incomplete | Yes Pass |
+| 9 | Quiz — all wrong (0/5) | Select all wrong answers | Score: 0/5, "Review the notes" | Correct answers revealed, retry available | Yes Pass |
+| 10 | Quiz — partial answers | Answer only 3 of 5 questions | Submit button disabled | "Submit (3/5 answered)" — disabled state | Yes Pass |
+| 11 | Forum post — empty fields | Title: "", Content: "" | Cannot submit | Submit button disabled | Yes Pass |
+| 12 | Forum post — long content | 2000+ character post | Post created and displayed | Content saved and rendered correctly | Yes Pass |
+| 13 | Forum post — special characters | Title: "What's <script>alert('xss')</script>?" | Content escaped, no XSS | React's JSX auto-escapes; content shown as text | Yes Pass |
+| 14 | Mentorship — no date selected | Leave date field empty | Cannot confirm booking | Confirm button disabled | Yes Pass |
+| 15 | Practice Lab — empty code | Submit with no code written | Output shows appropriate message | "No output" or empty preview displayed | Yes Pass |
+| 16 | Practice Lab — syntax error | Write invalid JavaScript | Error caught and displayed | Error message shown in output box | Yes Pass |
+| 17 | Module search — no results | Search: "xyznonexistent" | "No modules found" or empty list | Empty filtered list displayed | Yes Pass |
+| 18 | Twi — missing translations | Switch to Twi for newer features | Falls back to English keys | English text shown for untranslated strings | Yes Pass |
 
 **Result:** 18/18 data validation tests passed. The application handles edge cases, boundary values, and invalid inputs gracefully.
 
@@ -380,11 +380,11 @@ The application was tested across major web browsers:
 
 | Browser | Version | OS | Result | Notes |
 |---------|---------|-----|--------|-------|
-| Google Chrome | 137 | Windows 11 | ✅ Full functionality | Primary development browser |
-| Mozilla Firefox | 139 | Windows 11 | ✅ Full functionality | All features work correctly |
-| Microsoft Edge | 137 | Windows 11 | ✅ Full functionality | Chromium-based, consistent |
-| Google Chrome | 137 | Android 14 | ✅ Full functionality | Mobile-first design renders correctly |
-| Safari | 18 | iOS 18 | ✅ Full functionality | PWA installs correctly |
+| Google Chrome | 137 | Windows 11 | Yes Full functionality | Primary development browser |
+| Mozilla Firefox | 139 | Windows 11 | Yes Full functionality | All features work correctly |
+| Microsoft Edge | 137 | Windows 11 | Yes Full functionality | Chromium-based, consistent |
+| Google Chrome | 137 | Android 14 | Yes Full functionality | Mobile-first design renders correctly |
+| Safari | 18 | iOS 18 | Yes Full functionality | PWA installs correctly |
 
 **Result:** Full cross-browser compatibility confirmed across 5 browser/OS combinations.
 
@@ -407,15 +407,15 @@ The application was tested at multiple viewport sizes simulating different devic
 
 | Metric | Target (from Proposal) | Actual Result | Status |
 |--------|----------------------|---------------|--------|
-| Production build size (JS, gzipped) | — | 146.43 KB | ✅ Efficient |
-| Production build size (CSS, gzipped) | — | 5.19 KB | ✅ Minimal |
-| First page load (3G simulated) | < 3 seconds | ~2.4 seconds | ✅ Pass |
-| First page load (4G/WiFi) | < 2 seconds | ~1.1 seconds | ✅ Pass |
-| API response time (login) | < 500ms | ~120ms (local) | ✅ Pass |
-| API response time (load modules) | < 1 second | ~80ms (local) | ✅ Pass |
-| React build compilation | Successful | ✅ Compiled with warnings only (no errors) | ✅ Pass |
-| Service Worker registration | Caches media files | ✅ Audio (.mp3) and PDF (.pdf) cached | ✅ Pass |
-| Offline functionality | Core features available | ✅ Cached modules, audio, PDF accessible offline | ✅ Pass |
+| Production build size (JS, gzipped) | — | 146.43 KB | Yes Efficient |
+| Production build size (CSS, gzipped) | — | 5.19 KB | Yes Minimal |
+| First page load (3G simulated) | < 3 seconds | ~2.4 seconds | Yes Pass |
+| First page load (4G/WiFi) | < 2 seconds | ~1.1 seconds | Yes Pass |
+| API response time (login) | < 500ms | ~120ms (local) | Yes Pass |
+| API response time (load modules) | < 1 second | ~80ms (local) | Yes Pass |
+| React build compilation | Successful | Yes Compiled with warnings only (no errors) | Yes Pass |
+| Service Worker registration | Caches media files | Yes Audio (.mp3) and PDF (.pdf) cached | Yes Pass |
+| Offline functionality | Core features available | Yes Cached modules, audio, PDF accessible offline | Yes Pass |
 
 **Result:** All performance targets met. The application loads in under 3 seconds on 3G connections, meeting the requirement specified in the project proposal (Objective 2).
 
@@ -438,7 +438,7 @@ The application was tested at multiple viewport sizes simulating different devic
 
 ### 10.1 Achievement of Project Proposal Objectives
 
-#### Objective 1: Evidence-Based Foundation Research ✅ Achieved
+#### Objective 1: Evidence-Based Foundation Research Yes Achieved
 
 | Success Metric | Target | Result |
 |---------------|--------|--------|
@@ -448,7 +448,7 @@ The application was tested at multiple viewport sizes simulating different devic
 
 **Analysis:** The foundation research directly shaped the platform's unique design. The finding that self-efficacy develops through mastery experiences, vicarious learning, social persuasion, and emotional-state management (Master et al., 2021) led to the platform's integrated approach: Practice Lab provides mastery experiences, mentorship provides vicarious learning and social persuasion, and the community forum manages emotional states through peer support.
 
-#### Objective 2: Platform Development & Deployment ✅ Achieved
+#### Objective 2: Platform Development & Deployment Yes Achieved
 
 | Success Metric | Target | Result |
 |---------------|--------|--------|
@@ -460,11 +460,11 @@ The application was tested at multiple viewport sizes simulating different devic
 | Offline access (PWA) | Service worker caching | Audio lectures and PDF study guides cached for offline |
 | Mobile-first design | Responsive layout | Works on 280px–1920px viewports |
 | Load time on 3G | < 3 seconds | ~2.4 seconds achieved |
-| Production build | Successful | ✅ Compiled (146 KB JS + 5.2 KB CSS gzipped) |
+| Production build | Successful | Yes Compiled (146 KB JS + 5.2 KB CSS gzipped) |
 
 **Analysis:** All technical objectives from the proposal were met. The platform implements the full feature set specified in the capstone scope: 20 modules with rich content (notes, resources, assignments, quizzes, grades), mentorship booking, community forum, career resources, certificates, offline mode, and Twi localization. Beyond the proposal scope, additional features were implemented: Practice Lab (interactive coding challenges with XP/badges), Achievements page (trophy room), Discover & Share page (outreach tools), Pomodoro study timer, and confetti celebration animations.
 
-#### Objective 3: Validate Platform & Establish Pilot Readiness ✅ In Progress
+#### Objective 3: Validate Platform & Establish Pilot Readiness Yes In Progress
 
 | Success Metric | Target | Result |
 |---------------|--------|--------|
@@ -560,36 +560,36 @@ As specified in the project proposal, the production deployment targets **AWS cl
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                     AWS Cloud Infrastructure                     │
-│                                                                  │
-│  ┌──────────────┐   ┌──────────────┐   ┌──────────────────────┐ │
-│  │   EC2         │   │   RDS         │   │   S3                 │ │
-│  │  (App Server) │   │  (PostgreSQL) │   │  (Media Storage)     │ │
-│  │               │   │               │   │                      │ │
-│  │  Node.js      │◄─►│  Tables:      │   │  - Audio lectures    │ │
-│  │  Express.js   │   │  - users      │   │  - PDF study guides  │ │
-│  │  React Build  │   │  - modules    │   │  - Certificates      │ │
-│  │               │   │  - completions│   │  - Profile images    │ │
-│  └───────┬───────┘   │  - mentors    │   └──────────────────────┘ │
-│          │           │  - bookings   │                            │
-│          │           │  - forum_posts│   ┌──────────────────────┐ │
-│          │           │  - forum_     │   │   CloudFront (CDN)   │ │
-│          │           │    comments   │   │                      │ │
-│          │           └──────────────┘   │  Global edge caching  │ │
-│          │                              │  SSL/HTTPS termination│ │
-│          ▼                              │  Low-latency delivery │ │
-│   HTTPS Endpoint                        └──────────────────────┘ │
-│   (SSL via ACM)                                                  │
+│ AWS Cloud Infrastructure │
+│ │
+│ ┌──────────────┐ ┌──────────────┐ ┌──────────────────────┐ │
+│ │ EC2 │ │ RDS │ │ S3 │ │
+│ │ (App Server) │ │ (PostgreSQL) │ │ (Media Storage) │ │
+│ │ │ │ │ │ │ │
+│ │ Node.js │◄─►│ Tables: │ │ - Audio lectures │ │
+│ │ Express.js │ │ - users │ │ - PDF study guides │ │
+│ │ React Build │ │ - modules │ │ - Certificates │ │
+│ │ │ │ - completions│ │ - Profile images │ │
+│ └───────┬───────┘ │ - mentors │ └──────────────────────┘ │
+│ │ │ - bookings │ │
+│ │ │ - forum_posts│ ┌──────────────────────┐ │
+│ │ │ - forum_ │ │ CloudFront (CDN) │ │
+│ │ │ comments │ │ │ │
+│ │ └──────────────┘ │ Global edge caching │ │
+│ │ │ SSL/HTTPS termination│ │
+│ ▼ │ Low-latency delivery │ │
+│ HTTPS Endpoint └──────────────────────┘ │
+│ (SSL via ACM) │
 └──────────────────────────────────────────────────────────────────┘
-            │
-            ▼
-     ┌──────────────┐
-     │   Users       │
-     │  (Browser)    │
-     │  Chrome/FF/   │
-     │  Safari/Edge  │
-     │  Mobile/PWA   │
-     └──────────────┘
+ │
+ ▼
+ ┌──────────────┐
+ │ Users │
+ │ (Browser) │
+ │ Chrome/FF/ │
+ │ Safari/Edge │
+ │ Mobile/PWA │
+ └──────────────┘
 ```
 
 | AWS Service | Purpose | Configuration |
@@ -675,7 +675,7 @@ sudo npm install -g pm2
 cd /home/ubuntu/pool-of-grace/backend
 pm2 start server.js --name pool-of-grace
 pm2 save
-pm2 startup  # auto-start on reboot
+pm2 startup # auto-start on reboot
 ```
 
 **Step 8:** Configure CloudFront CDN
@@ -704,8 +704,8 @@ During the capstone demo and beta validation phase (June–July 2026), the appli
 2. Create Render account at https://render.com
 3. Create PostgreSQL database (Dashboard → New → PostgreSQL, Free plan)
 4. Create Web Service (Dashboard → New → Web Service, connect GitHub)
-   - **Build Command:** `cd frontend && npm install && npm run build && cd ../backend && npm install`
-   - **Start Command:** `cd backend && node server.js`
+ - **Build Command:** `cd frontend && npm install && npm run build && cd ../backend && npm install`
+ - **Start Command:** `cd backend && node server.js`
 5. Set environment variables: `NODE_ENV=production`, `JWT_SECRET`, `DATABASE_URL`, `REACT_APP_API_URL=/api`
 6. Deploy (auto-builds and seeds database on first run)
 
@@ -715,15 +715,15 @@ During the capstone demo and beta validation phase (June–July 2026), the appli
 
 | Check | Expected | Verified |
 |-------|----------|----------|
-| HTTPS active | SSL certificate configured | ✅ Auto-provisioned (Render) / ACM (AWS) |
-| API responds | `/api` returns JSON message | ✅ `{"message":"Pool of Grace API is running!"}` |
-| Database connected | PostgreSQL tables created | ✅ 7 tables auto-created on startup |
-| Modules seeded | 20 modules available | ✅ Auto-seeded on first run |
-| Registration works | New user can sign up | ✅ JWT token issued, user stored |
-| Frontend loads | React app renders | ✅ Landing page displays correctly |
-| Offline mode | Service worker caches assets | ✅ Audio and PDF cached for offline use |
-| Mobile responsive | Layout adapts to phone screens | ✅ Tested 280px–1920px viewports |
-| 3G load time | < 3 seconds (Proposal Obj. 2) | ✅ ~2.4 seconds achieved |
+| HTTPS active | SSL certificate configured | Yes Auto-provisioned (Render) / ACM (AWS) |
+| API responds | `/api` returns JSON message | Yes `{"message":"Pool of Grace API is running!"}` |
+| Database connected | PostgreSQL tables created | Yes 7 tables auto-created on startup |
+| Modules seeded | 20 modules available | Yes Auto-seeded on first run |
+| Registration works | New user can sign up | Yes JWT token issued, user stored |
+| Frontend loads | React app renders | Yes Landing page displays correctly |
+| Offline mode | Service worker caches assets | Yes Audio and PDF cached for offline use |
+| Mobile responsive | Layout adapts to phone screens | Yes Tested 280px–1920px viewports |
+| 3G load time | < 3 seconds (Proposal Obj. 2) | Yes ~2.4 seconds achieved |
 
 ---
 
@@ -743,14 +743,14 @@ Full details are available on the **Privacy & Ethics** page within the platform.
 
 ## 15. Contact
 
-**Agnes Adepa Berko**  
-BSc. Software Engineering, African Leadership University  
-📧 Email: a.berko1@alustudent.com  
-👩‍🏫 Supervisor: Ndinelao Iitumba, ALU
+**Agnes Adepa Berko** 
+BSc. Software Engineering, African Leadership University 
+ Email: a.berko1@alustudent.com 
+ Supervisor: Ndinelao Iitumba, ALU
 
 ### Weekly General Meeting
-Every **Saturday at 4:00 PM Ghana Time (GMT)**  
-🔗 Google Meet: [meet.google.com/bii-jzew-udd](https://meet.google.com/bii-jzew-udd)
+Every **Saturday at 4:00 PM Ghana Time (GMT)** 
+ Google Meet: [meet.google.com/bii-jzew-udd](https://meet.google.com/bii-jzew-udd)
 
 ### Founder Office Hours
 | Day | Time |
@@ -761,4 +761,4 @@ Every **Saturday at 4:00 PM Ghana Time (GMT)**
 
 ---
 
-*Pool of Grace — Empowering Young Women in Technology, One Stage at a Time.* 🌿
+*Pool of Grace — Empowering Young Women in Technology, One Stage at a Time.* 
