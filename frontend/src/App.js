@@ -1420,27 +1420,130 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
   };
   const savedNote = localStorage.getItem(`pog_note_${module.id}`) || '';
 
-  const videoLinks = module.category === 'self-worth' ? [
-    { title:'The Power of Believing That You Can Improve — Carol Dweck (TED)',   url:'https://www.youtube.com/watch?v=_X0mgOOSpLU' },
-    { title:'Your Body Language May Shape Who You Are — Amy Cuddy (TED)',         url:'https://www.youtube.com/watch?v=Ks-_Mh1QhMc' },
-    { title:'Women in STEM: Breaking Barriers',                                   url:'https://www.youtube.com/watch?v=WW2eunybne0' },
-    { title:'How to Build Self-Confidence — Brendon Burchard',                   url:'https://www.youtube.com/watch?v=mO3XdepKRtQ' },
-    { title:'Overcoming Imposter Syndrome — Mike Cannon-Brookes (TED)',           url:'https://www.youtube.com/watch?v=zNBmHXS3A6I' },
-  ] : module.category === 'technical-skills' ? [
-    { title:'HTML and CSS Full Course for Beginners — freeCodeCamp',              url:'https://www.youtube.com/watch?v=mU6anWqZJcc' },
-    { title:'JavaScript Tutorial for Beginners — Programming with Mosh',          url:'https://www.youtube.com/watch?v=W6NZfCO5SIk' },
-    { title:'Python for Beginners Full Course — freeCodeCamp',                    url:'https://www.youtube.com/watch?v=rfscVS0vtbw' },
-    { title:'React JS Full Course for Beginners',                                 url:'https://www.youtube.com/watch?v=w7ejDZ8SWv8' },
-    { title:'Git and GitHub for Beginners — freeCodeCamp',                        url:'https://www.youtube.com/watch?v=RGOj5yH7evk' },
-    { title:'SQL Tutorial — Full Database Course for Beginners',                  url:'https://www.youtube.com/watch?v=HXV3zeQKqGY' },
-  ] : [
-    { title:'How to Get Your First Tech Job in Ghana — Career Tips',              url:'https://www.youtube.com/watch?v=y8YH0Qbu5h4' },
-    { title:'How to Prepare for a Technical Interview',                           url:'https://www.youtube.com/watch?v=Tpp-M5KqyFM' },
-    { title:'How to Build a Tech Portfolio — Step by Step',                       url:'https://www.youtube.com/watch?v=oC483DTjRXU' },
-    { title:'LinkedIn for Developers — Profile and Networking Tips',              url:'https://www.youtube.com/watch?v=SG5Sb5WTV_g' },
-    { title:'Women in Tech Africa — Stories and Career Journeys',                 url:'https://www.youtube.com/watch?v=2dxM9oH6KwE' },
-    { title:'Freelancing as a Developer in Africa — Full Guide',                  url:'https://www.youtube.com/watch?v=IiPNLmHsD7g' },
-  ];
+  const moduleVideoMap = {
+    // Module 1: Understanding Your Worth
+    1: [
+      { title: 'The Power of Vulnerability — Brené Brown (TED)', url: 'https://www.youtube.com/watch?v=iCvmsMzlF7o' },
+      { title: 'How to Build Self-Worth — Mastin Kipp', url: 'https://www.youtube.com/watch?v=uOrVnlMiEXo' },
+      { title: 'Know Your Worth — Motivational Video for Women', url: 'https://www.youtube.com/watch?v=vc3MAdMpmEg' },
+    ],
+    // Module 2: Breaking Cultural Barriers
+    2: [
+      { title: 'We Should All Be Feminists — Chimamanda Ngozi Adichie (TEDx)', url: 'https://www.youtube.com/watch?v=hg3umXU_qWc' },
+      { title: 'The Danger of a Single Story — Chimamanda Adichie (TED)', url: 'https://www.youtube.com/watch?v=D9Ihs241zeg' },
+      { title: 'Women in Technology in Africa — Inspiring Stories', url: 'https://www.youtube.com/watch?v=WW2eunybne0' },
+    ],
+    // Module 3: Building Confidence in Tech
+    3: [
+      { title: 'The Power of Believing That You Can Improve — Carol Dweck (TED)', url: 'https://www.youtube.com/watch?v=_X0mgOOSpLU' },
+      { title: 'Your Body Language May Shape Who You Are — Amy Cuddy (TED)', url: 'https://www.youtube.com/watch?v=Ks-_Mh1QhMc' },
+      { title: 'Self-Efficacy Theory — Albert Bandura Explained', url: 'https://www.youtube.com/watch?v=pxSu0FqSNKY' },
+    ],
+    // Module 4: Overcoming Fear of Failure
+    4: [
+      { title: 'The Fringe Benefits of Failure — J.K. Rowling (Harvard)', url: 'https://www.youtube.com/watch?v=wHGqp8lz36c' },
+      { title: 'Overcoming Imposter Syndrome — Mike Cannon-Brookes (TED)', url: 'https://www.youtube.com/watch?v=zNBmHXS3A6I' },
+      { title: 'Growth Mindset vs Fixed Mindset — Explained Simply', url: 'https://www.youtube.com/watch?v=KUWn_TJTrnU' },
+    ],
+    // Module 5: Your Vision and Goals
+    5: [
+      { title: 'How to Set SMART Goals — Brian Tracy', url: 'https://www.youtube.com/watch?v=1-SvuFIQjK8' },
+      { title: 'The Psychology of Goal Setting — TED Talk', url: 'https://www.youtube.com/watch?v=V2PP3p4_4R8' },
+      { title: 'How to Achieve Your Most Ambitious Goals — Stephen Duneier (TEDx)', url: 'https://www.youtube.com/watch?v=TQMbvJNRpLE' },
+    ],
+    // Module 6: Community and Support Systems
+    6: [
+      { title: 'Why Good Leaders Make You Feel Safe — Simon Sinek (TED)', url: 'https://www.youtube.com/watch?v=lmyZMtPVodo' },
+      { title: 'The Power of Peer Learning — Education Reimagined', url: 'https://www.youtube.com/watch?v=PfBV2M3bIR4' },
+      { title: 'Ghana Tech Ecosystem — Accra and Kumasi Innovation Hubs', url: 'https://www.youtube.com/watch?v=6rZvp_T_07U' },
+    ],
+    // Module 7: Celebrating Your Progress
+    7: [
+      { title: 'The Happy Secret to Better Work — Shawn Achor (TED)', url: 'https://www.youtube.com/watch?v=fLJsdqxnZb0' },
+      { title: 'Celebrating Small Wins — Why It Matters for Success', url: 'https://www.youtube.com/watch?v=dFdVkYRyKhE' },
+      { title: 'The Importance of Self-Reflection — Personal Growth', url: 'https://www.youtube.com/watch?v=vMVx6Y2VdoI' },
+    ],
+    // Module 8: Introduction to HTML and CSS
+    8: [
+      { title: 'HTML Tutorial for Beginners — Programming with Mosh (1 hour)', url: 'https://www.youtube.com/watch?v=qz0aGYrrlhU' },
+      { title: 'CSS Crash Course for Absolute Beginners — Traversy Media', url: 'https://www.youtube.com/watch?v=yfoY53QXEnI' },
+      { title: 'Build Your First Website — HTML & CSS Full Course (freeCodeCamp)', url: 'https://www.youtube.com/watch?v=mU6anWqZJcc' },
+    ],
+    // Module 9: JavaScript Fundamentals
+    9: [
+      { title: 'JavaScript Tutorial for Beginners — Programming with Mosh (1 hour)', url: 'https://www.youtube.com/watch?v=W6NZfCO5SIk' },
+      { title: 'JavaScript in 100 Seconds — Fireship', url: 'https://www.youtube.com/watch?v=DHjqpvDnNGE' },
+      { title: 'Learn JavaScript Variables, Data Types and Operators — freeCodeCamp', url: 'https://www.youtube.com/watch?v=PkZNo7MFNFg' },
+    ],
+    // Module 10: Building Your First Website
+    10: [
+      { title: 'Responsive Web Design Tutorial — Kevin Powell', url: 'https://www.youtube.com/watch?v=srvUrASNj0s' },
+      { title: 'DOM Manipulation for Beginners — Web Dev Simplified', url: 'https://www.youtube.com/watch?v=y17RuWkWdn8' },
+      { title: 'Build a Responsive Website From Scratch — Traversy Media', url: 'https://www.youtube.com/watch?v=p0bGHP-PXD4' },
+    ],
+    // Module 11: Introduction to Python
+    11: [
+      { title: 'Python for Beginners Full Course — freeCodeCamp (4.5 hours)', url: 'https://www.youtube.com/watch?v=rfscVS0vtbw' },
+      { title: 'Python in 100 Seconds — Fireship', url: 'https://www.youtube.com/watch?v=x7X9w_GIm1s' },
+      { title: 'Python Variables, Lists and Dictionaries — Corey Schafer', url: 'https://www.youtube.com/watch?v=k9TUPpGqYTo' },
+    ],
+    // Module 12: Databases and SQL
+    12: [
+      { title: 'SQL Tutorial — Full Database Course for Beginners (freeCodeCamp)', url: 'https://www.youtube.com/watch?v=HXV3zeQKqGY' },
+      { title: 'SQL in 100 Seconds — Fireship', url: 'https://www.youtube.com/watch?v=zsjvFFKOm3c' },
+      { title: 'Learn SQL SELECT, INSERT, UPDATE and DELETE — Programming with Mosh', url: 'https://www.youtube.com/watch?v=7S_tz1z_5bA' },
+    ],
+    // Module 13: Web Development Project
+    13: [
+      { title: 'What is a Full Stack Developer? — Explained Simply', url: 'https://www.youtube.com/watch?v=pkdgVYehiTE' },
+      { title: 'REST API Explained in 5 Minutes — IBM Technology', url: 'https://www.youtube.com/watch?v=lsMQRaeKNDk' },
+      { title: 'React JS Full Course for Beginners — freeCodeCamp', url: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8' },
+    ],
+    // Module 14: Version Control with GitHub
+    14: [
+      { title: 'Git and GitHub for Beginners — freeCodeCamp (1 hour)', url: 'https://www.youtube.com/watch?v=RGOj5yH7evk' },
+      { title: 'Git Explained in 100 Seconds — Fireship', url: 'https://www.youtube.com/watch?v=hwP7WQkmECE' },
+      { title: 'How to Create a GitHub Profile README — Step by Step', url: 'https://www.youtube.com/watch?v=ECuqb5Tv9qI' },
+    ],
+    // Module 15: Ghana Tech Job Market
+    15: [
+      { title: 'Africa\'s Tech Ecosystem is Booming — CNBC Africa', url: 'https://www.youtube.com/watch?v=y8YH0Qbu5h4' },
+      { title: 'How to Get Your First Tech Job — Practical Steps', url: 'https://www.youtube.com/watch?v=Xg9ihH15Fe0' },
+      { title: 'Women in Tech Africa — Career Journeys and Advice', url: 'https://www.youtube.com/watch?v=2dxM9oH6KwE' },
+    ],
+    // Module 16: Building Your CV and Portfolio
+    16: [
+      { title: 'How to Build a Developer Portfolio — Step by Step', url: 'https://www.youtube.com/watch?v=oC483DTjRXU' },
+      { title: 'Write a Great Developer Resume — Tips and Examples', url: 'https://www.youtube.com/watch?v=BYUy1yvjHxE' },
+      { title: 'GitHub Portfolio Tips for Junior Developers', url: 'https://www.youtube.com/watch?v=u-RLu_8kwA0' },
+    ],
+    // Module 17: Interview Preparation
+    17: [
+      { title: 'How to Prepare for a Technical Interview — Google Career Tips', url: 'https://www.youtube.com/watch?v=Tpp-M5KqyFM' },
+      { title: 'The STAR Method — Behavioral Interview Technique Explained', url: 'https://www.youtube.com/watch?v=AEVR3aQIiII' },
+      { title: 'Common Coding Interview Mistakes to Avoid', url: 'https://www.youtube.com/watch?v=1t1_a1BZ04o' },
+    ],
+    // Module 18: Networking and LinkedIn
+    18: [
+      { title: 'LinkedIn Profile Tips for Software Developers — Danny Thompson', url: 'https://www.youtube.com/watch?v=SG5Sb5WTV_g' },
+      { title: 'How to Network as a Developer — Tech Career Advice', url: 'https://www.youtube.com/watch?v=uFg2GBswQ3E' },
+      { title: 'DevCongress Ghana — Building Tech Communities in Africa', url: 'https://www.youtube.com/watch?v=6rZvp_T_07U' },
+    ],
+    // Module 19: Freelancing and Entrepreneurship
+    19: [
+      { title: 'How to Start Freelancing as a Web Developer — Practical Guide', url: 'https://www.youtube.com/watch?v=IiPNLmHsD7g' },
+      { title: 'Upwork Tutorial for Beginners — Get Your First Client', url: 'https://www.youtube.com/watch?v=LcbX4SxzIVE' },
+      { title: 'Starting a Tech Business in Africa — MEST Insights', url: 'https://www.youtube.com/watch?v=n5WfGZ9H6P4' },
+    ],
+    // Module 20: Continuing Your Tech Journey
+    20: [
+      { title: 'Learning How to Learn — Coursera (Key Insights)', url: 'https://www.youtube.com/watch?v=O96fE1E-rf8' },
+      { title: 'Developer Roadmap 2026 — What to Learn Next', url: 'https://www.youtube.com/watch?v=66tfvFeALBQ' },
+      { title: 'Contributing to Open Source — Getting Started Guide', url: 'https://www.youtube.com/watch?v=yzeVMecydCE' },
+    ],
+  };
+
+  const videoLinks = moduleVideoMap[module.id] || moduleVideoMap[1];
 
   const tabs = [
     { key:'notes',      label:'Notes' },
@@ -1653,9 +1756,9 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
               </div>
             </div>
 
-            <h2 className="section-heading">Educational Video Resources</h2>
+            <h2 className="section-heading">Videos for: {module.title}</h2>
             <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'22px' }}>
-              Curated videos for <strong>{module.title}</strong>. {isOnline ? 'Click any link to watch on YouTube.' : 'Requires internet to watch.'}
+              Curated educational videos specifically for <strong>Stage {module.order}: {module.title}</strong>. {isOnline ? 'Click any link to watch on YouTube (requires internet).' : 'Requires internet connection to watch.'}
             </p>
             <div style={{ display:'flex',flexDirection:'column',gap:'10px',marginBottom:'30px', opacity: isOnline ? 1 : 0.65 }}>
               {videoLinks.map((v,i)=>(
