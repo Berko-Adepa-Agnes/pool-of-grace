@@ -1345,7 +1345,7 @@ textarea.premium-input { resize: vertical; min-height: 90px; }
   color: #5a4a2a;
 }
 .story-intro::before {
-  content: '📖';
+  content: 'Story';
   position: absolute;
   top: -14px;
   left: -14px;
@@ -1374,7 +1374,7 @@ textarea.premium-input { resize: vertical; min-height: 90px; }
   position: relative;
 }
 .story-block::before {
-  content: '📖';
+  content: '';
   font-size: 16px;
   margin-right: 6px;
   font-style: normal;
@@ -1390,7 +1390,7 @@ textarea.premium-input { resize: vertical; min-height: 90px; }
   position: relative;
 }
 .lesson-callout::before {
-  content: '🌟';
+  content: '*';
   position: absolute;
   top: -10px;
   left: -12px;
@@ -1429,7 +1429,7 @@ textarea.premium-input { resize: vertical; min-height: 90px; }
   position: relative;
 }
 .your-turn-prompt::before {
-  content: '✍️';
+  content: '?';
   position: absolute;
   top: -10px;
   left: -10px;

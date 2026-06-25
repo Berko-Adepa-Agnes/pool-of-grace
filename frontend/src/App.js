@@ -1298,7 +1298,7 @@ const renderStoryContent = (text) => {
       return <div key={i} className="lesson-callout"><div className="lesson-callout-title">{"Lesson from Ama's Story"}</div><p>{content}</p></div>;
     } else if (part.startsWith('[YOUR_TURN]')) {
       const content = part.replace('[YOUR_TURN]','').replace('[/YOUR_TURN]','').trim();
-      return <div key={i} className="your-turn-prompt"><div className="your-turn-title">✍️ Your Turn</div><p>{content}</p></div>;
+      return <div key={i} className="your-turn-prompt"><div className="your-turn-title">Your Turn</div><p>{content}</p></div>;
     } else if (part.trim()) {
       return <p key={i}>{part.trim()}</p>;
     }
