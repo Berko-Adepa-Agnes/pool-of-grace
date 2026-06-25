@@ -2,478 +2,1546 @@ const bcrypt = require('bcrypt');
 const db = require('./db');
 
 const mentorsSeed = [
-  { id: 1, name: 'Abena Asante', role: 'Senior Software Engineer', company: 'MTN Ghana', experience: '8 years', speciality: 'Web Development and Career Guidance', location: 'Accra', available: 'Mon, Wed, Fri' },
-  { id: 2, name: 'Akosua Mensah', role: 'Data Analyst', company: 'Vodafone Ghana', experience: '5 years', speciality: 'Data Science and Python', location: 'Kumasi', available: 'Tue, Thu, Sat' },
-  { id: 3, name: 'Ama Boateng', role: 'UX Designer', company: 'Hubtel', experience: '6 years', speciality: 'UI/UX Design and Product Thinking', location: 'Accra', available: 'Mon, Tue, Thu' },
-  { id: 4, name: 'Efua Darko', role: 'Cybersecurity Analyst', company: 'GCB Bank', experience: '7 years', speciality: 'Cybersecurity and IT Support', location: 'Kumasi', available: 'Wed, Fri, Sat' }
+  {
+    "id": 1,
+    "name": "Abena Asante",
+    "role": "Senior Software Engineer",
+    "company": "MTN Ghana",
+    "experience": "8 years",
+    "speciality": "Web Development and Career Guidance",
+    "location": "Accra",
+    "available": "Mon, Wed, Fri"
+  },
+  {
+    "id": 2,
+    "name": "Akosua Mensah",
+    "role": "Data Analyst",
+    "company": "Vodafone Ghana",
+    "experience": "5 years",
+    "speciality": "Data Science and Python",
+    "location": "Kumasi",
+    "available": "Tue, Thu, Sat"
+  },
+  {
+    "id": 3,
+    "name": "Ama Boateng",
+    "role": "UX Designer",
+    "company": "Hubtel",
+    "experience": "6 years",
+    "speciality": "UI/UX Design and Product Thinking",
+    "location": "Accra",
+    "available": "Mon, Tue, Thu"
+  },
+  {
+    "id": 4,
+    "name": "Efua Darko",
+    "role": "Cybersecurity Analyst",
+    "company": "GCB Bank",
+    "experience": "7 years",
+    "speciality": "Cybersecurity and IT Support",
+    "location": "Kumasi",
+    "available": "Wed, Fri, Sat"
+  }
 ];
 
 const modulesSeed = [
   {
-    id: 1,
-    title: 'Understanding Your Worth',
-    category: 'self-worth',
-    description: 'Discover your identity and challenge limiting beliefs about yourself and technology.',
-    order: 1,
-    duration: '45 minutes',
-    content: {
-      intro: 'Welcome to your first step. Before learning how to code, we begin by building your belief in yourself. Your worth is inherent and cannot be diminished by cultural stereotypes or negative voices. In Ghana, many young women are told that technology is not for them — but that is a lie built on outdated traditions. This module is your foundation. Every great developer, designer, and tech leader started exactly where you are right now: at the beginning.',
-      sections: [
-        { heading: 'Inherent Self-Worth', body: 'Self-worth is the deep, unshakeable belief that you are valuable and deserving of respect simply because you exist. It is not something you earn through achievements, marriage, or approval from others — it is your birthright.\n\nIn many Ghanaian communities, young women are taught that their primary value comes from domestic roles, marriage prospects, or the ability to care for others. While these are noble qualities, they should not define the boundaries of your potential. You are capable of building software, analyzing data, designing user interfaces, and leading technology teams.\n\nResearch by Dr. Kristin Neff at the University of Texas shows that self-worth built on internal values (rather than external validation) leads to greater resilience, better academic performance, and higher career achievement. When you believe you are worthy of learning technology, you create the psychological foundation for every skill you will build in this program.' },
-        { heading: 'Limiting Beliefs vs. Truth', body: 'Limiting beliefs are invisible stories we tell ourselves that restrict our growth. They feel like facts, but they are actually fears dressed up as truth. Common limiting beliefs among young women in Ghana include: "I am not smart enough for computer science," "Technology is only for men," "I do not have the right background for coding," or "Girls from my village do not become programmers."\n\nThese beliefs are not genetic or permanent — they are learned through socialization. A study by Master et al. (2021) published in the Proceedings of the National Academy of Sciences found that gender stereotypes about who belongs in STEM fields emerge as early as age 6, meaning these beliefs were planted in your mind before you could question them.\n\nThe truth is that coding ability is built through consistent practice, not innate talent. The most successful programmers in the world are not geniuses — they are people who practiced solving problems every single day. You can do the same.' },
-        { heading: 'Rewriting Your Story', body: 'You have the power to consciously examine and reject negative socialization. This is not about ignoring your culture — it is about choosing which cultural messages serve your growth and which ones hold you back.\n\nTo rewrite your story, start with this exercise: Write down every negative thought you have about yourself and technology. For each one, ask: "Is this a fact I can prove, or is this a fear someone taught me?" Then replace each limiting belief with an empowering declaration based on effort. For example, replace "I cannot learn coding" with "I can learn coding step by step, one lesson at a time."\n\nPsychologist Carol Dweck calls this shift moving from a "fixed mindset" (believing abilities are permanent) to a "growth mindset" (believing abilities develop through effort). This single mental shift has been shown to dramatically improve learning outcomes in students across Africa and the world.' },
-        { heading: 'Reflection Exercise', body: 'Think about a difficult situation in your life that you successfully resolved. Perhaps you managed a family challenge, navigated a difficult school situation, organized a community event, or helped someone through a crisis. Write down what qualities you used — patience, logical thinking, determination, creativity, problem-solving.\n\nNow recognize something important: these are exactly the same qualities that make excellent programmers. Patience helps you debug code. Logical thinking helps you write algorithms. Determination keeps you going when your code does not work on the first try. Creativity helps you design beautiful user interfaces.\n\nYou already possess the core qualities of a successful technologist. This program will simply give you the technical vocabulary and tools to apply those qualities in a new domain. Keep this reflection close — you will need it when coding gets challenging.' }
+    "id": 1,
+    "title": "Understanding Your Worth",
+    "category": "self-worth",
+    "description": "Discover your identity and challenge limiting beliefs about yourself and technology.",
+    "order": 1,
+    "duration": "45 minutes",
+    "content": {
+      "intro": "[STORY]Ama sat on the wooden bench outside her family's compound in Kumasi, staring at the cracked screen of her brother's old phone. On it, a website glowed — colorful, alive, interactive. 'Who builds things like this?' she whispered. Her aunt overheard and laughed. 'Ama, leave those computer things. Focus on what matters — learn to cook well so you can find a good husband.' That night, Ama couldn't sleep. The aunt's words echoed: computer things are not for you. But another voice, quieter but stubborn, whispered back: Why not me?[/STORY]",
+      "sections": [
+        {
+          "heading": "Inherent Self-Worth",
+          "body": "[STORY]Ama woke up early, the sound of sweeping broomsticks outside her window. Her aunt's voice still hovered in her mind, heavy like the morning fog. She walked to the mirror and looked at herself. Was she only meant to follow the path others had paved? She remembered her grandmother's wise words: 'Ama, your value was born with you, like the gold in our land. Nobody can give it to you, and nobody can take it away.'[/STORY]\n\n[LESSON]Self-worth is the deep, unshakeable belief that you are valuable and deserving of respect simply because you exist. It is not something you earn through domestic work, marriage, or approval from others — it is your birthright. When you believe you are worthy of learning technology, you build the foundation for every skill you will learn.[/LESSON]\n\n[YOUR_TURN]What is one thing about yourself that you are proud of that does not depend on anyone else's approval? Write it down.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Limiting Beliefs vs. Truth",
+          "body": "[STORY]At the market, Ama saw a flyer for a computer coding class. Her heart leapt, but then sank. Her cousin Kwame had once told her, 'Coding is for geniuses and boys. You need a big brain and a special school.' Ama looked at her hands, worn from helping her mother sell vegetables. Maybe Kwame was right. Maybe girls like her weren't meant for computers.[/STORY]\n\n[LESSON]Limiting beliefs are stories we tell ourselves that restrict our potential. They feel like facts, but they are actually fears. The truth is that coding ability is built through consistent practice, not innate talent. The most successful programmers in the world are not geniuses — they are people who practiced solving problems every single day.[/LESSON]\n\n[YOUR_TURN]Identify one negative thought you have about your ability to learn technology. Write it down, then write the truth next to it.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Rewriting Your Story",
+          "body": "[STORY]Ama took a piece of charcoal and a scrap of cardboard from a tomato crate. She decided she was tired of letting her cousin's words dictate her limits. She wrote: 'I, Ama, can learn to code.' She looked at it. It felt bold, almost dangerous. But as she read it aloud, she felt a quiet strength rising in her chest.[/STORY]\n\n[LESSON]You have the power to reject negative social programming. Shifting from a 'fixed mindset' (believing your abilities are set in stone) to a 'growth mindset' (believing you can grow through effort) is the key. Replace 'I cannot do this' with 'I cannot do this YET.'[/LESSON]\n\n[YOUR_TURN]Write your own Worth Declaration: 'I, [your name], am worthy of learning technology. I will learn step by step.' Keep it close to you.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Reflection Exercise",
+          "body": "[STORY]Ama sat by the stove, watching the water boil for fufu. She thought about how she had managed her mother's market stall budget last month when the prices fluctuated. She had calculated the profits, organized the stock, and handled the customers. It had been hard, but she had done it with patience and logical planning.[/STORY]\n\n[LESSON]You already possess the core qualities of a successful programmer. Patience helps you find bugs. Logical thinking helps you write instructions. Determination keeps you going when code breaks. Tech is simply a new language to apply the strengths you already have.[/LESSON]\n\n[YOUR_TURN]Think of a difficult situation in your life that you successfully resolved. What qualities did you use? How can they help you in coding?[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What is the definition of self-worth?', options: ['The amount of money you earn', 'The belief that you are inherently valuable and deserving', 'The level of education you reach', 'How popular you are in your neighborhood'], answer: 'The belief that you are inherently valuable and deserving' },
-        { question: 'Which of the following is a limiting belief?', options: ['I can learn HTML with practice', 'I am not smart enough to study computer programming', 'Mistakes are a normal part of the learning journey', 'Women can succeed in tech roles in Ghana'], answer: 'I am not smart enough to study computer programming' },
-        { question: 'How do you overcome a limiting belief?', options: ['By avoiding difficult challenges', 'By ignoring your goals', 'By replacing negative thoughts with effort-focused truths', 'By waiting for someone else to change it'], answer: 'By replacing negative thoughts with effort-focused truths' },
-        { question: 'Your potential is:', options: ['Fixed at birth', 'Determined by your gender', 'Limitless and shaped by consistent effort', 'Dependent on what other people say about you'], answer: 'Limitless and shaped by consistent effort' },
-        { question: 'Why does Pool of Grace start with self-worth?', options: ['Because programming is too difficult', 'Because building confidence is key to sustained learning and growth', 'Because we do not teach coding', 'Because it takes less time'], answer: 'Because building confidence is key to sustained learning and growth' }
+      "quiz": [
+        {
+          "question": "What is the definition of self-worth?",
+          "options": [
+            "The amount of money you earn",
+            "The belief that you are inherently valuable and deserving",
+            "The level of education you reach",
+            "How popular you are in your neighborhood"
+          ],
+          "answer": "The belief that you are inherently valuable and deserving"
+        },
+        {
+          "question": "Which of the following is a limiting belief?",
+          "options": [
+            "I can learn HTML with practice",
+            "I am not smart enough to study computer programming",
+            "Mistakes are a normal part of the learning journey",
+            "Women can succeed in tech roles in Ghana"
+          ],
+          "answer": "I am not smart enough to study computer programming"
+        },
+        {
+          "question": "How do you overcome a limiting belief?",
+          "options": [
+            "By avoiding difficult challenges",
+            "By ignoring your goals",
+            "By replacing negative thoughts with effort-focused truths",
+            "By waiting for someone else to change it"
+          ],
+          "answer": "By replacing negative thoughts with effort-focused truths"
+        },
+        {
+          "question": "Your potential is:",
+          "options": [
+            "Fixed at birth",
+            "Determined by your gender",
+            "Limitless and shaped by consistent effort",
+            "Dependent on what other people say about you"
+          ],
+          "answer": "Limitless and shaped by consistent effort"
+        },
+        {
+          "question": "Why does Pool of Grace start with self-worth?",
+          "options": [
+            "Because programming is too difficult",
+            "Because building confidence is key to sustained learning and growth",
+            "Because we do not teach coding",
+            "Because it takes less time"
+          ],
+          "answer": "Because building confidence is key to sustained learning and growth"
+        }
       ]
     }
   },
   {
-    id: 2,
-    title: 'Breaking Cultural Barriers',
-    category: 'self-worth',
-    description: 'Explore cultural narratives about women in technology and rewrite your story.',
-    order: 2,
-    duration: '50 minutes',
-    content: {
-      intro: 'In this module, we examine how cultural expectations in Ghana impact women\'s entry into technology and how to build internal resilience against discouragement. According to the Ghana Statistical Service, women make up only 22% of the technology workforce in Ghana. This is not because women lack ability — it is because cultural systems have historically directed women away from STEM fields. Understanding these barriers is the first step to dismantling them.',
-      sections: [
-        { heading: 'Cultural Roles and Technology', body: 'Societal expectations in Ghana often steer young women toward traditional roles — cooking, cleaning, market trading, or preparing for marriage — positioning technology as a masculine field. This socialization creates an invisible barrier, preventing girls from even imagining themselves as tech creators rather than passive consumers of technology.\n\nA 2022 UNICEF Ghana report found that girls in rural areas are 40% less likely to be encouraged toward STEM education compared to boys from the same communities. This gap is not about intelligence — it is about opportunity and expectation. In Kumasi and Accra, girls who are given equal access to computers and coding education perform at the same level as their male peers.\n\nThe Akan proverb "Obaa tumi bi a, na obarima tumi bi" (What a woman can do, a man can also do) actually works both ways — what a man can do in technology, a woman can absolutely do as well. Technology does not require physical strength; it requires logical thinking, creativity, and persistence — qualities that women possess in abundance.' },
-        { heading: 'Dealing with Active Discouragement', body: 'Family members, friends, or community elders may suggest that computer technology is "too hard" or "unsuitable for a woman." They often speak out of concern, tradition, or simply because they have never seen a woman from your community succeed in tech. Their discouragement is usually not malicious — it comes from a limited worldview.\n\nLearn to listen politely but protect your career path using constructive boundary setting. Here are practical strategies:\n\n1. Acknowledge their concern: "I understand you want the best for me, and I appreciate that."\n2. State your intention clearly: "I have decided to learn technology skills because it will give me better career options."\n3. Share evidence: "Companies in Accra are actively hiring female developers, and entry-level salaries start at 30,000 GHS per year."\n4. Set a boundary: "I value your opinion, but I am going to continue learning. I will show you my progress."\n\nRemember: you do not need permission to pursue your dreams. You need determination.' },
-        { heading: 'Role Model Vicarious Learning', body: 'Seeing women who look like you succeed in technology is one of the strongest predictors of self-belief. Psychologist Albert Bandura called this "vicarious experience" — when you see someone similar to you achieve something, your brain registers: "If she can do it, maybe I can too."\n\nGhana has incredible tech pioneers you should know about: Ethel Cofie is a Ghanaian tech entrepreneur and the first West African woman to be listed in the top 100 Global Tech Women list. Farida Bedwei is a Ghanaian software engineer who built banking software used across West Africa — and she did this while managing cerebral palsy. Regina Honu founded Soronko Academy in Accra, which has trained over 20,000 young women in coding.\n\nThese women did not have special advantages. They had determination, access to learning, and the courage to ignore people who told them they could not. You have those same qualities, and Pool of Grace is giving you the same access to learning.' },
-        { heading: 'Reflecting on Cultural Strengths', body: 'Not all cultural values are barriers — many are powerful assets. Ghanaian culture values community support (ubuntu/communal living), resilience in the face of hardship, storytelling as a way of transferring knowledge, and respect for learning. These are exactly the values that make strong developer communities.\n\nIn the tech world, the best teams are collaborative. They share code, review each other\'s work, teach newcomers, and celebrate collective wins. Your cultural background has already trained you for this kind of teamwork.\n\nThe concept of "susu" (community savings groups) in Ghana is essentially the same principle behind open-source software — people contributing their resources to a shared pool that benefits everyone. When you join Pool of Grace\'s community forum, you are participating in a digital susu of knowledge.\n\nUse your cultural strengths to build strong networks of female developers who lift each other up. Your grandmother\'s wisdom about community is more relevant to modern tech culture than you might think.' }
+    "id": 2,
+    "title": "Breaking Cultural Barriers",
+    "category": "self-worth",
+    "description": "Explore cultural narratives about women in technology and rewrite your story.",
+    "order": 2,
+    "duration": "50 minutes",
+    "content": {
+      "intro": "[STORY]Ama knew she wanted to join the local tech meetup, but her friends mocked her: 'Ama, why do you want to stay inside all day with screens? You need to find a husband.' They spoke out of concern, but their words felt like heavy chains. Ama took a deep breath. She had heard of a software developer named Akosua who worked in Kumasi. She decided to go find her, hoping to see what was possible.[/STORY]",
+      "sections": [
+        {
+          "heading": "Cultural Roles and Technology",
+          "body": "[STORY]At home, Ama was expected to cook and clean while her brother sat on the computer. She felt it was unfair, but she didn't want to cause trouble. She decided to speak to her mother. 'Mama, if I finish my chores early, can I use the family computer for one hour?' Her mother was surprised but agreed. It was a small negotiation, but it opened a door.[/STORY]\n\n[LESSON]Traditional expectations often steer girls away from technology, positioning it as a masculine field. Obaa tumi bi a, na obarima tumi bi (What a woman can do, a man can also do). Technology does not require physical strength; it requires logical thinking and persistence — qualities you possess in abundance.[/LESSON]\n\n[YOUR_TURN]Identify one traditional expectation in your household that you can work around to create study time. How will you negotiate it?[/YOUR_TURN]"
+        },
+        {
+          "heading": "Dealing with Active Discouragement",
+          "body": "[STORY]Ama's father sat her down. 'Ama, computers are too hard, and there are no jobs for girls in that. Focus on something safe.' Ama felt tears coming, but she remembered Akosua's advice. She showed her father a newspaper article about tech jobs in Accra. 'Papa, I respect your worry. But tech is growing, and companies are hiring female developers. I want to try.' Her father looked at the article, surprised, and went silent.[/STORY]\n\n[LESSON]Active discouragement usually comes from concern or a limited worldview. Learn to listen politely but protect your career path using constructive boundary setting. Share facts and results, and show them your progress rather than arguing.[/LESSON]\n\n[YOUR_TURN]Write a polite, firm response to a family member who says tech is 'too hard' for you.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Role Model Vicarious Learning",
+          "body": "[STORY]Ama visited Akosua's office in Kumasi. On the wall were pictures of Farida Bedwei, a famous Ghanaian software engineer who built banking software despite cerebral palsy, and Ethel Cofie, founder of Women in Tech Africa. 'If they did it,' Akosua told her, 'with all their challenges, why not you?' Ama stared at the photos. They looked like her. For the first time, she truly believed she belonged.[/STORY]\n\n[LESSON]Seeing women who look like you succeed in technology is one of the strongest builders of self-belief. Psychologist Albert Bandura called this 'vicarious experience.' When you see someone similar to you achieve something, your brain registers: 'If she can do it, I can too.'[/LESSON]\n\n[YOUR_TURN]Find or read about one African woman in technology. What is her name, and what did she build?[/YOUR_TURN]"
+        },
+        {
+          "heading": "Reflecting on Cultural Strengths",
+          "body": "[STORY]Ama thought about her community savings group, the 'susu.' Everyone contributed money to a common pot, and each member took turns using it to grow their business. It was a system built on trust and mutual support. Akosua told her, 'Software development is just like a susu. We share our code and help each other build better things.'[/STORY]\n\n[LESSON]Not all cultural values are barriers. Ghanaian values of community support, resilience, and sharing are powerful assets in tech. The developer community relies on open source and collaborative forums where people contribute their knowledge to help everyone grow.[/LESSON]\n\n[YOUR_TURN]How can you bring the spirit of communal support to your coding journey and support your peers?[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What is a major cultural barrier for Ghanaian girls in tech?', options: ['A lack of intelligence', 'Traditional expectations that direct women away from STEM careers', 'Computers not being allowed in Ghana', 'A lack of English language skills'], answer: 'Traditional expectations that direct women away from STEM careers' },
-        { question: 'When someone discourages you from tech, you should:', options: ['Immediately quit and find a different career', 'Protect your career dreams and set constructive boundaries', 'Argue with them angrily', 'Agree with them that you cannot do it'], answer: 'Protect your career dreams and set constructive boundaries' },
-        { question: 'How do role models help build your capability?', options: ['They do all the coding work for you', 'They prove that success is possible and show you the way', 'They pay for your internet', 'They do not help at all'], answer: 'They prove that success is possible and show you the way' },
-        { question: 'Which of the following is an effective way to counter cultural stereotyping?', options: ['Working completely alone', 'Connecting with female mentors and peer groups', 'Avoiding tech entirely', 'Blaming ourselves'], answer: 'Connecting with female mentors and peer groups' },
-        { question: 'Empowerment theory suggests that agency is:', options: ['The physical environment', 'The psychological capability to make choices and act on them', 'A certificate you receive', 'Having money'], answer: 'The psychological capability to make choices and act on them' }
+      "quiz": [
+        {
+          "question": "What is a major cultural barrier for Ghanaian girls in tech?",
+          "options": [
+            "A lack of intelligence",
+            "Traditional expectations that direct women away from STEM careers",
+            "Computers not being allowed in Ghana",
+            "A lack of English language skills"
+          ],
+          "answer": "Traditional expectations that direct women away from STEM careers"
+        },
+        {
+          "question": "When someone discourages you from tech, you should:",
+          "options": [
+            "Immediately quit and find a different career",
+            "Protect your career dreams and set constructive boundaries",
+            "Argue with them angrily",
+            "Agree with them that you cannot do it"
+          ],
+          "answer": "Protect your career dreams and set constructive boundaries"
+        },
+        {
+          "question": "How do role models help build your capability?",
+          "options": [
+            "They do all the coding work for you",
+            "They prove that success is possible and show you the way",
+            "They pay for your internet",
+            "They do not help at all"
+          ],
+          "answer": "They prove that success is possible and show you the way"
+        },
+        {
+          "question": "Which of the following is an effective way to counter cultural stereotyping?",
+          "options": [
+            "Working completely alone",
+            "Connecting with female mentors and peer groups",
+            "Avoiding tech entirely",
+            "Blaming ourselves"
+          ],
+          "answer": "Connecting with female mentors and peer groups"
+        },
+        {
+          "question": "Empowerment theory suggests that agency is:",
+          "options": [
+            "The physical environment",
+            "The psychological capability to make choices and act on them",
+            "A certificate you receive",
+            "Having money"
+          ],
+          "answer": "The psychological capability to make choices and act on them"
+        }
       ]
     }
   },
   {
-    id: 3,
-    title: 'Building Confidence in Tech',
-    category: 'self-worth',
-    description: 'Develop self-efficacy and belief in your ability to succeed in technology.',
-    order: 3,
-    duration: '40 minutes',
-    content: {
-      intro: 'This module introduces self-efficacy — the foundation of technical confidence — and breaks down how to build it through structured effort. Self-efficacy is different from self-esteem. Self-esteem is a general feeling about yourself; self-efficacy is the specific belief that you can succeed at a particular task. You can build tech self-efficacy even if your general confidence is low — and that is exactly what we will do here.',
-      sections: [
-        { heading: 'What is Self-Efficacy?', body: 'Self-efficacy is your belief in your capacity to execute behaviors necessary to produce specific performance attainments. It was defined by psychologist Albert Bandura in 1977 and has become one of the most researched concepts in educational psychology.\n\nSelf-efficacy is not general self-esteem. It is domain-specific: you might have low confidence about cooking but high confidence about mathematics, or vice versa. This is important because it means your confidence in technology is a separate, buildable skill — it does not depend on how confident you feel in other areas of your life.\n\nResearch consistently shows that self-efficacy is a stronger predictor of academic success than actual ability. In other words, students who believe they can learn technology actually learn it better than students with higher IQ who doubt themselves. Your belief in your ability to code is literally more important than your raw intelligence.' },
-        { heading: 'The Four Sources of Self-Efficacy', body: 'Albert Bandura identified four sources of self-efficacy, and Pool of Grace is designed to give you all four:\n\n1. MASTERY EXPERIENCES: The most powerful source. Every time you successfully write a line of code, fix a bug, or pass a quiz, your brain registers a "win." These wins accumulate into genuine confidence. This is why our modules have many small exercises — each one builds your mastery.\n\n2. VICARIOUS EXPERIENCES: Watching someone similar to you succeed. When you see another Ghanaian woman complete a coding module or build a website, your brain says "I can do that too." This is why our community forum and mentorship program exist.\n\n3. SOCIAL PERSUASION: Encouragement from people you trust. When your mentor says "You can do this" or your peers celebrate your progress, it builds your belief. This is why Agnes holds weekly office hours and provides personal feedback.\n\n4. PHYSIOLOGICAL STATES: Managing your body\'s stress response. When you feel anxious looking at code, that anxiety can either be interpreted as "I can\'t do this" or "I\'m excited to learn something new." We teach you to reframe anxiety as a positive signal.' },
-        { heading: 'Engineering Mastery Experiences', body: 'To build confidence, we break large tasks into tiny, achievable pieces. This is called "scaffolding" in education theory, and it is the same approach used by the best coding bootcamps in the world.\n\nInstead of saying "Build a website" (which feels overwhelming), we say: "Write your name inside an HTML paragraph tag." That is one line of code. When you do it successfully, your brain registers a small victory. Then we say: "Now make your name bold using a <strong> tag." Another small win. After 20 small wins, you have built a webpage — and you have 20 proof points that you can code.\n\nThis is exactly how professional developers work too. Senior engineers at Google do not sit down and write an entire application in one go. They break it into tiny tasks, solve them one at a time, test each piece, and gradually build the whole system. The process you are learning here is the professional process.\n\nKey principle: Solving a small syntax error is a mastery experience. Fixing a single bug teaches you more than reading 10 pages of theory. Always prioritize doing over reading.' },
-        { heading: 'Managing Learning Anxiety', body: 'When you see red error messages on the screen, your heart rate might increase, your palms might get sweaty, and your mind might say "I broke something." This is a normal physiological response called the stress response, and every single programmer in the world experiences it — even those with 20 years of experience.\n\nThe difference between a confident programmer and an anxious one is not the absence of stress — it is how they interpret it. Here is the reframe:\n\nOLD interpretation: "I see an error. I must have done something wrong. I am not good at this."\nNEW interpretation: "I see an error. The computer is telling me exactly what to fix. This is useful information. Let me read the error message carefully."\n\nError messages are not punishments — they are diagnostic guides. They are the computer\'s way of helping you. A program that shows no errors but does the wrong thing is actually much worse than one that shows a clear error message.\n\nPractical tip: When you encounter an error, read it out loud. Say "The computer is telling me that line 15 has a missing closing tag. Let me go fix that." Speaking the problem aloud engages your logical brain and reduces the emotional response.' }
+    "id": 3,
+    "title": "Building Confidence in Tech",
+    "category": "self-worth",
+    "description": "Develop self-efficacy and belief in your ability to succeed in technology.",
+    "order": 3,
+    "duration": "40 minutes",
+    "content": {
+      "intro": "[STORY]Ama opened her editor to write her first lines of code. But when she refreshed the browser, the screen remained blank. She felt a wave of frustration. 'I don't know what I'm doing,' she sighed, putting her head on the table. She wanted to quit before she even started. Akosua sat next to her. 'Ama, confidence is not something you are born with. It is a house you build block by block.'[/STORY]",
+      "sections": [
+        {
+          "heading": "What is Self-Efficacy?",
+          "body": "[STORY]Ama felt she wasn't 'smart enough' because she didn't understand the syntax immediately. Akosua explained: 'Self-esteem is how you feel about yourself generally. Self-efficacy is your belief that you can complete a specific task, like styling a button. You don't need general confidence to start coding; you just need to believe you can learn this one step.'[/STORY]\n\n[LESSON]Self-efficacy is the specific belief that you can succeed at a particular task. It is a domain-specific skill that develops through effort, not general self-esteem. Research shows that self-efficacy is a stronger predictor of academic success than raw IQ. Believing you can learn is half the battle.[/LESSON]\n\n[YOUR_TURN]Rate your confidence in learning technology on a scale of 1-10. What is one specific task you feel confident about?[/YOUR_TURN]"
+        },
+        {
+          "heading": "The Four Sources of Self-Efficacy",
+          "body": "[STORY]Akosua showed Ama the four sources of confidence. 'First, mastery: you code and get it right. Second, vicarious: you watch me code. Third, persuasion: I tell you that you can do it. Fourth, emotion: you reframe your panic as excitement.' Ama wrote these four sources in her notebook. It made confidence feel like a recipe she could cook.[/STORY]\n\n[LESSON]Albert Bandura identified four sources of self-efficacy: 1. Mastery Experiences (successes), 2. Vicarious Experiences (seeing others), 3. Social Persuasion (encouragement), and 4. Physiological States (managing stress). Pool of Grace is structured to provide all four.[/LESSON]\n\n[YOUR_TURN]Which of the four sources of self-efficacy do you need most today? How can you obtain it?[/YOUR_TURN]"
+        },
+        {
+          "heading": "Engineering Mastery Experiences",
+          "body": "[STORY]Instead of trying to build a whole website, Akosua had Ama write just one line of code: a heading tag with her name. Ama typed: `<h1>Ama</h1>`. She clicked save, refreshed the page, and there it was — her name, bold and clear. She smiled. 'I did it!' she said. 'Yes,' Akosua said, 'that is your first mastery experience. Now let's build the next.'[/STORY]\n\n[LESSON]To build confidence, break large tasks into tiny, achievable steps (called 'scaffolding'). Every small success builds your belief in your capability. A senior developer at a major company like MTN or Hubtel builds software the same way — one tiny line at a time.[/LESSON]\n\n[YOUR_TURN]Break a large goal you have (like learning to code) into three tiny, manageable tasks you can do this week.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Managing Learning Anxiety",
+          "body": "[STORY]Ama typed a paragraph tag but forgot the closing bracket. The screen filled with red error text. Her heart raced. 'I broke it!' she gasped. Akosua laughed. 'You didn't break anything. The computer is just having a conversation with you. Read the message.' Ama read it: 'Expected closing tag on line 12.' She added the bracket, and the error vanished.[/STORY]\n\n[LESSON]Anxiety is a natural body response to errors. Reframe it: error messages are not grades or punishments. They are useful diagnostics telling you exactly what to fix. When you see an error, read it out loud to engage your logical brain and calm your emotions.[/LESSON]\n\n[YOUR_TURN]Next time you get a coding error, read it out loud and explain to yourself what the computer is asking for. Write down this experience.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'Who defined the concept of Self-Efficacy?', options: ['Ndinelao Iitumba', 'Albert Bandura', 'Bill Gates', 'UNESCO officials'], answer: 'Albert Bandura' },
-        { question: 'Which source of self-efficacy is built when you successfully solve a programming challenge?', options: ['Social persuasion', 'Mastery experiences', 'Vicarious learning', 'Anxiety management'], answer: 'Mastery experiences' },
-        { question: 'If you feel highly anxious when encountering code errors, you should:', options: ['Stop coding immediately', 'Frame the error as a helpful diagnostic guide instead of a failure', 'Restart your computer and ignore the bug', 'Assume you are not meant for technology'], answer: 'Frame the error as a helpful diagnostic guide instead of a failure' },
-        { question: 'How does social persuasion support your learning?', options: ['By paying your school fees', 'By providing encouragement and feedback from mentors', 'By writing the code for you', 'By testing your software for you'], answer: 'By providing encouragement and feedback from mentors' },
-        { question: 'To build technical self-efficacy, it is best to:', options: ['Only read books without typing code', 'Break tasks into tiny, manageable steps and code daily', 'Attempt huge, complex projects on day one', 'Code only when you feel 100% confident'], answer: 'Break tasks into tiny, manageable steps and code daily' }
+      "quiz": [
+        {
+          "question": "Who defined the concept of Self-Efficacy?",
+          "options": [
+            "Ndinelao Iitumba",
+            "Albert Bandura",
+            "Bill Gates",
+            "UNESCO officials"
+          ],
+          "answer": "Albert Bandura"
+        },
+        {
+          "question": "Which source of self-efficacy is built when you successfully solve a programming challenge?",
+          "options": [
+            "Social persuasion",
+            "Mastery experiences",
+            "Vicarious learning",
+            "Anxiety management"
+          ],
+          "answer": "Mastery experiences"
+        },
+        {
+          "question": "If you feel highly anxious when encountering code errors, you should:",
+          "options": [
+            "Stop coding immediately",
+            "Frame the error as a helpful diagnostic guide instead of a failure",
+            "Restart your computer and ignore the bug",
+            "Assume you are not meant for technology"
+          ],
+          "answer": "Frame the error as a helpful diagnostic guide instead of a failure"
+        },
+        {
+          "question": "How does social persuasion support your learning?",
+          "options": [
+            "By paying your school fees",
+            "By providing encouragement and feedback from mentors",
+            "By writing the code for you",
+            "By testing your software for you"
+          ],
+          "answer": "By providing encouragement and feedback from mentors"
+        },
+        {
+          "question": "To build technical self-efficacy, it is best to:",
+          "options": [
+            "Only read books without typing code",
+            "Break tasks into tiny, manageable steps and code daily",
+            "Attempt huge, complex projects on day one",
+            "Code only when you feel 100% confident"
+          ],
+          "answer": "Break tasks into tiny, manageable steps and code daily"
+        }
       ]
     }
   },
   {
-    id: 4,
-    title: 'Overcoming Fear of Failure',
-    category: 'self-worth',
-    description: 'Learn how to embrace mistakes as part of your learning journey.',
-    order: 4,
-    duration: '45 minutes',
-    content: {
-      intro: 'In software development, failure is not an end point — it is the core mechanism of learning. Every professional programmer writes code that breaks. Every app you use on your phone was built through thousands of failures that were fixed one by one. This module reframes bugs, errors, and mistakes as stepping stones to mastery.',
-      sections: [
-        { heading: 'The Growth Mindset', body: 'Developed by Stanford psychologist Carol Dweck after decades of research, a growth mindset is the belief that basic abilities can be developed through dedication and hard work. Brains and talent are just the starting point — they are not the finish line.\n\nDweck\'s research found that students who were taught about growth mindset before difficult math tests performed significantly better than those who were not. The simple act of believing that intelligence is malleable literally makes you smarter.\n\nIn a fixed mindset, you believe: "I am either good at coding or I am not." In a growth mindset, you believe: "I am not good at coding YET, but I will improve with practice." That three-letter word — YET — is one of the most powerful words in your vocabulary.\n\nGhanaian proverb: "Aboa bi bɛka wo a, na ɔfiri wo ntoma mu" (If an insect will bite you, it comes from your own cloth). Similarly, the biggest obstacle to your tech career is not external — it is the internal belief that you cannot do it. Change the belief, and the external obstacles become manageable.' },
-        { heading: 'Bugs are Normal', body: 'Here is a fact that surprises most beginners: professional programmers spend up to 80% of their time finding and fixing bugs, not writing new code. Writing code that fails on the first run is not a sign of incompetence — it is standard procedure for every developer at every level.\n\nWhen you run your code and see a red error message, you have not failed. You have just discovered one way that does not work, which brings you one step closer to the way that does work. Thomas Edison reportedly said about inventing the light bulb: "I have not failed. I have just found 10,000 ways that do not work."\n\nThe professional debugging process looks like this:\n1. Read the error message carefully — what line does it point to?\n2. Check that specific line for typos, missing characters, or logic errors\n3. If you cannot find the issue, search the error message on Google or StackOverflow\n4. Apply the fix, run the code again, and see if the next error appears\n5. Repeat until the code works\n\nThis process is not a sign of weakness — it IS the process. Every developer in the world does this every day.' },
-        { heading: 'Overcoming Shame of Mistakes', body: 'Research on "stereotype threat" by psychologists Claude Steele and Joshua Aronson shows that women in male-dominated fields often feel extra pressure to be perfect. The fear is: "If I make a mistake, people will think women cannot code." This invisible pressure makes learning harder because you are trying to be perfect instead of trying to learn.\n\nHere is the truth: perfection is the enemy of progress. The fastest way to learn coding is to write bad code, break things, see errors, fix them, and repeat. Every expert was once a beginner who was willing to be bad at something for a while.\n\nPractical strategies for overcoming shame:\n- Celebrate your errors out loud: "I found a bug! Now I get to learn something new."\n- Share your struggles in the community forum — you will find that others have the exact same problems\n- Keep an "error journal" — write down every error you fix. After a month, you will be amazed at how much you have learned\n- Remember: the goal is not to write perfect code. The goal is to write code that you can improve.' },
-        { heading: 'Ghanaian Tech Community Resilience', body: 'In Ghana, practical challenges can disrupt your workflow: power fluctuations (dumsor), slow or expensive internet, shared devices, or noisy environments. These are real obstacles, but they do not have to stop you.\n\nBuilding resilience means developing strategies to work within constraints:\n\n1. POWER OUTAGES: Save your work frequently (Ctrl+S every few minutes). Use a text editor that auto-saves. If possible, study during hours when power is more stable. Consider using your phone as a mobile hotspot and coding on a tablet.\n\n2. SLOW INTERNET: Download learning materials when you have connectivity. Pool of Grace\'s offline mode lets you access previously viewed modules without internet. Download PDF study guides for each module.\n\n3. SHARED DEVICES: Keep your code in an online repository (like GitHub) so you can access it from any device. Your work is never lost if it is saved online.\n\n4. NOISE: Use earphones or find a quiet time early in the morning or late at night. Many successful Ghanaian developers learned to code between 5-7 AM before the household woke up.\n\nThe fact that you are learning technology despite these challenges makes you more resilient than developers in countries where everything works perfectly. That resilience is a superpower.' }
+    "id": 4,
+    "title": "Overcoming Fear of Failure",
+    "category": "self-worth",
+    "description": "Learn how to embrace mistakes as part of your learning journey.",
+    "order": 4,
+    "duration": "45 minutes",
+    "content": {
+      "intro": "[STORY]Ama sat under the neem tree, her laptop battery dead, the power out in the neighborhood. Dumsor had struck again. She felt like the world was conspiring against her. Her code was half-finished and full of errors. She wanted to slam the lid and go to sleep. But she remembered a saying: 'The path to the market has thorns, but we still go to buy food.' She opened her notebook instead.[/STORY]",
+      "sections": [
+        {
+          "heading": "The Growth Mindset",
+          "body": "[STORY]Ama used to think: 'I am either good at computers or I am not.' When she struggled, she thought she was failing. Akosua taught her about Carol Dweck's research. 'A growth mindset means you believe you can develop your brain through effort. If you fail, it just means you haven't succeeded YET.' Ama repeated that word: YET. It felt like a promise.[/STORY]\n\n[LESSON]A growth mindset is the belief that abilities can be developed through dedication and hard work. Shifting from a fixed mindset to a growth mindset helps you embrace challenges. Replace 'I cannot code' with 'I cannot code YET.' Effort is the path to mastery.[/LESSON]\n\n[YOUR_TURN]Rewrite this fixed mindset thought into a growth mindset thought: 'I am terrible at JavaScript.'[/YOUR_TURN]"
+        },
+        {
+          "heading": "Bugs are Normal",
+          "body": "[STORY]Ama learned that professional developers spend most of their time fixing errors, not writing new code. 'So I'm not slow?' she asked Akosua. 'No,' Akosua said, 'debugging is the job. Thomas Edison found 10,000 ways that didn't work before he made the bulb.' Ama felt a weight lift from her shoulders. If errors were normal, she didn't need to fear them.[/STORY]\n\n[LESSON]Bugs and errors are normal parts of the programming cycle. Professional developers spend up to 80% of their time debugging. Treat error messages as useful guides rather than signs of failure. The process is simple: read, analyze, search, fix, and repeat.[/LESSON]\n\n[YOUR_TURN]Create a 3-step checklist of what you will do when you get stuck on a coding bug.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Overcoming Shame of Mistakes",
+          "body": "[STORY]Ama was afraid to ask questions in the community forum. She thought, 'If I ask, they will think I am stupid.' Akosua showed her that even senior engineers ask questions on StackOverflow. 'Mistakes are just data,' Akosua said. Ama finally posted her bug. Within ten minutes, another student replied with the solution. Ama felt a warm wave of relief.[/STORY]\n\n[LESSON]Stereotype threat can make women feel extra pressure to be perfect to avoid confirming negative stereotypes. Let go of perfectionism. The fastest way to learn is to break things, make mistakes, and ask for help in your community. Vulnerability is a strength in engineering.[/LESSON]\n\n[YOUR_TURN]Post one question or share one error you solved in the community forum. How did it feel to share?[/YOUR_TURN]"
+        },
+        {
+          "heading": "Ghanaian Tech Community Resilience",
+          "body": "[STORY]When the power cut, Ama didn't stop. She saved her work, closed her laptop, and read her offline PDF study notes on her phone. When she had slow internet, she downloaded resources at a local cafe and practiced coding offline at home. She realized that these obstacles were actually making her a more creative and resilient developer.[/STORY]\n\n[LESSON]Resilience is key in Ghana's tech environment. Work within constraints: save work frequently (Ctrl+S), download learning materials for offline use, code offline using text editors, and connect with peers to share devices or internet hotspots.[/LESSON]\n\n[YOUR_TURN]List two practical ways you can continue learning during a power outage or when you run out of mobile data.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What is a growth mindset?', options: ['The belief that intelligence is completely fixed', 'The belief that basic abilities can be developed through dedication and hard work', 'Focusing only on getting perfect grades', 'Expecting to never fail'], answer: 'The belief that basic abilities can be developed through dedication and hard work' },
-        { question: 'In computer programming, bugs are:', options: ['Proof that you cannot code', 'A normal, everyday part of software development', 'Signs that you should quit', 'A problem only beginners face'], answer: 'A normal, everyday part of software development' },
-        { question: 'What percentage of time do professional developers spend fixing bugs and debugging?', options: ['0%', '10%', 'Up to 80%', 'Exactly 100%'], answer: 'Up to 80%' },
-        { question: 'Why do women sometimes struggle more with tech mistakes?', options: ['They are naturally worse at logic', 'They face social pressure to be perfect and fear confirming negative stereotypes', 'They do not care about coding', 'They have less computer access'], answer: 'They face social pressure to be perfect and fear confirming negative stereotypes' },
-        { question: 'How should you respond to a power outage or internet cut in Ghana?', options: ['Quit the course', 'Adapt, use offline capabilities, save code regularly, and stay calm', 'Complain to your mentor without taking action', 'Throw away your computer'], answer: 'Adapt, use offline capabilities, save code regularly, and stay calm' }
+      "quiz": [
+        {
+          "question": "What is a growth mindset?",
+          "options": [
+            "The belief that intelligence is completely fixed",
+            "The belief that basic abilities can be developed through dedication and hard work",
+            "Focusing only on getting perfect grades",
+            "Expecting to never fail"
+          ],
+          "answer": "The belief that basic abilities can be developed through dedication and hard work"
+        },
+        {
+          "question": "In computer programming, bugs are:",
+          "options": [
+            "Proof that you cannot code",
+            "A normal, everyday part of software development",
+            "Signs that you should quit",
+            "A problem only beginners face"
+          ],
+          "answer": "A normal, everyday part of software development"
+        },
+        {
+          "question": "What percentage of time do professional developers spend fixing bugs and debugging?",
+          "options": [
+            "0%",
+            "10%",
+            "Up to 80%",
+            "Exactly 100%"
+          ],
+          "answer": "Up to 80%"
+        },
+        {
+          "question": "Why do women sometimes struggle more with tech mistakes?",
+          "options": [
+            "They are naturally worse at logic",
+            "They face social pressure to be perfect and fear confirming negative stereotypes",
+            "They do not care about coding",
+            "They have less computer access"
+          ],
+          "answer": "They face social pressure to be perfect and fear confirming negative stereotypes"
+        },
+        {
+          "question": "How should you respond to a power outage or internet cut in Ghana?",
+          "options": [
+            "Quit the course",
+            "Adapt, use offline capabilities, save code regularly, and stay calm",
+            "Complain to your mentor without taking action",
+            "Throw away your computer"
+          ],
+          "answer": "Adapt, use offline capabilities, save code regularly, and stay calm"
+        }
       ]
     }
   },
   {
-    id: 5,
-    title: 'Your Vision and Goals',
-    category: 'self-worth',
-    description: 'Create a clear vision for your technology career and set achievable goals.',
-    order: 5,
-    duration: '50 minutes',
-    content: {
-      intro: 'Goal setting is the bridge between aspiration and achievement. In this module, you define your tech career vision and establish SMART milestones. Without a clear destination, even the best map is useless. By the end of this module, you will have a written career vision and a 90-day action plan.',
-      sections: [
-        { heading: 'Defining Your Career Vision', body: 'A career vision is a clear picture of what you want your professional life to look like in 2-5 years. It is not about having all the answers — it is about choosing a direction. Here are some technology career paths available to you as a graduate of Pool of Grace:\n\n- FRONTEND DEVELOPER: Build beautiful, interactive websites and apps using HTML, CSS, JavaScript, and React. Companies like Hubtel, MTN Ghana, and Andela hire frontend developers.\n- BACKEND DEVELOPER: Build server logic, databases, and APIs using Python, Node.js, or Java. Banks, telecom companies, and startups need backend developers.\n- DATA ANALYST: Use Python and SQL to analyze data and create reports. NGOs, government agencies, and businesses need data analysts.\n- UX/UI DESIGNER: Design user-friendly digital products. Mobile money apps, health platforms, and e-commerce sites need designers.\n- FREELANCER: Build websites and apps for local businesses, schools, and organizations on your own schedule.\n- TECH ENTREPRENEUR: Start your own digital business solving problems in agriculture, health, education, or commerce.\n\nYou do not need to choose right now. But start imagining: which of these excites you the most?' },
-        { heading: 'SMART Goal Framework', body: 'SMART is a proven goal-setting framework used by professionals worldwide. Each letter stands for a quality that makes a goal effective:\n\nS — SPECIFIC: What exactly will you do? Not "learn coding" but "complete the HTML & CSS module on Pool of Grace."\nM — MEASURABLE: How will you know you achieved it? "Pass the quiz with at least 4 out of 5 correct."\nA — ACHIEVABLE: Is it realistic given your current situation? "I have a phone and 2 hours per week."\nR — RELEVANT: Does it connect to your career vision? "Yes, HTML is the foundation of web development."\nT — TIME-BOUND: When will you complete it? "By the end of this month."\n\nBAD goal: "I want to learn tech."\nSMART goal: "I will complete 2 Pool of Grace modules every week for the next 10 weeks, studying for 1 hour each Tuesday and Saturday morning at 6 AM, so that I finish all 20 modules and earn my certificate by September 2026."\n\nWrite your SMART goal now in the Personal Notes section of this module.' },
-        { heading: 'Action Plans and Habits', body: 'Vision without execution is a hallucination. A goal without a daily action plan is just a wish. The key to success is building tiny, consistent habits that compound over time.\n\nResearch by James Clear (author of "Atomic Habits") shows that the most effective way to build a new habit is to:\n1. Make it OBVIOUS: Set a specific time and place. "Every Tuesday at 6 AM, I open Pool of Grace."\n2. Make it EASY: Start with just 15 minutes. You can always do more, but the goal is consistency.\n3. Make it SATISFYING: Track your progress. Check off completed modules. Celebrate each quiz passed.\n4. Never miss twice: If you miss one day, make sure you do not miss the next one.\n\nPractical daily micro-habits for your tech journey:\n- Morning (15 min): Read one section of a Pool of Grace module before breakfast\n- Afternoon (15 min): Practice typing code in the Practice Lab during lunch break\n- Evening (15 min): Watch one YouTube tutorial video from the Resources tab\n\nThese 45 minutes per day will transform your skills within 3 months.' },
-        { heading: 'Sharing Your Goals', body: 'Research published in the American Journal of Lifestyle Medicine shows that sharing your goals with a supportive accountability partner increases your chances of success by 65%. The key word is "supportive" — share with people who will encourage you, not those who will discourage you.\n\nHere is how to use Pool of Grace\'s support system for accountability:\n\n1. MENTOR ACCOUNTABILITY: Book an office hours session with Agnes or a mentor. Tell them your SMART goal. They will check in on your progress.\n\n2. PEER ACCOUNTABILITY: Post your goal in the community forum. Find a "study buddy" — another participant who is at a similar stage. Check in with each other weekly.\n\n3. SELF-ACCOUNTABILITY: Use the Calendar page to mark your study days. Use the History page to track which modules you have completed.\n\n4. FAMILY ACCOUNTABILITY: If you have a supportive family member, tell them your plan. Ask them to ask you about your progress every Sunday. Sometimes having someone simply ask "How is your coding going?" keeps you motivated.\n\nRemember: accountability is not about pressure. It is about having people who care enough to ask about your dreams.' }
+    "id": 5,
+    "title": "Your Vision and Goals",
+    "category": "self-worth",
+    "description": "Create a clear vision for your technology career and set achievable goals.",
+    "order": 5,
+    "duration": "50 minutes",
+    "content": {
+      "intro": "[STORY]Ama stood on the hill overlooking Kumasi, looking at the city lights. She wanted a better life for her family and a career she was proud of. But the path felt foggy. Akosua told her, 'To get where you want to go, you need a map. A developer without a vision is like a driver without a destination.' Ama took out a clean sheet of paper to draw her map.[/STORY]",
+      "sections": [
+        {
+          "heading": "Defining Your Career Vision",
+          "body": "[STORY]Ama asked herself: 'What do I want to build?' She thought of the local weavers in her village who made beautiful kente cloth but struggled to sell it. 'I want to build a website that lets anyone in the world buy kente directly from our weavers,' she wrote. Her vision was no longer just about 'learning computers' — it was about helping her community.[/STORY]\n\n[LESSON]A clear vision connects your learning to a larger purpose, providing motivation during difficult lessons. Define what you want to achieve with technology — whether it is building a local business site, creating a mobile app, or supporting your family.[/LESSON]\n\n[YOUR_TURN]Write down your tech vision. What is the ultimate project or career goal you want to achieve?[/YOUR_TURN]"
+        },
+        {
+          "heading": "SMART Goal Framework",
+          "body": "[STORY]Ama wrote: 'I want to learn HTML.' Akosua shook her head. 'Too broad. Make it SMART.' Ama rewrote it: 'I will write HTML code for 30 minutes every morning at 6 AM before heading to the market, and build one sample page by Friday.' This goal felt real. She knew exactly what she had to do and when.[/STORY]\n\n[LESSON]SMART goals are Specific, Measurable, Actionable, Relevant, and Time-bound. Instead of vague desires, define precise actions. This keeps you focused and prevents overwhelm, allowing you to build technical skills systematically.[/LESSON]\n\n[YOUR_TURN]Write one SMART goal for your learning this week. Make sure it has a specific time and a measurable outcome.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Action Plans and Habits",
+          "body": "[STORY]Ama's house was noisy during the day with chores and visitors. She decided to wake up at 5:00 AM, when the air was cool and the compound was quiet. She sat at the table with her notebook and code editor. Those 45 minutes of quiet focus became her favorite part of the day. She was amazed at how much she learned when there were no distractions.[/STORY]\n\n[LESSON]Create a dedicated study routine that fits your lifestyle. Protect this time by setting expectations with your family. Even 30-45 minutes of daily, uninterrupted focus is more effective than hours of distracted studying once a week.[/LESSON]\n\n[YOUR_TURN]What is the best time and place for you to study without distractions? How will you protect this time?[/YOUR_TURN]"
+        },
+        {
+          "heading": "Sharing Your Goals",
+          "body": "[STORY]Ama made a simple chart on her wall with 20 boxes. Every time she completed a module, she colored in a box with a red pen. Ticking off the boxes gave her a sense of progress. When she looked at the chart and saw 5 colored boxes, she realized she was no longer a complete beginner. She was moving forward.[/STORY]\n\n[LESSON]Visualizing your progress builds momentum and fights imposter syndrome. Keep a physical or digital milestone tracker. Ticking off completed tasks reinforces your mastery and reminds you how far you have come.[/LESSON]\n\n[YOUR_TURN]Create a physical tracker in your notebook or on your wall to mark your progress through these 20 modules.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What does the S in SMART stand for?', options: ['Social', 'Specific', 'Smart', 'Standard'], answer: 'Specific' },
-        { question: 'Which of the following is a SMART goal?', options: ['I want to get rich in technology', 'I want to study web development some day', 'I will code for 45 minutes every Monday and Wednesday at 8 AM for the next 6 weeks', 'I will try my best to learn Python'], answer: 'I will code for 45 minutes every Monday and Wednesday at 8 AM for the next 6 weeks' },
-        { question: 'A career vision:', options: ['Should be decided by your parents', 'Is a future picture of your professional achievements and direction', 'Must never change once written', 'Is only for college graduates'], answer: 'Is a future picture of your professional achievements and direction' },
-        { question: 'Why is it helpful to share your goals with your Pool of Grace mentor?', options: ['So they can write code for you', 'To build accountability and increase your chance of completion', 'So they can pay you a stipend', 'It is not helpful'], answer: 'To build accountability and increase your chance of completion' },
-        { question: 'Daily micro-habits should be:', options: ['Huge and exhausting', 'Small, realistic, and consistent actions', 'Done only when you feel inspired', 'Skipped on weekends'], answer: 'Small, realistic, and consistent actions' }
+      "quiz": [
+        {
+          "question": "What does the S in SMART stand for?",
+          "options": [
+            "Social",
+            "Specific",
+            "Smart",
+            "Standard"
+          ],
+          "answer": "Specific"
+        },
+        {
+          "question": "Which of the following is a SMART goal?",
+          "options": [
+            "I want to get rich in technology",
+            "I want to study web development some day",
+            "I will code for 45 minutes every Monday and Wednesday at 8 AM for the next 6 weeks",
+            "I will try my best to learn Python"
+          ],
+          "answer": "I will code for 45 minutes every Monday and Wednesday at 8 AM for the next 6 weeks"
+        },
+        {
+          "question": "A career vision:",
+          "options": [
+            "Should be decided by your parents",
+            "Is a future picture of your professional achievements and direction",
+            "Must never change once written",
+            "Is only for college graduates"
+          ],
+          "answer": "Is a future picture of your professional achievements and direction"
+        },
+        {
+          "question": "Why is it helpful to share your goals with your Pool of Grace mentor?",
+          "options": [
+            "So they can write code for you",
+            "To build accountability and increase your chance of completion",
+            "So they can pay you a stipend",
+            "It is not helpful"
+          ],
+          "answer": "To build accountability and increase your chance of completion"
+        },
+        {
+          "question": "Daily micro-habits should be:",
+          "options": [
+            "Huge and exhausting",
+            "Small, realistic, and consistent actions",
+            "Done only when you feel inspired",
+            "Skipped on weekends"
+          ],
+          "answer": "Small, realistic, and consistent actions"
+        }
       ]
     }
   },
   {
-    id: 6,
-    title: 'Community and Support Systems',
-    category: 'self-worth',
-    description: 'Build your support network and learn how community accelerates growth.',
-    order: 6,
-    duration: '40 minutes',
-    content: {
-      intro: 'No programmer develops in isolation. Building a support network is critical to sustaining your momentum in Ghana\'s tech ecosystem. The myth of the "lone genius programmer" working alone in a dark room is exactly that — a myth. The world\'s best software is built by teams, and the fastest-growing developers are those with strong support networks.',
-      sections: [
-        { heading: 'The Power of Peer Networks', body: 'Your cohort peers on Pool of Grace are your greatest allies. Research in educational psychology shows that peer learning groups outperform individual study by an average of 23% on test scores. When you learn alongside others, several things happen:\n\n1. You explain concepts to others, which deepens your own understanding (this is called the "protégé effect")\n2. You discover that everyone struggles with similar challenges, which normalizes difficulty\n3. You share resources, shortcuts, and tips that save each other time\n4. You build professional connections that may lead to job opportunities later\n\nPractical steps to build your peer network on Pool of Grace:\n- Post an introduction in the Community forum: your name, where you are from, and what you hope to learn\n- Comment on other participants\' posts with encouragement or helpful suggestions\n- If someone posts a question you know the answer to, respond — teaching reinforces your own learning\n- Look for a "study partner" who is at a similar module and schedule weekly check-ins' },
-        { heading: 'Mentorship is a Catalyst', body: 'Mentors act as navigators. They have already walked the path you are starting, and they can help you avoid common pitfalls, review your work, and introduce you to the professional network.\n\nPool of Grace connects you with experienced female technologists in Ghana:\n- Abena Asante (Senior Software Engineer at MTN Ghana, 8 years experience)\n- Akosua Mensah (Data Analyst at Vodafone Ghana, 5 years experience)\n- Ama Boateng (UX Designer at Hubtel, 6 years experience)\n- Efua Darko (Cybersecurity Analyst at GCB Bank, 7 years experience)\n\nPlus, Agnes Berko (the founder) holds weekly office hours every Tuesday, Friday, and Saturday from 2:00-3:00 PM Ghana Time.\n\nHow to make the most of mentorship:\n1. Come prepared with specific questions — not just "Can you help me?" but "I am stuck on line 15 of my HTML file. The paragraph tag is not showing. Can you look at my code?"\n2. Take notes during sessions\n3. Follow up on advice given — mentors are motivated when they see you implementing their suggestions\n4. Express gratitude — a simple "Thank you, your advice helped me fix the bug" goes a long way' },
-        { heading: 'Constructive Online Forums', body: 'Online forums like StackOverflow, the Pool of Grace community forum, and Reddit\'s r/learnprogramming are tools that can dramatically accelerate your learning. But there is an art to asking good questions that get helpful answers.\n\nThe formula for a good technical question:\n1. STATE YOUR GOAL: "I am trying to make a button change color when clicked."\n2. SHOW YOUR CODE: Paste the relevant code so others can see what you wrote\n3. DESCRIBE THE ERROR: "When I click the button, nothing happens. The console shows \'undefined is not a function.\'"  \n4. LIST WHAT YOU TRIED: "I checked the spelling of the function name and made sure the event listener is attached."\n\nThis format shows that you have put in effort, and it makes it easy for others to help you. Avoid posting "It does not work, please help" — that gives no information for anyone to work with.\n\nRemember: there are no stupid questions in programming. Every expert was once a beginner who asked the same questions you are asking now.' },
-        { heading: 'Ghana Tech Hubs', body: 'Ghana has a growing ecosystem of technology hubs, coworking spaces, and community organizations that provide physical spaces for learning, networking, and collaboration. Familiarize yourself with these resources:\n\nACCRA:\n- iSpace Foundation: One of West Africa\'s leading innovation hubs. Offers training programs, events, and workspace.\n- MEST Africa: Provides entrepreneurship training, seed funding, and mentorship for tech startups.\n- Mobile Web Ghana: Focuses on mobile technology training and community events.\n- Academic City University: Offers tech programs and hackathons.\n\nKUMASI:\n- Kumasi Hive: A technology hub providing coworking space, training workshops, and community networking events. Located in the heart of the tech community in Kumasi.\n- KNUST Tech Hub: Connected to Kwame Nkrumah University of Science and Technology.\n\nONLINE:\n- DevCongress Ghana: The largest developer community in Ghana. They host annual conferences and regular meetups.\n- Women in Tech Africa: A Pan-African network connecting female technologists across the continent.\n- GDG Accra/Kumasi: Google Developer Groups that host study jams, workshops, and hackathons.\n\nEven if you cannot physically visit these hubs, follow them on social media and attend their virtual events. Networking starts with showing up — even online.' }
+    "id": 6,
+    "title": "Community and Support Systems",
+    "category": "self-worth",
+    "description": "Build your support network and learn how community accelerates growth.",
+    "order": 6,
+    "duration": "40 minutes",
+    "content": {
+      "intro": "[STORY]Ama was stuck on a CSS layout. No matter what she did, the image would not center. She felt isolated and frustrated, ready to throw her notes away. Akosua saw her. 'Ama, why are you carrying this weight alone? The best developers in the world code in teams. You need a support network.' Ama realized she didn't have to walk this road by herself.[/STORY]",
+      "sections": [
+        {
+          "heading": "The Power of Peer Networks",
+          "body": "[STORY]Ama used to think programmers were lone geniuses working in dark rooms. Akosua explained: 'Modern software is too large for one person. Teams at MTN or Hubtel use collaboration tools to write code together. Communication and helping others is just as important as writing logic.' Ama understood that learning to collaborate was a key skill.[/STORY]\n\n[LESSON]Software engineering is a collaborative team sport, not a solo activity. Modern platforms are built by teams who share code, review designs, and solve bugs together. Building strong communication and teamwork skills is essential for a professional tech career.[/LESSON]\n\n[YOUR_TURN]What is one way you can practice teamwork in your daily life that can translate to a tech career?[/YOUR_TURN]"
+        },
+        {
+          "heading": "Mentorship is a Catalyst",
+          "body": "[STORY]Ama reached out to Esi and Beatrice, two other girls in the Pool of Grace program. They created a WhatsApp group called 'Kumasi Dev Girls.' They promised to share their bugs and study together. When Beatrice got stuck, Ama helped her. Helping Beatrice made Ama feel smart and helped her understand the lesson even better.[/STORY]\n\n[LESSON]Peer learning is one of the fastest ways to learn. Set up small study circles with classmates. Explaining code to others reinforces your own understanding and builds a supportive community that keeps everyone accountable.[/LESSON]\n\n[YOUR_TURN]Reach out to at least one peer in this program and agree to check in on each other's progress weekly. Write down their name.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Constructive Online Forums",
+          "body": "[STORY]Ama shared her website link in the group. Esi wrote back: 'I love the headers, but the button text is hard to read because the background is too dark.' Ama felt a brief sting of defensive pride, but she realized Esi was right. She changed the button color, and it looked much better. 'Thank you, Esi!' she wrote.[/STORY]\n\n[LESSON]Constructive feedback is the mechanism of improvement in tech. Frame feedback not as criticism of your worth, but as support for your work. Welcome suggestions with an open mind, and give peer reviews that are specific and encouraging.[/LESSON]\n\n[YOUR_TURN]Review a peer's project in the forum. Write down one specific thing they did well and one constructive suggestion.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Ghana Tech Hubs",
+          "body": "[STORY]Ama had a bug she couldn't solve for two hours. She wanted to message Akosua: 'My code is broken, help.' But she remembered Akosua's rule. She wrote instead: 'Hi Akosua, I am trying to center an image. I tried setting the margin to auto and changing display to block, but it is still aligned left. Here is my code.' Akosua replied in minutes, guiding her to the solution.[/STORY]\n\n[LESSON]Mentors are here to guide your thinking, not write code for you. When asking for help, describe the problem, show the error, explain what you expected, and list what you have already tried. This shows initiative and helps the mentor help you.[/LESSON]\n\n[YOUR_TURN]Draft a help request for a current bug you are facing, following the structured format: problem, expectation, and attempts made.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'Why is a peer network important in tech?', options: ['They compete with you', 'They provide support, share learning resources, and decrease dropouts', 'They code for you', 'They are not important'], answer: 'They provide support, share learning resources, and decrease dropouts' },
-        { question: 'What is Kumasi Hive?', options: ['A honey farm in Kumasi', 'A technology hub providing workspace, community, and training', 'An online game', 'A bank branch'], answer: 'A technology hub providing workspace, community, and training' },
-        { question: 'When posting a question on the forum, you should NOT:', options: ['State what you are trying to accomplish', 'Copy-paste the exact error message', 'Ask someone to do the whole task for you', 'Show what solutions you have already tried'], answer: 'Ask someone to do the whole task for you' },
-        { question: 'How do mentors help accelerate your career?', options: ['They hire you instantly', 'They navigate career choices, review work, and connect you to opportunities', 'They attend classes in your place', 'They check your attendance'], answer: 'They navigate career choices, review work, and connect you to opportunities' },
-        { question: 'Which of the following is a tech hub based in Accra?', options: ['Kumasi Hive', 'iSpace / Mobile Web Ghana', 'Takoradi Port', 'Kejetia Market'], answer: 'iSpace / Mobile Web Ghana' }
+      "quiz": [
+        {
+          "question": "Why is a peer network important in tech?",
+          "options": [
+            "They compete with you",
+            "They provide support, share learning resources, and decrease dropouts",
+            "They code for you",
+            "They are not important"
+          ],
+          "answer": "They provide support, share learning resources, and decrease dropouts"
+        },
+        {
+          "question": "What is Kumasi Hive?",
+          "options": [
+            "A honey farm in Kumasi",
+            "A technology hub providing workspace, community, and training",
+            "An online game",
+            "A bank branch"
+          ],
+          "answer": "A technology hub providing workspace, community, and training"
+        },
+        {
+          "question": "When posting a question on the forum, you should NOT:",
+          "options": [
+            "State what you are trying to accomplish",
+            "Copy-paste the exact error message",
+            "Ask someone to do the whole task for you",
+            "Show what solutions you have already tried"
+          ],
+          "answer": "Ask someone to do the whole task for you"
+        },
+        {
+          "question": "How do mentors help accelerate your career?",
+          "options": [
+            "They hire you instantly",
+            "They navigate career choices, review work, and connect you to opportunities",
+            "They attend classes in your place",
+            "They check your attendance"
+          ],
+          "answer": "They navigate career choices, review work, and connect you to opportunities"
+        },
+        {
+          "question": "Which of the following is a tech hub based in Accra?",
+          "options": [
+            "Kumasi Hive",
+            "iSpace / Mobile Web Ghana",
+            "Takoradi Port",
+            "Kejetia Market"
+          ],
+          "answer": "iSpace / Mobile Web Ghana"
+        }
       ]
     }
   },
   {
-    id: 7,
-    title: 'Celebrating Your Progress',
-    category: 'self-worth',
-    description: 'Recognize and celebrate your achievements on your technology journey.',
-    order: 7,
-    duration: '35 minutes',
-    content: {
-      intro: 'This final self-worth module focuses on acknowledging your learning gains, reinforcing self-efficacy, and preparing you for the transition into technical skills training. You have completed seven modules of psychological preparation — and that alone is a significant achievement worth celebrating.',
-      sections: [
-        { heading: 'Celebrating the Process, Not Just Outcomes', body: 'Empowerment means recognizing your progress at every stage, not just at the end. Did you learn what a variable is? Did you write your first paragraph in HTML? Did you show up to study even when you did not feel like it? These are all victories worth celebrating.\n\nIn Ghanaian culture, we celebrate milestones: naming ceremonies, graduations, harvest festivals. Your learning journey deserves the same recognition. Each module completed is a milestone. Each quiz passed is a harvest of knowledge.\n\nResearch by psychologist Teresa Amabile at Harvard Business School found that of all the things that boost motivation, the single most important is "making progress in meaningful work." Even small progress — what she calls "small wins" — dramatically increases motivation, engagement, and creative thinking.\n\nPractical celebration ideas:\n- After completing each module, tell a friend or family member what you learned\n- Keep a "victory journal" — write down one thing you learned or accomplished each study session\n- Treat yourself after reaching milestones (5 modules completed, 10 modules completed, etc.)\n- Share your achievements in the Pool of Grace community forum' },
-        { heading: 'Reinforcing Self-Efficacy', body: 'Reflect on how far you have come since Module 1. When you started, you may have doubted whether technology was for you. Now you understand self-worth, cultural barriers, self-efficacy, growth mindset, goal setting, and community building. You have already learned more about the psychology of success than most people ever will.\n\nDocumenting your growth serves as a powerful reminder during future moments of self-doubt. Here is an exercise: open the Personal Notes section and answer these questions:\n\n1. What is the most important thing I have learned about myself in these 7 modules?\n2. What limiting belief have I identified and started to challenge?\n3. Who in my support network has encouraged me the most?\n4. What is my SMART goal for the technical modules?\n5. On a scale of 1-10, how confident do I feel about starting to learn HTML?\n\nSave these answers. In 3 months, you will look back and be amazed at how much you have grown.' },
-        { heading: 'Preparing for the Tech Transition', body: 'You have completed the self-worth foundation! You are now psychologically armed to start coding. The technical modules (8-14) will challenge you in new ways — but you have the tools to handle those challenges:\n\n- When you encounter a confusing concept → You know about growth mindset (Module 4)\n- When you see an error message → You know errors are diagnostic guides, not failures (Module 3)\n- When someone discourages you → You know how to set boundaries (Module 2)\n- When you feel like giving up → You know your worth is inherent and your potential is limitless (Module 1)\n- When you feel alone → You know how to use your community and mentors (Module 6)\n- When you lose direction → You have your SMART goals and career vision (Module 5)\n\nThe technical modules start with HTML and CSS (the building blocks of every website you have ever visited). The content is designed for absolute beginners — no prior experience is required. Every concept is explained step by step with examples relevant to life in Ghana.' },
-        { heading: 'A Letter to Yourself', body: 'This is your most important exercise. Open the Personal Notes section below and write a letter to your future self. This letter will serve as your anchor when the technical modules get challenging.\n\nInclude:\n1. WHY you started this journey — what motivated you to join Pool of Grace?\n2. WHAT you hope to achieve — your career vision and goals\n3. WHO you are doing this for — yourself, your family, your community?\n4. HOW you will respond when things get difficult — what strategies will you use?\n5. A PROMISE to yourself — "I promise that even when coding feels hard, I will..."\n\nThis letter is private — only you can see it in your Personal Notes. But it is incredibly powerful. Research shows that writing about your motivations and commitments makes you significantly more likely to follow through.\n\nAs the Akan proverb says: "Se wo were fi na wosankofa a, yennkyi" — It is not wrong to go back and fetch what you forgot. Whenever you feel lost in the technical modules, come back to this letter. Come back to your foundation. Then move forward again.' }
+    "id": 7,
+    "title": "Celebrating Your Progress",
+    "category": "self-worth",
+    "description": "Recognize and celebrate your achievements on your technology journey.",
+    "order": 7,
+    "duration": "35 minutes",
+    "content": {
+      "intro": "[STORY]Ama sat under the mango tree, her notebook open. She had completed all seven self-worth modules. She looked back at the first day when she sat on the bench, afraid of 'computer things.' Now, she felt a strong, quiet confidence. She had a growth mindset, a study routine, and a vision. She decided to celebrate this first victory with a cool bottle of Sobolo.[/STORY]",
+      "sections": [
+        {
+          "heading": "Celebrating the Process, Not Just Outcomes",
+          "body": "[STORY]Ama felt guilty about resting. 'I should start the HTML module immediately,' she thought. But Akosua stopped her. 'No, Ama. Your brain needs to know when it has won. If you just run to the next task, you will burn out. Celebrate your hard work.' Ama closed her laptop and enjoyed the sweet, spicy taste of her Sobolo, feeling proud.[/STORY]\n\n[LESSON]Celebrating milestones releases dopamine, reinforcing the learning behavior and building sustained motivation. Never skip celebrating your progress. Recognizing your successes builds resilience for the challenges ahead.[/LESSON]\n\n[YOUR_TURN]How will you celebrate completing this first phase of the program? Choose a simple, meaningful reward.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Reinforcing Self-Efficacy",
+          "body": "[STORY]Ama started a page in her notebook called 'Ama's Win Log.' She wrote: 'Module 1: I declared my worth. Module 2: I negotiated study time. Module 3: I rendered my name in HTML. Module 4: I solved a syntax error.' Looking at the list made her feel like a champion. Whenever she doubted herself, she would read the log.[/STORY]\n\n[LESSON]A Win Log is a written record of your achievements, breakthroughs, and problems solved. Keeping this log helps you fight imposter syndrome and provides visual evidence of your growth when you encounter difficult technical challenges.[/LESSON]\n\n[YOUR_TURN]Create a Win Log page in your notebook and write down three wins you have achieved since starting this program.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Preparing for the Tech Transition",
+          "body": "[STORY]Ama established a rule: after every 45-minute focus session, she would walk outside for 5 minutes and chat with her neighbor, or listen to her favorite song. After completing a full module, she would cook a special meal or rest. These small rewards kept her excited to sit down and study every day.[/STORY]\n\n[LESSON]Tie healthy, non-destructive rewards directly to completing your milestones. This builds a positive feedback loop in your brain, linking the effort of coding with positive experiences, making learning sustainable.[/LESSON]\n\n[YOUR_TURN]List three healthy, simple rewards you can use to treat yourself after completing coding sessions or modules.[/YOUR_TURN]"
+        },
+        {
+          "heading": "A Letter to Yourself",
+          "body": "[STORY]Ama looked at her old charcoal declaration: 'I, Ama, can learn to code.' She smiled. She was no longer afraid of the red errors or the computer screens. She had built a solid mental house. She was ready to lay the technical bricks. She opened the HTML notes with excitement, ready for the next stage of her journey.[/STORY]\n\n[LESSON]A solid psychological foundation is required before learning technical skills. By building self-worth, setting goals, establishing community, and reframing failure, you have prepared your mind for the technical challenges ahead. You are ready to write code.[/LESSON]\n\n[YOUR_TURN]Reflect on how your mindset has changed since Module 1. Write down one major shift in your thinking.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'Why should you celebrate small steps in learning?', options: ['Because learning is finished', 'To reinforce self-efficacy and build positive learning loops', 'So you can take a long vacation', 'It is a waste of time'], answer: 'To reinforce self-efficacy and build positive learning loops' },
-        { question: 'Completing the 7 self-worth modules means you are:', options: ['A professional software developer', 'Psychologically prepared and ready for technical coding modules', 'Finished with the Pool of Grace course', 'Eligible for immediate employment'], answer: 'Psychologically prepared and ready for technical coding modules' },
-        { question: 'When you feel discouraged during technical modules, you should:', options: ['Assume you were wrong about your capacity', 'Reflect on your progress and remember your original motivation', 'Delete your account', 'Stop seeking mentor help'], answer: 'Reflect on your progress and remember your original motivation' },
-        { question: 'What is the focus of self-worth celebration?', options: ['Acknowledge effort, progress, and resilience', 'Perfect test scores only', 'Being better than other participants', 'Winning cash prizes'], answer: 'Acknowledge effort, progress, and resilience' },
-        { question: 'Your self-worth journey:', options: ['Ends here', 'Continues as a foundation as you build technical and career resources', 'Was a distraction from coding', 'Is only for beginners'], answer: 'Continues as a foundation as you build technical and career resources' }
+      "quiz": [
+        {
+          "question": "Why should you celebrate small steps in learning?",
+          "options": [
+            "Because learning is finished",
+            "To reinforce self-efficacy and build positive learning loops",
+            "So you can take a long vacation",
+            "It is a waste of time"
+          ],
+          "answer": "To reinforce self-efficacy and build positive learning loops"
+        },
+        {
+          "question": "Completing the 7 self-worth modules means you are:",
+          "options": [
+            "A professional software developer",
+            "Psychologically prepared and ready for technical coding modules",
+            "Finished with the Pool of Grace course",
+            "Eligible for immediate employment"
+          ],
+          "answer": "Psychologically prepared and ready for technical coding modules"
+        },
+        {
+          "question": "When you feel discouraged during technical modules, you should:",
+          "options": [
+            "Assume you were wrong about your capacity",
+            "Reflect on your progress and remember your original motivation",
+            "Delete your account",
+            "Stop seeking mentor help"
+          ],
+          "answer": "Reflect on your progress and remember your original motivation"
+        },
+        {
+          "question": "What is the focus of self-worth celebration?",
+          "options": [
+            "Acknowledge effort, progress, and resilience",
+            "Perfect test scores only",
+            "Being better than other participants",
+            "Winning cash prizes"
+          ],
+          "answer": "Acknowledge effort, progress, and resilience"
+        },
+        {
+          "question": "Your self-worth journey:",
+          "options": [
+            "Ends here",
+            "Continues as a foundation as you build technical and career resources",
+            "Was a distraction from coding",
+            "Is only for beginners"
+          ],
+          "answer": "Continues as a foundation as you build technical and career resources"
+        }
       ]
     }
   },
   {
-    id: 8,
-    title: 'Introduction to HTML and CSS',
-    category: 'technical-skills',
-    description: 'Learn the building blocks of web development from absolute scratch.',
-    order: 8,
-    duration: '60 minutes',
-    content: {
-      intro: 'Welcome to your first programming module! You will learn HTML to create the structure of web pages and CSS to style their design. Every website you have ever visited — Google, Facebook, Jumia, MTN — is built with HTML and CSS at its foundation. By the end of this module, you will understand how to create your own web pages from scratch.',
-      sections: [
-        { heading: 'What is HTML?', body: 'HTML stands for HyperText Markup Language. It is the standard language used to create the structure and content of every web page on the internet. Think of HTML as the skeleton of a building — it defines where the walls, doors, and windows go, but it does not add the paint or decoration.\n\nHTML uses "tags" to define different elements on a page. Tags are written inside angle brackets < >. Most tags come in pairs — an opening tag and a closing tag:\n\n<h1>This is a main heading</h1>\n<p>This is a paragraph of text.</p>\n<img src="photo.jpg" alt="A description of the photo">\n<a href="https://google.com">Click here to visit Google</a>\n\nKey HTML tags you will use daily:\n- <h1> to <h6>: Headings (h1 is the largest, h6 is the smallest)\n- <p>: Paragraphs of text\n- <a>: Links to other pages\n- <img>: Images\n- <ul> and <li>: Bulleted lists\n- <div>: A container that groups other elements together\n- <button>: A clickable button' },
-        { heading: 'What is CSS?', body: 'CSS stands for Cascading Style Sheets. If HTML is the skeleton of a web page, CSS is the clothing, makeup, and jewelry. It controls how HTML elements look — their colors, fonts, sizes, spacing, and layout.\n\nCSS rules follow a simple pattern:\nselector { property: value; }\n\nFor example:\nh1 { color: green; font-size: 24px; }\np { color: #333333; line-height: 1.6; }\nbutton { background-color: blue; color: white; padding: 10px 20px; border-radius: 5px; }\n\nCommon CSS properties:\n- color: Changes text color\n- background-color: Changes the background color of an element\n- font-size: Changes how big or small text appears\n- padding: Adds space inside an element (between content and border)\n- margin: Adds space outside an element (between elements)\n- border-radius: Rounds the corners of an element\n- font-family: Changes the font style\n\nCSS is what makes websites beautiful. Without CSS, every website would look like a plain black-and-white document from the 1990s.' },
-        { heading: 'HTML Document Structure', body: 'Every HTML document follows a specific structure. This structure tells the web browser how to read and display the page correctly:\n\n<!DOCTYPE html>        — Tells the browser this is an HTML5 document\n<html>                 — The root element that wraps everything\n  <head>               — Contains metadata (page title, CSS links, etc.)\n    <title>My Page</title>\n    <link rel="stylesheet" href="style.css">\n  </head>\n  <body>               — Contains all the visible content\n    <h1>Welcome to My Website</h1>\n    <p>This is my first paragraph.</p>\n  </body>\n</html>\n\nThe <head> section is invisible to users — it contains information that helps the browser and search engines understand the page. The <body> section contains everything the user actually sees.\n\nPractical tip: When building your first page, always start with this template structure. Save it as a file called "index.html" — this is the standard name for a website\'s main page. You can open this file in any web browser (Chrome, Firefox, Safari) to see your page.' },
-        { heading: 'Ghanaian CSS Styling Challenge', body: 'Let us put your new knowledge into practice with a fun challenge! Create a simple styled profile card using HTML and CSS, themed with Ghana\'s national colors.\n\nGhana\'s flag colors and their CSS values:\n- Red: #CE1126 (represents the blood of those who fought for independence)\n- Gold/Yellow: #FCD116 (represents Ghana\'s mineral wealth)\n- Green: #006B3F (represents the forests and natural wealth)\n- Black Star: #000000 (represents African emancipation)\n\nYour challenge:\n1. Create an HTML file with a <div> container\n2. Inside the div, add an <h1> with your name, a <p> with your dream tech career, and a <button> saying "View My Goals"\n3. Use CSS to:\n   - Set the background to Green (#006B3F)\n   - Make the heading Gold (#FCD116)\n   - Style the button with Red (#CE1126) background and white text\n   - Add padding and border-radius for a polished look\n\nThis exercise combines everything you have learned in this module. Try it in the Practice Lab! Do not worry about getting it perfect — the goal is to type real code and see it appear on screen. That first moment when your code becomes a visible web page is magical.' }
+    "id": 8,
+    "title": "Introduction to HTML and CSS",
+    "category": "technical-skills",
+    "description": "Learn the building blocks of web development from absolute scratch.",
+    "order": 8,
+    "duration": "60 minutes",
+    "content": {
+      "intro": "[STORY]Ama sat with her laptop open, ready to write her first web page. She wanted to build a page to showcase the beautiful kente cloth woven in her village. 'How do I start?' she asked. Akosua took a bowl of waakye. 'Think of HTML as the food dividers in this bowl, and CSS as the decorations on the table. Let's build the structure first.'[/STORY]",
+      "sections": [
+        {
+          "heading": "What is HTML?",
+          "body": "[STORY]Akosye pointed to the waakye bowl. 'Look at how the leaf divides the rice from the beans, and the egg sits in its own corner. In HTML, we use tags to create dividers. `<h1>` is your big stall banner, `<p>` is the description of your goods, and `<img>` is the photo.' Ama typed `<h1>Kente from Kumasi</h1>` and watched it appear on the screen. She was building her first digital stall.[/STORY]\n\n[LESSON]HTML (HyperText Markup Language) is the structure of a webpage. Tags tell the browser what type of content each element is. `<h1>` is for main headings, `<p>` for paragraphs, and `<a>` for links. Every website begins as an HTML skeleton.[/LESSON]\n\n[YOUR_TURN]Write a basic HTML line containing a paragraph tag with the sentence: 'I am learning HTML.'[/YOUR_TURN]"
+        },
+        {
+          "heading": "What is CSS?",
+          "body": "[STORY]Ama's page was plain black text on a white background. 'It looks dull,' she said. Akosua smiled. 'Time for CSS. Think of kente weaving — you choose yellow for royalty, blue for peace, and red for love. In CSS, we choose colors, fonts, and layouts to make the HTML look beautiful.' Ama added a CSS style to make her background a soft warm orange and her headers a deep purple. Her page instantly felt alive.[/STORY]\n\n[LESSON]CSS (Cascading Style Sheets) controls the visual presentation of a webpage. You use CSS to apply colors, define fonts, add spacing, and set layouts. CSS separates the design layer from the HTML structure, giving you creative control.[/LESSON]\n\n[YOUR_TURN]Write a CSS rule that changes the color of all `<h1_>` tags to purple and sets their text alignment to center.[/YOUR_TURN]"
+        },
+        {
+          "heading": "HTML Document Structure",
+          "body": "[STORY]Ama wanted to add space around her text so it didn't touch the borders. Akosua explained the Box Model. 'Every element is a cardboard box. The text is the kente cloth inside. Padding is the bubble wrap inside the box. Border is the cardboard itself. Margin is the empty space between different boxes on the shelf.' Ama adjusted the padding and margin, and her layout looked neat and professional.[/STORY]\n\n[LESSON]In CSS, every element is treated as a rectangular box. The CSS Box Model consists of: 1. Content (text/image), 2. Padding (space inside the border), 3. Border (the edge), and 4. Margin (space outside the border). Mastering this is key to layout design.[/LESSON]\n\n[YOUR_TURN]Draw a diagram of the CSS Box Model in your notebook, labeling Content, Padding, Border, and Margin.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Ghanaian CSS Styling Challenge",
+          "body": "[STORY]Ama opened her text editor, saved a new file as `index.html`, and typed out the full structure: `<html>`, `<head>`, `<body>`. She linked a `style.css` file and added her kente details. She opened the file in her browser without any internet connection. It loaded perfectly! 'I built a webpage offline!' she cheered. Akosua nodded. 'You are now a creator.'[/STORY]\n\n[LESSON]To build a webpage, create a folder with `index.html` and `style.css`. Link them together using the `<link>` tag in the head. You can test and view your webpage locally in any web browser without needing an active internet connection.[/LESSON]\n\n[YOUR_TURN]Create a simple HTML page on your computer with a heading, paragraph, and styled background. View it in your browser.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What does HTML stand for?', options: ['Hyper Text Markup Language', 'Home Tool Markup Language', 'Hyperlink Text Management Language', 'High Tech Modern Language'], answer: 'Hyper Text Markup Language' },
-        { question: 'Which HTML tag is used for the largest heading?', options: ['<h6>', '<head>', '<heading>', '<h1>'], answer: '<h1>' },
-        { question: 'What does CSS stand for?', options: ['Computer Style Sheets', 'Cascading Style Sheets', 'Creative Styling Syntax', 'Common Style System'], answer: 'Cascading Style Sheets' },
-        { question: 'Which HTML element contains the visible content of a webpage?', options: ['<head>', '<body>', '<meta>', '<html>'], answer: '<body>' },
-        { question: 'How do you apply a color to a text in CSS?', options: ['text-color: blue;', 'color: blue;', 'font-color: blue;', 'background: blue;'], answer: 'color: blue;' }
+      "quiz": [
+        {
+          "question": "What does HTML stand for?",
+          "options": [
+            "Hyper Text Markup Language",
+            "Home Tool Markup Language",
+            "Hyperlink Text Management Language",
+            "High Tech Modern Language"
+          ],
+          "answer": "Hyper Text Markup Language"
+        },
+        {
+          "question": "Which HTML tag is used for the largest heading?",
+          "options": [
+            "<h6>",
+            "<head>",
+            "<heading>",
+            "<h1>"
+          ],
+          "answer": "<h1>"
+        },
+        {
+          "question": "What does CSS stand for?",
+          "options": [
+            "Computer Style Sheets",
+            "Cascading Style Sheets",
+            "Creative Styling Syntax",
+            "Common Style System"
+          ],
+          "answer": "Cascading Style Sheets"
+        },
+        {
+          "question": "Which HTML element contains the visible content of a webpage?",
+          "options": [
+            "<head>",
+            "<body>",
+            "<meta>",
+            "<html>"
+          ],
+          "answer": "<body>"
+        },
+        {
+          "question": "How do you apply a color to a text in CSS?",
+          "options": [
+            "text-color: blue;",
+            "color: blue;",
+            "font-color: blue;",
+            "background: blue;"
+          ],
+          "answer": "color: blue;"
+        }
       ]
     }
   },
   {
-    id: 9,
-    title: 'JavaScript Fundamentals',
-    category: 'technical-skills',
-    description: 'Learn programming logic and JavaScript basics with hands-on exercises.',
-    order: 9,
-    duration: '75 minutes',
-    content: {
-      intro: 'JavaScript makes websites alive and interactive. While HTML creates structure and CSS adds beauty, JavaScript adds behavior — it makes buttons work, forms validate, animations run, and data update without reloading the page. JavaScript is the most popular programming language in the world, and learning it opens doors to web development, mobile apps, and even server programming.',
-      sections: [
-        { heading: 'What is JavaScript?', body: 'JavaScript (JS) is a text-based programming language used both on the client-side (in the browser) and server-side (on the server). It is the language that makes the internet interactive.\n\nEvery time you:\n- Click a "Like" button and see the count increase → JavaScript\n- Fill out a form and see "Password too short" appear → JavaScript\n- See a dropdown menu open when you click → JavaScript\n- Watch a slideshow of images rotate automatically → JavaScript\n\nHTML is the structure (the building), CSS is the design (the paint and decoration), and JavaScript is the behavior (the electricity, plumbing, and elevator). Without JavaScript, websites would be static documents that never change.\n\nJavaScript is beginner-friendly because you can see results immediately. Write a line of code in your browser, press Enter, and something happens. This instant feedback makes it one of the best first programming languages to learn.' },
-        { heading: 'Variables and Data Types', body: 'Variables are containers for storing data values. Think of a variable as a labeled box — you give it a name and put something inside it. In JavaScript, we declare variables using the keywords let, const, or var:\n\nlet studentName = "Ama";        // A text value (called a "string")\nlet age = 22;                     // A number\nlet isEnrolled = true;            // A true/false value (called a "boolean")\nconst courseName = "Pool of Grace"; // A constant that cannot change\n\nThe main data types in JavaScript:\n- STRING: Text wrapped in quotes. Examples: "Hello", "Kumasi", "I love coding"\n- NUMBER: Any numeric value. Examples: 42, 3.14, -7, 1000\n- BOOLEAN: Either true or false. Used for yes/no decisions.\n- ARRAY: A list of items. Example: let colors = ["red", "gold", "green"]\n- OBJECT: A collection of related data. Example: let student = { name: "Ama", age: 22, city: "Accra" }\n\nNaming rules: Variable names must start with a letter, cannot contain spaces, and are case-sensitive (myName and myname are different variables). Use descriptive names like studentAge instead of x.' },
-        { heading: 'Conditional Logic', body: 'Conditional statements let your program make decisions. They follow the same logic you use every day: "IF this condition is true, THEN do this action. OTHERWISE, do something else."\n\nJavaScript syntax:\nif (condition) {\n  // do this if the condition is true\n} else if (anotherCondition) {\n  // do this if the first condition is false but this one is true\n} else {\n  // do this if all conditions are false\n}\n\nReal-world example — a quiz grading system:\nlet score = 4;\nif (score >= 4) {\n  console.log("Excellent! You passed with distinction.");\n} else if (score >= 3) {\n  console.log("Good job! You passed the module.");\n} else {\n  console.log("Keep studying. You need at least 3 to pass.");\n}\n\nComparison operators you will use:\n- === means "is equal to" (let passed = score === 5)\n- !== means "is not equal to"\n- > means "greater than"\n- < means "less than"\n- >= means "greater than or equal to"\n- <= means "less than or equal to"\n\nConditionals are the foundation of all programming logic. Every app, game, and website uses them constantly.' },
-        { heading: 'Loops and Functions', body: 'LOOPS execute a block of code multiple times. Instead of writing the same code 10 times, you write it once and let the loop repeat it:\n\n// Print numbers 1 to 5\nfor (let i = 1; i <= 5; i++) {\n  console.log("Module " + i);\n}\n// Output: Module 1, Module 2, Module 3, Module 4, Module 5\n\n// Loop through an array\nlet cities = ["Accra", "Kumasi", "Tamale", "Takoradi"];\nfor (let i = 0; i < cities.length; i++) {\n  console.log("I love " + cities[i]);\n}\n\nFUNCTIONS are reusable blocks of code that perform a specific task. Instead of repeating code, you define it once and call it whenever you need it:\n\nfunction greetStudent(name) {\n  return "Welcome to Pool of Grace, " + name + "!";\n}\n\nconsole.log(greetStudent("Ama"));    // "Welcome to Pool of Grace, Ama!"\nconsole.log(greetStudent("Kwame"));  // "Welcome to Pool of Grace, Kwame!"\n\nFunctions make your code organized, reusable, and easier to debug. Professional developers write dozens of functions every day. If you find yourself writing the same code twice, that code should probably be a function.' }
+    "id": 9,
+    "title": "JavaScript Fundamentals",
+    "category": "technical-skills",
+    "description": "Learn programming logic and JavaScript basics with hands-on exercises.",
+    "order": 9,
+    "duration": "75 minutes",
+    "content": {
+      "intro": "[STORY]Ama had her beautiful kente page, but it was static. 'I want buyers to select a cloth size and see the price change instantly,' she told Akosua. Akosua tapped the laptop. 'For that, we need JavaScript. If HTML is the stall and CSS is the paint, JavaScript is the calculator and the helper who talks to customers.' Ama opened her script file, excited to add action.[/STORY]",
+      "sections": [
+        {
+          "heading": "What is JavaScript?",
+          "body": "[STORY]Ama learned that JavaScript runs behind the scenes, reacting to what the user does. When a customer clicks a button, JavaScript catches the click, processes the logic, and updates the screen. Ama wrote a simple script that popped up a message: 'Welcome to our Kente Stall!' when the page loaded. She felt like she had given her page a voice.[/STORY]\n\n[LESSON]JavaScript is the programming language that makes webpages interactive. While HTML handles structure and CSS handles style, JavaScript handles dynamic behavior — responding to user clicks, calculating numbers, updating content, and validating forms.[/LESSON]\n\n[YOUR_TURN]What is the role of JavaScript compared to HTML and CSS? Write a one-sentence summary.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Variables and Data Types",
+          "body": "[STORY]Akosua showed Ama how to store data. 'Think of a market woman's record book. She writes down: customerName = Ama, kentePrice = 350. In JavaScript, we do the same using variables.' Ama declared her first variables: `let customer = 'Ama';` and `let price = 350;`. She understood that variables were just labeled baskets holding information.[/STORY]\n\n[LESSON]Variables are containers for storing data values. In modern JavaScript, we declare them using `let` (for values that can change) and `const` (for values that stay the same). Data types include strings (text), numbers, booleans (true/false), and arrays (lists).[/LESSON]\n\n[YOUR_TURN]Write two lines of JavaScript: one declaring a variable for your age, and another for your name.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Conditional Logic",
+          "body": "[STORY]Ama wanted to offer a discount. 'If the customer buys more than two cloths, give a 10% discount,' she planned. Akosua showed her the `if/else` statement. Ama coded: `if (quantity > 2) { price = price * 0.9; } else { price = price; }`. She ran the script with different quantities and watched the prices adjust. It was like magic, but it was pure logic.[/STORY]\n\n[LESSON]Control flow allows your program to make decisions based on conditions. The `if/else` statement executes one block of code if a condition is true, and a different block if it is false. This logic makes your application interactive and smart.[/LESSON]\n\n[YOUR_TURN]Write a JavaScript condition that checks if a user's age is 18 or older, and logs 'Adult' if true, or 'Minor' if false.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Loops and Functions",
+          "body": "[STORY]Ama had to calculate the total price for different customers. Instead of writing the discount logic over and over, Akosua showed her how to write a function. 'Think of Jollof rice,' Akosua said. 'You write the recipe once as a function, then you just call it with different ingredients.' Ama wrote a function `calculateTotal(price, qty)` and called it three times. It saved time and kept her code clean.[/STORY]\n\n[LESSON]A function is a reusable block of code designed to perform a specific task. You define the function once (with inputs called parameters), and then you can execute ('call') it multiple times with different values, returning a result.[/LESSON]\n\n[YOUR_TURN]Write a JavaScript function named `add` that takes two numbers as parameters and returns their sum.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'How do you declare a variable that cannot be reassigned?', options: ['let myVar = 5;', 'const myVar = 5;', 'var myVar = 5;', 'assign myVar = 5;'], answer: 'const myVar = 5;' },
-        { question: 'Which keyword is used to create conditional logic in JavaScript?', options: ['for', 'function', 'if', 'while'], answer: 'if' },
-        { question: 'What data type represents true or false values?', options: ['String', 'Number', 'Boolean', 'Object'], answer: 'Boolean' },
-        { question: 'How do you write a comment in JavaScript?', options: ['<!-- Comment -->', '// Comment', '# Comment', '/* Comment'], answer: '// Comment' },
-        { question: 'What is the purpose of a function?', options: ['To style a webpage', 'To create a database', 'To group reusable code together to perform a task', 'To host a website'], answer: 'To group reusable code together to perform a task' }
+      "quiz": [
+        {
+          "question": "How do you declare a variable that cannot be reassigned?",
+          "options": [
+            "let myVar = 5;",
+            "const myVar = 5;",
+            "var myVar = 5;",
+            "assign myVar = 5;"
+          ],
+          "answer": "const myVar = 5;"
+        },
+        {
+          "question": "Which keyword is used to create conditional logic in JavaScript?",
+          "options": [
+            "for",
+            "function",
+            "if",
+            "while"
+          ],
+          "answer": "if"
+        },
+        {
+          "question": "What data type represents true or false values?",
+          "options": [
+            "String",
+            "Number",
+            "Boolean",
+            "Object"
+          ],
+          "answer": "Boolean"
+        },
+        {
+          "question": "How do you write a comment in JavaScript?",
+          "options": [
+            "<!-- Comment -->",
+            "// Comment",
+            "# Comment",
+            "/* Comment"
+          ],
+          "answer": "// Comment"
+        },
+        {
+          "question": "What is the purpose of a function?",
+          "options": [
+            "To style a webpage",
+            "To create a database",
+            "To group reusable code together to perform a task",
+            "To host a website"
+          ],
+          "answer": "To group reusable code together to perform a task"
+        }
       ]
     }
   },
   {
-    id: 10,
-    title: 'Building Your First Website',
-    category: 'technical-skills',
-    description: 'Put your HTML CSS and JavaScript skills together to build a real website.',
-    order: 10,
-    duration: '90 minutes',
-    content: {
-      intro: 'This module is a practical challenge. You will synthesize HTML structure, CSS design, and JavaScript behavior into a complete, working website. This is where everything comes together — and it is one of the most exciting moments in your learning journey.',
-      sections: [
-        { heading: 'Project Setup and Structure', body: 'Professional web development starts with organized files. A clean folder structure makes your code maintainable and helps others (and your future self) understand your project.\n\nCreate a project folder with this structure:\nmy-website/\n  index.html      ← Your main HTML file\n  style.css       ← Your CSS styles\n  app.js          ← Your JavaScript logic\n\nIn your index.html, connect these files:\n<head>\n  <link rel="stylesheet" href="style.css">  ← Links your CSS\n</head>\n<body>\n  <!-- Your visible content here -->\n  <script src="app.js"></script>  ← Links your JavaScript (placed at bottom of body)\n</body>\n\nWhy put the <script> tag at the bottom of <body>? Because the browser reads HTML from top to bottom. If your JavaScript tries to access HTML elements before they exist, it will fail. Placing the script at the bottom ensures all HTML is loaded first.\n\nPractical tip: Use relative paths (href="style.css") instead of absolute paths. This means your CSS file should be in the same folder as your HTML file.' },
-        { heading: 'Responsive Design Principles', body: 'A responsive website automatically adjusts its layout to look great on any screen size — mobile phones, tablets, and desktop computers. In Ghana, over 70% of internet users access the web primarily through mobile phones, so mobile-responsive design is not optional — it is essential.\n\nCSS Media Queries are the primary tool for responsive design. They let you apply different styles based on the screen size:\n\n/* Default styles (mobile first) */\n.container {\n  width: 100%;\n  padding: 10px;\n}\n\n/* Tablet and larger screens */\n@media (min-width: 768px) {\n  .container {\n    width: 750px;\n    margin: 0 auto;\n  }\n}\n\n/* Desktop screens */\n@media (min-width: 1024px) {\n  .container {\n    width: 960px;\n  }\n}\n\nThe "mobile first" approach means you design for small screens first, then add complexity for larger screens. This is the industry standard because it is easier to add features for bigger screens than to remove them for smaller ones.\n\nOther responsive tools: Use percentages (width: 50%) instead of fixed pixels (width: 500px). Use CSS Flexbox for flexible layouts. Use max-width to prevent elements from getting too wide on large screens.' },
-        { heading: 'DOM Manipulation', body: 'DOM stands for Document Object Model. It is the browser\'s internal representation of your HTML page as a tree of objects. JavaScript can access this tree and change anything on the page — text, colors, visibility, even add or remove entire elements.\n\nSelecting elements:\nconst heading = document.getElementById("main-title");     // By ID\nconst buttons = document.querySelectorAll(".btn");           // By CSS class\nconst firstParagraph = document.querySelector("p");          // First matching element\n\nChanging content:\nheading.textContent = "Welcome, Ama!";                      // Change text\nheading.style.color = "#006B3F";                             // Change style\nheading.classList.add("highlighted");                        // Add a CSS class\n\nResponding to events (clicks, typing, etc.):\nconst button = document.getElementById("submit-btn");\nbutton.addEventListener("click", function() {\n  alert("Form submitted! Medaase!");\n});\n\nDOM manipulation is what makes websites interactive. When you click a button and a dropdown appears, that is JavaScript manipulating the DOM. When you type in a search box and see suggestions appear, that is JavaScript reading your input and updating the DOM in real time.' },
-        { heading: 'Ghanaian Small Business Showcase', body: 'Your capstone challenge for this module: build a product landing page for a local Ghanaian enterprise. Choose one of these ideas (or create your own):\n\n1. SHEA BUTTER BUSINESS: A landing page for a Ghanaian shea butter brand with product photos, prices in GHS, and a "Contact Us" form\n2. KENTE WEAVING: A showcase for a kente cloth weaver with a gallery of designs and an order inquiry form\n3. FARM PRODUCE: A page for a local farmer selling plantain, yam, or cassava with a simple order list\n4. TECH TRAINING: A landing page for a coding bootcamp in your community\n\nYour page should include:\n- A header with a logo/name and navigation\n- A hero section with a compelling headline and call-to-action button\n- A products/services section with at least 3 items\n- A contact form with name, email, and message fields\n- A footer with contact information\n- CSS styling that uses Ghana flag colors\n- JavaScript that validates the form (check that fields are not empty before "submitting")\n\nThis project will be something you can show to potential employers or clients. It demonstrates that you can build real, functional web pages — which is exactly what companies hire junior developers to do.' }
+    "id": 10,
+    "title": "Building Your First Website",
+    "category": "technical-skills",
+    "description": "Put your HTML CSS and JavaScript skills together to build a real website.",
+    "order": 10,
+    "duration": "90 minutes",
+    "content": {
+      "intro": "[STORY]Ama stood back and looked at her project folder. She had `index.html`, `style.css`, and `script.js` ready. 'Now we assemble them,' Akosua said. 'We will build a fully responsive, interactive kente calculator that fits on any phone in Ghana, from Accra to Bolgatanga.' Ama felt a thrill of excitement. This was her first complete web product.[/STORY]",
+      "sections": [
+        {
+          "heading": "Project Setup and Structure",
+          "body": "[STORY]Ama organized her files. She placed her HTML file in the root directory, her styles in a `css` folder, and her script in a `js` folder. She linked the stylesheet in the `<head>` and the script at the bottom of the `<body>`. Linking them correctly meant the browser loaded the structure, design, and logic together as one functional app.[/STORY]\n\n[LESSON]A standard web project is organized with `index.html` at the root, linking external files: `<link rel='stylesheet' href='css/style.css'>` and `<script src='js/script.js'></script>`. Keeping files organized makes your codebase clean and maintainable.[/LESSON]\n\n[YOUR_TURN]Draw a folder structure showing where to place HTML, CSS, and JS files for a clean web project.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Responsive Design Principles",
+          "body": "[STORY]Ama loaded her site on her brother's cheap phone. The text was tiny and the image was cut off. 'Oh no,' she said. Akosua showed her CSS media queries. 'We must design for all screens. Mobile first.' Ama added `@media (max-width: 600px)` rules, making the font larger and the kente image stack vertically. On the phone, the site now looked perfect and clean.[/STORY]\n\n[LESSON]Responsive Web Design ensures webpages look good on all devices (phones, tablets, laptops). Use CSS media queries to apply styles based on the device width, and use relative units like percentages, `rem`, or flexbox layouts instead of fixed pixels.[/LESSON]\n\n[YOUR_TURN]Write a basic media query in CSS that changes the background color to light gray when the screen width is 600px or less.[/YOUR_TURN]"
+        },
+        {
+          "heading": "DOM Manipulation",
+          "body": "[STORY]Ama wanted her JavaScript to read the quantity input from the screen and update the price text. She learned to select elements using `document.getElementById()`. She wrote a click listener: `button.addEventListener('click', () => { ... })`. When she entered '3' and clicked 'Calculate', the total changed from '0 GHS' to '945 GHS' right before her eyes.[/STORY]\n\n[LESSON]The DOM (Document Object Model) is the browser's representation of your HTML page. JavaScript can manipulate the DOM by selecting elements, listening for user events (like clicks or keystrokes), changing text content, or modifying CSS styles in real time.[/LESSON]\n\n[YOUR_TURN]Write a JavaScript code snippet that selects an HTML element with the ID 'title' and changes its text to 'Welcome!'[/YOUR_TURN]"
+        },
+        {
+          "heading": "Ghanaian Small Business Showcase",
+          "body": "[STORY]Ama opened her browser's developer console (Inspect element). She saw a red error message. Instead of panicking, she read it carefully: 'Cannot read property of null on line 15.' She realized she had misspelled the button ID. She fixed it, refreshed, and the console was clean. She tested the site offline multiple times. It worked flawlessly.[/STORY]\n\n[LESSON]Use browser developer tools (Right-click -> Inspect -> Console) to test and debug your code. The console displays JavaScript outputs and syntax errors, helping you pinpoint and resolve issues quickly. Testing locally requires no internet connection.[/LESSON]\n\n[YOUR_TURN]Open your browser's Developer Tools on any page. Locate the console tab and run a simple `console.log('Test')` command. Write down what happens.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What does DOM stand for?', options: ['Document Object Model', 'Data Output Management', 'Digital Office Media', 'Developer Object Mode'], answer: 'Document Object Model' },
-        { question: 'How do you link an external CSS file in HTML?', options: ['<script src="style.css">', '<link rel="stylesheet" href="style.css">', '<style src="style.css">', '<a href="style.css">'], answer: '<link rel="stylesheet" href="style.css">' },
-        { question: 'Which CSS rule makes layouts adapt to mobile screens?', options: ['@media query', '@responsive rule', '@import font', '@keyframes animation'], answer: '@media query' },
-        { question: 'How do you select an element by ID in JavaScript?', options: ['document.selectID("myId")', 'document.getElementById("myId")', 'document.query("myId")', 'element.myId'], answer: 'document.getElementById("myId")' },
-        { question: 'Where is the correct place to write metadata and stylesheet links?', options: ['Inside <body>', 'Inside <head>', 'Outside <html>', 'Inside <footer>'], answer: 'Inside <head>' }
+      "quiz": [
+        {
+          "question": "What does DOM stand for?",
+          "options": [
+            "Document Object Model",
+            "Data Output Management",
+            "Digital Office Media",
+            "Developer Object Mode"
+          ],
+          "answer": "Document Object Model"
+        },
+        {
+          "question": "How do you link an external CSS file in HTML?",
+          "options": [
+            "<script src=\"style.css\">",
+            "<link rel=\"stylesheet\" href=\"style.css\">",
+            "<style src=\"style.css\">",
+            "<a href=\"style.css\">"
+          ],
+          "answer": "<link rel=\"stylesheet\" href=\"style.css\">"
+        },
+        {
+          "question": "Which CSS rule makes layouts adapt to mobile screens?",
+          "options": [
+            "@media query",
+            "@responsive rule",
+            "@import font",
+            "@keyframes animation"
+          ],
+          "answer": "@media query"
+        },
+        {
+          "question": "How do you select an element by ID in JavaScript?",
+          "options": [
+            "document.selectID(\"myId\")",
+            "document.getElementById(\"myId\")",
+            "document.query(\"myId\")",
+            "element.myId"
+          ],
+          "answer": "document.getElementById(\"myId\")"
+        },
+        {
+          "question": "Where is the correct place to write metadata and stylesheet links?",
+          "options": [
+            "Inside <body>",
+            "Inside <head>",
+            "Outside <html>",
+            "Inside <footer>"
+          ],
+          "answer": "Inside <head>"
+        }
       ]
     }
   },
   {
-    id: 11,
-    title: 'Introduction to Python',
-    category: 'technical-skills',
-    description: 'Learn Python programming from scratch with practical Ghanaian examples.',
-    order: 11,
-    duration: '75 minutes',
-    content: {
-      intro: 'Python is a high-level, readable programming language used for data analysis, automation, machine learning, and backend development. It is known as one of the easiest programming languages to learn because its syntax reads almost like plain English. Python is used by companies like Google, Netflix, Instagram, and Spotify — and it is the most popular language for data science in Africa.',
-      sections: [
-        { heading: 'Why Learn Python?', body: 'Python is known for clean, readable syntax that resembles plain English. Unlike JavaScript which uses curly brackets and semicolons, Python uses indentation (spaces) to organize code. This makes Python code easier to read and write, especially for beginners.\n\nCompare JavaScript vs Python for the same task:\n\nJavaScript:\nfunction greet(name) {\n  if (name === "Ama") {\n    console.log("Akwaaba, " + name + "!");\n  } else {\n    console.log("Hello, " + name + "!");\n  }\n}\n\nPython:\ndef greet(name):\n    if name == "Ama":\n        print(f"Akwaaba, {name}!")\n    else:\n        print(f"Hello, {name}!")\n\nNotice how Python is shorter and more readable. No curly brackets, no semicolons — just clean indentation.\n\nPython is especially powerful for:\n- DATA ANALYSIS: Analyzing agricultural data, sales records, or survey results\n- AUTOMATION: Writing scripts to automate repetitive tasks (like renaming files or sending emails)\n- WEB DEVELOPMENT: Building server-side applications using Django or Flask\n- MOBILE MONEY ANALYTICS: Processing and analyzing mobile money transaction data' },
-        { heading: 'Variables and Simple Calculations', body: 'Python variables are declared by simple assignment — no special keywords needed:\n\n# Text (strings)\nname = "Kwame"\ncity = "Kumasi"\ngreeting = f"Hello, {name} from {city}!"\n\n# Numbers\nprice_per_kg = 15.50\nquantity = 3\ntotal_cost = price_per_kg * quantity    # 46.50\n\n# Calculations\nprint(f"Total cost: GHS {total_cost}")   # Total cost: GHS 46.50\n\nMathematical operators in Python:\n+ Addition:       5 + 3 = 8\n- Subtraction:    10 - 4 = 6\n* Multiplication: 6 * 7 = 42\n/ Division:       20 / 4 = 5.0\n** Exponent:      2 ** 3 = 8 (2 to the power of 3)\n% Modulus:        10 % 3 = 1 (remainder after division)\n\nPractical example — calculating market prices:\nprice_yam = 20\nprice_plantain = 8\nprice_groundnut = 12\ntotal = price_yam + price_plantain + price_groundnut\ntax = total * 0.125    # 12.5% VAT in Ghana\nfinal_price = total + tax\nprint(f"Total: GHS {final_price}")' },
-        { heading: 'Control Flow (If, For, While)', body: 'Python uses indentation (4 spaces) instead of curly brackets to define blocks of code. This is unique to Python and enforces clean, readable code structure.\n\nIF STATEMENTS — Making decisions:\nage = 20\nif age >= 18:\n    print("You are eligible to register for the tech program")\n    print("Welcome to Pool of Grace!")\nelif age >= 15:\n    print("You can join our junior program")\nelse:\n    print("Please check back when you are 15 or older")\n\nFOR LOOPS — Repeating actions:\nmodules = ["HTML", "CSS", "JavaScript", "Python"]\nfor module in modules:\n    print(f"I am learning {module}")\n# Output: I am learning HTML, I am learning CSS, etc.\n\n# Counting with range()\nfor i in range(1, 6):\n    print(f"Week {i} of training")\n# Output: Week 1, Week 2, Week 3, Week 4, Week 5\n\nWHILE LOOPS — Repeat until a condition changes:\nquiz_score = 0\nattempts = 0\nwhile quiz_score < 3:\n    attempts += 1\n    quiz_score = int(input("Enter your score: "))\n    if quiz_score < 3:\n        print("Try again! You need at least 3 to pass.")\nprint(f"Congratulations! You passed after {attempts} attempt(s)!")\n\nIndentation is critical in Python: if your spaces are wrong, the code will not run. Always use 4 spaces (or Tab key) for each level of indentation.' },
-        { heading: 'List Operations and Dictionaries', body: 'LISTS store multiple items in a single variable. They are ordered, changeable, and allow duplicate values:\n\n# Creating a list\nstudents = ["Ama", "Kwame", "Efua", "Kofi"]\n\n# Accessing items (indexing starts at 0)\nfirst_student = students[0]    # "Ama"\nlast_student = students[-1]    # "Kofi"\n\n# Adding and removing items\nstudents.append("Abena")       # Adds "Abena" to the end\nstudents.remove("Kwame")       # Removes "Kwame"\n\n# List length\nprint(len(students))           # Number of items in the list\n\nDICTIONARIES store data in key-value pairs — like a real dictionary where a word (key) has a definition (value):\n\n# Creating a dictionary\nstudent = {\n    "name": "Ama Mensah",\n    "age": 22,\n    "city": "Kumasi",\n    "modules_completed": 7,\n    "enrolled": True\n}\n\n# Accessing values\nprint(student["name"])           # "Ama Mensah"\nprint(student["city"])           # "Kumasi"\n\n# Adding new data\nstudent["phone"] = "024-XXX-XXXX"\n\n# Looping through a dictionary\nfor key, value in student.items():\n    print(f"{key}: {value}")\n\nDictionaries are extremely useful for storing structured data — user profiles, product catalogs, quiz results, or any data with labeled fields. They are the Python equivalent of a real-world form or record book.' }
+    "id": 11,
+    "title": "Introduction to Python",
+    "category": "technical-skills",
+    "description": "Learn Python programming from scratch with practical Ghanaian examples.",
+    "order": 11,
+    "duration": "75 minutes",
+    "content": {
+      "intro": "[STORY]Ama had built a frontend web page, but Akosua had a new challenge. 'Websites are great for users, but what if you need to process thousands of transactions or write server logic? For that, we need Python. It is a language of logic, data, and power. It is clean and readable, like writing in a clear voice.' Ama opened a new terminal, ready to learn.[/STORY]",
+      "sections": [
+        {
+          "heading": "Why Learn Python?",
+          "body": "[STORY]Ama looked at a Python script. There were no brackets or semicolons like in JavaScript. Instead, it used simple indentations (spaces). Code looked like: `if score > 80:\n    print('Pass')`. Ama loved it. It was clean and readable. Akosua explained: 'Python is used by companies like MTN for data analysis, and by Google for web servers. It is the language of problem solvers.'[/STORY]\n\n[LESSON]Python is a high-level, interpreted programming language known for its clean readability and simple syntax. Instead of brackets, Python uses indentation to define code blocks. It is widely used in web backend development, data science, automation, and AI.[/LESSON]\n\n[YOUR_TURN]Write a single line of Python code that prints: 'Hello, Ghana!'[/YOUR_TURN]"
+        },
+        {
+          "heading": "Variables and Simple Calculations",
+          "body": "[STORY]Ama wanted to list the colors of kente cloth. In Python, she created a list: `colors = ['yellow', 'red', 'green']`. Then she wanted to store the price of each style. She created a dictionary: `prices = {'Adweneasa': 500, 'Obiako': 450}`. She saw that Python made it simple to stack and categorize data, like stocking shelves at a store.[/STORY]\n\n[LESSON]Python data structures include Lists (ordered, modifiable sequences), Dictionaries (unordered key-value mappings for lookups), and Tuples (ordered, unchangeable sequences). They allow developers to store and organize complex information efficiently.[/LESSON]\n\n[YOUR_TURN]Write Python code declaring a dictionary named `student` with keys 'name' and 'score', and assign appropriate values.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Control Flow (If, For, While)",
+          "body": "[STORY]Ama had a list of 5 sales: `sales = [350, 400, 500, 300, 450]`. She wanted to calculate the total revenue. She wrote a `for` loop: `total = 0\nfor sale in sales:\n    total += sale`. She ran the script and it printed the sum instantly. She realized loops were like a persistent market assistant, counting every basket one by one without getting tired.[/STORY]\n\n[LESSON]Loops allow you to repeat a block of code multiple times. A `for` loop iterates over a sequence (like a list or dictionary) item by item. A `while` loop continues running as long as a specified condition is true. Loops are essential for processing collections of data.[/LESSON]\n\n[YOUR_TURN]Write a Python `for` loop that iterates through a list of numbers `[1, 2, 3]` and prints each number multiplied by 2.[/YOUR_TURN]"
+        },
+        {
+          "heading": "List Operations and Dictionaries",
+          "body": "[STORY]Ama wrote a function to calculate tax on her sales. She typed: `def calculate_tax(amount):\n    return amount * 0.05`. She passed 500 GHS into it, and it returned 25 GHS. She liked how she could wrap logic inside a clear name using the `def` keyword. Her code felt organized and reusable.[/STORY]\n\n[LESSON]In Python, you define functions using the `def` keyword, followed by the function name, parameters, and a colon. The function body must be indented, and values are returned using `return`. Python functions promote code reusability and clarity.[/LESSON]\n\n[YOUR_TURN]Write a Python function named `greet` that takes a name as a parameter and returns: 'Hello, ' + name.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'How does Python define blocks of code?', options: ['Using curly brackets {}', 'Using parentheses ()', 'Using indentation (whitespace)', 'Using semicolon endings ;'], answer: 'Using indentation (whitespace)' },
-        { question: 'Which keyword defines a function in Python?', options: ['function', 'def', 'create', 'func'], answer: 'def' },
-        { question: 'What data structure stores key-value pairs in Python?', options: ['List', 'Tuple', 'Set', 'Dictionary'], answer: 'Dictionary' },
-        { question: 'How do you print text in Python?', options: ['console.log("text")', 'print("text")', 'echo "text"', 'System.out.println("text")'], answer: 'print("text")' },
-        { question: 'Which of the following is a valid Python list?', options: ['my_list = [1, 2, 3]', 'my_list = {1, 2, 3}', 'my_list = (1, 2, 3)', 'my_list = "1, 2, 3"'], answer: 'my_list = [1, 2, 3]' }
+      "quiz": [
+        {
+          "question": "How does Python define blocks of code?",
+          "options": [
+            "Using curly brackets {}",
+            "Using parentheses ()",
+            "Using indentation (whitespace)",
+            "Using semicolon endings ;"
+          ],
+          "answer": "Using indentation (whitespace)"
+        },
+        {
+          "question": "Which keyword defines a function in Python?",
+          "options": [
+            "function",
+            "def",
+            "create",
+            "func"
+          ],
+          "answer": "def"
+        },
+        {
+          "question": "What data structure stores key-value pairs in Python?",
+          "options": [
+            "List",
+            "Tuple",
+            "Set",
+            "Dictionary"
+          ],
+          "answer": "Dictionary"
+        },
+        {
+          "question": "How do you print text in Python?",
+          "options": [
+            "console.log(\"text\")",
+            "print(\"text\")",
+            "echo \"text\"",
+            "System.out.println(\"text\")"
+          ],
+          "answer": "print(\"text\")"
+        },
+        {
+          "question": "Which of the following is a valid Python list?",
+          "options": [
+            "my_list = [1, 2, 3]",
+            "my_list = {1, 2, 3}",
+            "my_list = (1, 2, 3)",
+            "my_list = \"1, 2, 3\""
+          ],
+          "answer": "my_list = [1, 2, 3]"
+        }
       ]
     }
   },
   {
-    id: 12,
-    title: 'Databases and SQL',
-    category: 'technical-skills',
-    description: 'Understand how data is stored and learn to query databases using SQL.',
-    order: 12,
-    duration: '60 minutes',
-    content: {
-      intro: 'A database is an organized collection of structured information stored electronically. Every application you use — from mobile money to social media to this very platform — stores its data in a database. SQL (Structured Query Language) is the standard language used to communicate with databases. Learning SQL gives you the power to store, retrieve, and analyze data.',
-      sections: [
-        { heading: 'Relational Database Concepts', body: 'A relational database stores data in tables, similar to spreadsheets. Each table has rows (records) and columns (fields). Tables can relate to each other through shared columns called keys.\n\nExample — a "students" table:\n| id | name          | email              | city    | enrolled |\n|----|---------------|--------------------|---------|----------|\n| 1  | Ama Mensah    | ama@email.com      | Kumasi  | true     |\n| 2  | Kwame Asante  | kwame@email.com    | Accra   | true     |\n| 3  | Efua Darko    | efua@email.com     | Tamale  | false    |\n\nKey terms:\n- TABLE: A collection of related data organized in rows and columns (like a spreadsheet)\n- ROW (Record): A single entry in the table (one student)\n- COLUMN (Field): A category of data (name, email, city)\n- PRIMARY KEY: A unique identifier for each row (the id column). No two rows can have the same primary key.\n- FOREIGN KEY: A column in one table that references the primary key of another table. This is how tables are connected. For example, a "quiz_scores" table might have a student_id column that links to the students table.' },
-        { heading: 'Writing SELECT Queries', body: 'The SELECT statement is the most common SQL command. It retrieves data from a database table:\n\n-- Get all students\nSELECT * FROM students;\n\n-- Get only names and cities\nSELECT name, city FROM students;\n\n-- Get students from Kumasi\nSELECT * FROM students WHERE city = \'Kumasi\';\n\n-- Get enrolled students, sorted by name\nSELECT * FROM students WHERE enrolled = true ORDER BY name;\n\n-- Count how many students are enrolled\nSELECT COUNT(*) FROM students WHERE enrolled = true;\n\n-- Get students whose name contains "Ama"\nSELECT * FROM students WHERE name LIKE \'%Ama%\';\n\nThe WHERE clause filters results based on conditions. You can combine conditions:\nSELECT * FROM students WHERE city = \'Accra\' AND enrolled = true;\nSELECT * FROM students WHERE city = \'Kumasi\' OR city = \'Accra\';\n\nPractical tip: SQL keywords (SELECT, FROM, WHERE) are typically written in uppercase for readability, but they work in lowercase too.' },
-        { heading: 'CRUD Operations in SQL', body: 'CRUD stands for Create, Read, Update, and Delete — the four fundamental operations for managing data in any database:\n\nCREATE (INSERT) — Adding new data:\nINSERT INTO students (name, email, city, enrolled)\nVALUES (\'Abena Osei\', \'abena@email.com\', \'Cape Coast\', true);\n\nREAD (SELECT) — Retrieving data:\nSELECT * FROM students WHERE city = \'Cape Coast\';\n\nUPDATE — Modifying existing data:\nUPDATE students SET city = \'Accra\' WHERE id = 3;\nUPDATE students SET enrolled = true WHERE name = \'Efua Darko\';\n\nDELETE — Removing data:\nDELETE FROM students WHERE id = 3;\n\nIMPORTANT: Always use a WHERE clause with UPDATE and DELETE! Without it, you will modify or delete ALL rows in the table:\n-- DANGEROUS: This updates EVERY student\'s city!\nUPDATE students SET city = \'Accra\';  -- Missing WHERE clause!\n\n-- SAFE: This only updates one specific student\nUPDATE students SET city = \'Accra\' WHERE id = 3;\n\nThis is one of the most common mistakes beginners make, and it can have serious consequences in a production database. Always double-check your WHERE clause before running UPDATE or DELETE.' },
-        { heading: 'Joining Tables', body: 'A JOIN clause combines rows from two or more tables based on a related column. This is one of the most powerful features of relational databases.\n\nExample — connecting students to their quiz scores:\n\nstudents table:\n| id | name       |\n|----|------------|\n| 1  | Ama        |\n| 2  | Kwame      |\n\nquiz_scores table:\n| id | student_id | module    | score |\n|----|------------|-----------|-------|\n| 1  | 1          | HTML      | 5     |\n| 2  | 1          | Python    | 4     |\n| 3  | 2          | HTML      | 3     |\n\nTo see each student with their scores:\nSELECT students.name, quiz_scores.module, quiz_scores.score\nFROM students\nJOIN quiz_scores ON students.id = quiz_scores.student_id;\n\nResult:\n| name  | module | score |\n|-------|--------|-------|\n| Ama   | HTML   | 5     |\n| Ama   | Python | 4     |\n| Kwame | HTML   | 3     |\n\nTypes of JOINs:\n- INNER JOIN: Returns only rows that have matches in both tables (most common)\n- LEFT JOIN: Returns all rows from the left table, even if there is no match in the right table\n- RIGHT JOIN: Returns all rows from the right table\n\nJOINs are how Pool of Grace connects your user profile to your quiz scores, module completions, and mentorship bookings. Understanding JOINs is essential for working with any real-world database.' }
+    "id": 12,
+    "title": "Databases and SQL",
+    "category": "technical-skills",
+    "description": "Understand how data is stored and learn to query databases using SQL.",
+    "order": 12,
+    "duration": "60 minutes",
+    "content": {
+      "intro": "[STORY]Ama realized that when she refreshed her web page or closed her Python terminal, all her data disappeared. 'How do we make our information stay forever?' she asked. Akosua took a thick leather ledger book. 'This is how market women record credits. In tech, we use databases. They are digital ledger books that remember everything, even when the power goes off.'[/STORY]",
+      "sections": [
+        {
+          "heading": "Relational Database Concepts",
+          "body": "[STORY]Ama opened her notebook and drew columns for Customer ID, Name, Phone, and Order. Akosua showed her that this was a relational database table. 'We link tables together,' Akosua said. 'We have a Customers table and an Orders table, connected by a Customer ID. This prevents us from writing the same name over and over, keeping our ledger clean.'[/STORY]\n\n[LESSON]A relational database stores data in structured tables consisting of rows (records) and columns (attributes). Tables are connected to each other using relationships established by matching identifiers called Primary Keys (unique table IDs) and Foreign Keys (links).[/LESSON]\n\n[YOUR_TURN]Draw two related tables on paper: 'Students' and 'Grades', showing how they connect using a student ID. Write down the matching rows.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Writing SELECT Queries",
+          "body": "[STORY]Ama wanted to talk to the database. She learned SQL (Structured Query Language). She wrote her first command: `SELECT name FROM customers;`. It felt like writing a request to her market clerk: 'Give me the names from the customers book.' The database returned the list instantly. She felt a new sense of command over information.[/STORY]\n\n[LESSON]SQL (Structured Query Language) is the standard language used to interact with relational databases. Core SQL commands include `SELECT` (retrieve data), `INSERT` (add records), `UPDATE` (modify data), and `DELETE` (remove records).[/LESSON]\n\n[YOUR_TURN]Write an SQL query that retrieves all columns from a table named `products`.[/YOUR_TURN]"
+        },
+        {
+          "heading": "CRUD Operations in SQL",
+          "body": "[STORY]Ama only wanted to see orders from customers in Kumasi. She learned to add filter words. She wrote: `SELECT * FROM customers WHERE city = 'Kumasi' ORDER BY name ASC;`. The query filtered the list to only Kumasi users and sorted them alphabetically. It was like magic, filtering a mountain of records in a fraction of a second.[/STORY]\n\n[LESSON]Refine SQL queries using the `WHERE` clause to filter rows based on specific conditions (operators like `=`, `>`, `LIKE`). Use `ORDER BY` followed by `ASC` (ascending) or `DESC` (descending) to sort the output, making data easy to analyze.[/LESSON]\n\n[YOUR_TURN]Write an SQL query that selects names from the `users` table where the score is greater than 80, sorted by score in descending order.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Joining Tables",
+          "body": "[STORY]Ama wanted to see the names of customers alongside the items they ordered. Since names were in one table and orders in another, she used a `JOIN`. She wrote: `SELECT customers.name, orders.item FROM customers JOIN orders ON customers.id = orders.customer_id;`. She saw the customer name and order item side by side. The database had bridged the tables perfectly.[/STORY]\n\n[LESSON]A `JOIN` clause combines rows from two or more tables based on a related column between them (typically foreign keys). Joining tables allows you to query normalized database structures to produce comprehensive, readable reports.[/LESSON]\n\n[YOUR_TURN]Write a basic query outline joining a `students` table and a `courses` table based on a shared `student_id` column.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What does SQL stand for?', options: ['Simple Query Language', 'Structured Query Language', 'System Quality Logic', 'Standard Query Layout'], answer: 'Structured Query Language' },
-        { question: 'Which SQL statement is used to retrieve data from a database?', options: ['GET', 'SELECT', 'EXTRACT', 'READ'], answer: 'SELECT' },
-        { question: 'What is a Primary Key?', options: ['A password used to access a database', 'A unique identifier for each record in a table', 'The first column in any database table', 'An encryption key'], answer: 'A unique identifier for each record in a table' },
-        { question: 'Which SQL keyword is used to filter records?', options: ['GROUP BY', 'WHERE', 'HAVING', 'ORDER BY'], answer: 'WHERE' },
-        { question: 'What SQL command is used to add new rows to a table?', options: ['ADD NEW', 'INSERT INTO', 'UPDATE', 'CREATE ROW'], answer: 'INSERT INTO' }
+      "quiz": [
+        {
+          "question": "What does SQL stand for?",
+          "options": [
+            "Simple Query Language",
+            "Structured Query Language",
+            "System Quality Logic",
+            "Standard Query Layout"
+          ],
+          "answer": "Structured Query Language"
+        },
+        {
+          "question": "Which SQL statement is used to retrieve data from a database?",
+          "options": [
+            "GET",
+            "SELECT",
+            "EXTRACT",
+            "READ"
+          ],
+          "answer": "SELECT"
+        },
+        {
+          "question": "What is a Primary Key?",
+          "options": [
+            "A password used to access a database",
+            "A unique identifier for each record in a table",
+            "The first column in any database table",
+            "An encryption key"
+          ],
+          "answer": "A unique identifier for each record in a table"
+        },
+        {
+          "question": "Which SQL keyword is used to filter records?",
+          "options": [
+            "GROUP BY",
+            "WHERE",
+            "HAVING",
+            "ORDER BY"
+          ],
+          "answer": "WHERE"
+        },
+        {
+          "question": "What SQL command is used to add new rows to a table?",
+          "options": [
+            "ADD NEW",
+            "INSERT INTO",
+            "UPDATE",
+            "CREATE ROW"
+          ],
+          "answer": "INSERT INTO"
+        }
       ]
     }
   },
   {
-    id: 13,
-    title: 'Web Development Project',
-    category: 'technical-skills',
-    description: 'Build a complete web application project for your portfolio.',
-    order: 13,
-    duration: '120 minutes',
-    content: {
-      intro: 'This module is the culmination of your technology training. You will learn about full-stack architecture and how all the pieces you have studied (HTML, CSS, JavaScript, Python, SQL) fit together to create complete web applications like the very platform you are using right now.',
-      sections: [
-        { heading: 'Full-Stack Architecture', body: 'A full-stack application has three main layers that work together:\n\n1. FRONTEND (Client): What the user sees and interacts with. Built with HTML, CSS, and JavaScript. This runs in the user\'s web browser.\n\n2. BACKEND (Server): The logic engine that processes requests, applies business rules, and communicates with the database. Built with Node.js (JavaScript), Python (Django/Flask), or other server languages.\n\n3. DATABASE: Where all data is permanently stored. Uses SQL (PostgreSQL, MySQL) or NoSQL (MongoDB) databases.\n\nHow they communicate:\nUser clicks "Submit" → Frontend sends HTTP request → Backend processes the request → Backend queries the database → Database returns data → Backend sends response → Frontend displays the result\n\nThis communication happens through APIs (Application Programming Interfaces). The most common type is REST API, which uses standard HTTP methods:\n- GET: Retrieve data (like loading your modules list)\n- POST: Create new data (like submitting a quiz)\n- PUT: Update existing data (like editing your profile)\n- DELETE: Remove data (like deleting a forum post)\n\nPool of Grace itself is a full-stack app: React frontend + Node.js/Express backend + PostgreSQL database. You are using a full-stack application right now!' },
-        { heading: 'Form Handlers and State', body: 'Modern web applications use "state" to track data that changes over time. In React (which Pool of Grace uses), state is managed with hooks:\n\nconst [name, setName] = useState("");\nconst [email, setEmail] = useState("");\nconst [submitted, setSubmitted] = useState(false);\n\nA form handler captures user input and sends it to the server:\n\nconst handleSubmit = async () => {\n  // Validate inputs\n  if (!name || !email) {\n    alert("Please fill in all fields");\n    return;\n  }\n  \n  // Send data to the backend\n  const response = await axios.post("/api/register", {\n    name: name,\n    email: email\n  });\n  \n  // Handle the response\n  if (response.data.success) {\n    setSubmitted(true);\n    alert("Registration successful!");\n  }\n};\n\nAxios is a popular JavaScript library for making HTTP requests from the frontend to the backend. It handles the communication between the client and server, converting data to JSON format automatically.\n\nState management is crucial because web pages need to remember things: Is the user logged in? What items are in their cart? Which form fields have they filled out? State answers all these questions.' },
-        { heading: 'Ghanaian Community Resource Directory', body: 'Your portfolio project challenge: build a directory platform where users in Ghana can search for locally available resources. Choose one of these themes:\n\n1. CLEAN WATER SOURCES: A directory of boreholes, treated water vendors, and pipe-borne water access points in your community\n2. TECH CENTERS: A map of internet cafes, computer labs, and tech hubs near you\n3. COMMUNITY HUBS: A directory of libraries, community centers, and study spaces\n4. LOCAL BUSINESSES: A directory of small businesses in your neighborhood\n\nYour application should include:\n- A search bar that filters results as the user types\n- A list of resources with name, location, description, and contact info\n- The ability to add new resources (using a form)\n- Responsive design that works on mobile phones\n- Clean, professional styling using CSS\n\nThis project demonstrates full-stack thinking even if you only build the frontend. You can use a JavaScript array as a "mock database" to store your data, and add real database connectivity later as you learn more.' },
-        { heading: 'Deployment Planning', body: 'Deployment means making your website accessible to anyone on the internet. Before deployment, your website only exists on your computer. After deployment, anyone in the world can visit it by typing a URL.\n\nPopular free hosting platforms:\n\n1. GITHUB PAGES (Free): Perfect for static HTML/CSS/JS sites. Push your code to GitHub, enable Pages in settings, and your site is live at username.github.io/project-name\n\n2. VERCEL (Free tier): Excellent for React applications. Connect your GitHub repository, and Vercel automatically deploys every time you push code.\n\n3. RENDER (Free tier): Good for full-stack applications with both frontend and backend. Pool of Grace is hosted on Render.\n\n4. NETLIFY (Free tier): Great for static sites and serverless functions.\n\nDeployment checklist:\n- Test your site on mobile phones and different browsers\n- Check that all links work and images load\n- Remove any console.log() debug messages\n- Make sure your code is pushed to GitHub\n- Write a README.md file explaining what your project does\n\nHaving a deployed project that anyone can visit is incredibly powerful for job applications. Instead of just telling an employer "I can build websites," you can say "Here is a website I built — visit it at this URL."' }
+    "id": 13,
+    "title": "Web Development Project",
+    "category": "technical-skills",
+    "description": "Build a complete web application project for your portfolio.",
+    "order": 13,
+    "duration": "120 minutes",
+    "content": {
+      "intro": "[STORY]Ama looked at her skills: HTML/CSS for visual layout, JavaScript for client interaction, Python for server operations, and SQL for databases. 'Now,' Akosua said, 'we connect them all. We will build a Full Stack application. It is the ultimate system where the front counter talks to the kitchen, and the kitchen gets food from the pantry.' Ama sat straight, ready for the challenge.[/STORY]",
+      "sections": [
+        {
+          "heading": "Full-Stack Architecture",
+          "body": "[STORY]Akosua explained the three layers. 'Frontend is the front counter where the customer stands. Backend is the kitchen where the chef cooks. Database is the pantry where ingredients are stored. When a customer orders kente, the frontend sends the order to the backend, the backend updates the database pantry, and confirms the sale.' Ama realized how the pieces fit together.[/STORY]\n\n[LESSON]Full Stack development refers to working on both the client-side (Frontend: user interface) and server-side (Backend: server logic, APIs, and Database) of an application. Understanding how these layers communicate is essential for building modern web applications.[/LESSON]\n\n[YOUR_TURN]Sketch a diagram showing the flow of a user request from the Frontend to the Backend, then to the Database, and back.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Form Handlers and State",
+          "body": "[STORY]Ama wondered how the frontend sent requests to the backend. 'We use an API,' Akosua said. 'Think of a waiter. The waiter takes your order from the table (frontend), carries it to the kitchen (backend), and brings the food back. The API is the digital waiter that carries JSON data back and forth.' Ama understood: APIs were the bridges of the internet.[/STORY]\n\n[LESSON]An API (Application Programming Interface) is a set of definitions and protocols that allows different software applications to communicate. Web APIs typically use HTTP requests to exchange structured data, usually in JSON (JavaScript Object Notation) format, between frontend and backend.[/LESSON]\n\n[YOUR_TURN]In your own words, describe what a Web API does in a full-stack application.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Ghanaian Community Resource Directory",
+          "body": "[STORY]Ama used Node.js and Express to write backend server code. She wrote a route: `app.get('/api/kente', (req, res) => { res.json(kenteData); });`. She started the server, opened her browser to localhost:5000/api/kente, and saw her data text load. She had built her first server! It was running locally on her computer, listening and waiting to serve requests.[/STORY]\n\n[LESSON]Express is a minimal web framework for Node.js. It allows developers to set up servers that listen on specific network ports, define API routes (endpoints like `/api/data`), handle requests, process logic, and return responses to client applications.[/LESSON]\n\n[YOUR_TURN]Write a basic code block setting up an Express server route for `/api/hello` that returns a simple JSON message.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Deployment Planning",
+          "body": "[STORY]Ama went to her frontend JavaScript file. She used the `fetch()` function to call her new backend endpoint: `fetch('/api/kente').then(res => res.json()).then(data => { display(data); });`. She refreshed her webpage, and the data from her Express server appeared on her HTML screen. She had completed the link. She was officially a Full Stack developer![/STORY]\n\n[LESSON]To connect frontend and backend, use the browser's `fetch()` API or library calls to make asynchronous HTTP requests to backend routes. The frontend receives the JSON data, updates the React state or DOM elements, and displays the content to the user.[/LESSON]\n\n[YOUR_TURN]Write a simple JavaScript `fetch` call that requests data from `/api/status` and logs the result to the browser console.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What does a full-stack application include?', options: ['A computer screen only', 'Both frontend and backend components including a database', 'HTML design only', 'A single file with code'], answer: 'Both frontend and backend components including a database' },
-        { question: 'Which library is commonly used in React to make API calls?', options: ['axios', 'npm', 'json', 'express'], answer: 'axios' },
-        { question: 'What is the purpose of REST APIs?', options: ['To style page layouts', 'To allow communication between frontend client and backend server using HTTP methods', 'To secure local databases', 'To compile Python files'], answer: 'To allow communication between frontend client and backend server using HTTP methods' },
-        { question: 'What does the abbreviation URL mean?', options: ['Uniform Resource Locator', 'Universal Routing Link', 'User Registry Log', 'United Resource Line'], answer: 'Uniform Resource Locator' },
-        { question: 'In web development, state refers to:', options: ['The geographic region of the server', 'An object that holds component data that can change over time', 'The database connection type', 'A file format'], answer: 'An object that holds component data that can change over time' }
+      "quiz": [
+        {
+          "question": "What does a full-stack application include?",
+          "options": [
+            "A computer screen only",
+            "Both frontend and backend components including a database",
+            "HTML design only",
+            "A single file with code"
+          ],
+          "answer": "Both frontend and backend components including a database"
+        },
+        {
+          "question": "Which library is commonly used in React to make API calls?",
+          "options": [
+            "axios",
+            "npm",
+            "json",
+            "express"
+          ],
+          "answer": "axios"
+        },
+        {
+          "question": "What is the purpose of REST APIs?",
+          "options": [
+            "To style page layouts",
+            "To allow communication between frontend client and backend server using HTTP methods",
+            "To secure local databases",
+            "To compile Python files"
+          ],
+          "answer": "To allow communication between frontend client and backend server using HTTP methods"
+        },
+        {
+          "question": "What does the abbreviation URL mean?",
+          "options": [
+            "Uniform Resource Locator",
+            "Universal Routing Link",
+            "User Registry Log",
+            "United Resource Line"
+          ],
+          "answer": "Uniform Resource Locator"
+        },
+        {
+          "question": "In web development, state refers to:",
+          "options": [
+            "The geographic region of the server",
+            "An object that holds component data that can change over time",
+            "The database connection type",
+            "A file format"
+          ],
+          "answer": "An object that holds component data that can change over time"
+        }
       ]
     }
   },
   {
-    id: 14,
-    title: 'Version Control with GitHub',
-    category: 'technical-skills',
-    description: 'Learn how to use GitHub to manage and share your code professionally.',
-    order: 14,
-    duration: '60 minutes',
-    content: {
-      intro: 'Version control is essential for modern developer collaboration. Git tracks every change you make to your code, allowing you to revert mistakes, work on multiple features simultaneously, and collaborate with other developers. GitHub is the world\'s largest platform for hosting code — and your GitHub profile is your digital portfolio that employers check.',
-      sections: [
-        { heading: 'Introduction to Git', body: 'Git is a local version control system that tracks modifications to your code files. Think of it as an "undo history" for your entire project — but much more powerful. With Git, you can:\n\n- See exactly what changed, when, and why\n- Revert to any previous version of your code\n- Work on new features without breaking the main code\n- Merge changes from multiple people working on the same project\n\nGit was created in 2005 by Linus Torvalds (the same person who created Linux). It is used by virtually every software company in the world, from small startups in Accra to massive corporations like Google and Microsoft.\n\nKey concepts:\n- REPOSITORY (Repo): A project folder tracked by Git. Contains all your files and their complete history.\n- COMMIT: A saved snapshot of your project at a specific point in time. Like pressing "Save" on a document, but you can go back to any previous save.\n- BRANCH: A parallel version of your code. You can create a branch to work on a new feature without affecting the main code.\n- MERGE: Combining changes from one branch into another.' },
-        { heading: 'Core Git Commands', body: 'Here are the essential Git commands you will use daily as a developer:\n\n1. SETUP — Initialize a new repository:\ngit init                        # Creates a new Git repo in your folder\ngit clone URL                   # Downloads a copy of a remote repo\n\n2. DAILY WORKFLOW — Stage, commit, and push:\ngit status                      # Shows which files have changed\ngit add filename.html           # Stage a specific file for commit\ngit add .                       # Stage ALL changed files\ngit commit -m "Add contact form" # Save staged changes with a message\ngit push                        # Upload commits to GitHub\n\n3. CHECKING HISTORY:\ngit log                         # View commit history\ngit diff                        # See what changed since last commit\n\n4. BRANCHING:\ngit branch new-feature           # Create a new branch\ngit checkout new-feature         # Switch to the new branch\ngit merge new-feature            # Merge branch into current branch\n\nCommit message best practices:\n- BAD: "fixed stuff", "update", "changes"\n- GOOD: "Add user login form with email validation", "Fix mobile menu not closing on click", "Update footer contact information"\n\nGood commit messages help your future self (and other developers) understand what each change did and why.' },
-        { heading: 'GitHub Collaboration', body: 'GitHub is a cloud platform for hosting Git repositories. While Git works on your local computer, GitHub stores your code online so others can access it, review it, and contribute to it.\n\nCreating your first GitHub repository:\n1. Create an account at github.com\n2. Click "New Repository"\n3. Give it a name (e.g., "my-first-website")\n4. Choose "Public" so employers can see it\n5. Click "Create Repository"\n6. Follow the instructions to connect your local project\n\nPull Requests (PRs): In professional teams, you do not push code directly to the main branch. Instead:\n1. Create a branch for your feature\n2. Write your code and commit changes\n3. Push the branch to GitHub\n4. Open a Pull Request — a formal request for your code to be reviewed\n5. Team members review your code, suggest changes\n6. Once approved, the PR is merged into the main branch\n\nThis process ensures code quality and catches bugs before they reach production. Even solo developers use PRs to maintain good habits.' },
-        { heading: 'Creating an Open Source Profile', body: 'Your GitHub profile is your digital CV. Many employers in Ghana\'s tech industry will check your GitHub before your LinkedIn. Here is how to make it stand out:\n\n1. PROFILE README: Create a special repository with the same name as your username. Add a README.md file with:\n   - Your name and a brief bio\n   - What technologies you know (HTML, CSS, JavaScript, Python, SQL)\n   - What you are currently learning\n   - How to contact you\n\n2. PIN YOUR BEST PROJECTS: GitHub lets you pin up to 6 repositories on your profile. Pin your Pool of Grace capstone projects — the Ghana business landing page, the community directory, etc.\n\n3. WRITE GREAT README FILES: For each project, include:\n   - What the project does (1-2 sentences)\n   - Technologies used\n   - How to run it locally\n   - Screenshots of the finished product\n   - What you learned building it\n\n4. GREEN SQUARES: GitHub shows a contribution graph on your profile. Each day you make a commit, you get a green square. Consistent green squares show employers that you code regularly.\n\n5. CONTRIBUTE TO OPEN SOURCE: Find beginner-friendly open source projects (look for "good first issue" labels). Contributing to open source shows collaboration skills and exposes you to professional codebases.\n\nA strong GitHub profile with 3-5 well-documented projects is often more impressive to employers than a traditional CV.' }
+    "id": 14,
+    "title": "Version Control with GitHub",
+    "category": "technical-skills",
+    "description": "Learn how to use GitHub to manage and share your code professionally.",
+    "order": 14,
+    "duration": "60 minutes",
+    "content": {
+      "intro": "[STORY]Ama was proud of her full-stack weavers application. But she wanted to work with Esi on it. 'If Esi changes a style file and I change the logic, how do we combine our work without deleting each other's code?' she asked. Akosua opened a terminal. 'For that, we use Git and GitHub. It is a digital time machine and a global marketplace where developers share their creations.'[/STORY]",
+      "sections": [
+        {
+          "heading": "Introduction to Git",
+          "body": "[STORY]Ama remembered when she had copy-pasted her files as 'index_final.html', 'index_final_v2.html', and ended up confused. Akosua showed her Git. 'Git takes clean snapshots of your project folder. If you make a mistake, you can travel back in time to yesterday's snapshot. No more copy-pasting, and no more lost code.' Ama felt a wave of relief. She had a safety net.[/STORY]\n\n[LESSON]Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later. Git is the most popular open-source distributed version control system, allowing developers to track modifications and revert code easily.[/LESSON]\n\n[YOUR_TURN]Why is version control better than manually duplicating files with names like 'code_version2'? Write down your thoughts.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Core Git Commands",
+          "body": "[STORY]Ama initialized her project folder. She typed `git init`, then `git add .` to select her files, and `git commit -m 'Initial weavers project commit'` to save the snapshot. Finally, she typed `git push` to upload the snapshot to her online account on GitHub. She saw her project repository visible online. It was safe from any computer crash.[/STORY]\n\n[LESSON]The core Git workflow has three stages: 1. Working Directory (making changes), 2. Staging Area (`git add` to select changes to save), and 3. Local Repository (`git commit` to save the snapshot). Use `git push` to upload local commits to remote hosts like GitHub.[/LESSON]\n\n[YOUR_TURN]Write down the exact three Git command lines you use to save your local changes and upload them to GitHub.[/YOUR_TURN]"
+        },
+        {
+          "heading": "GitHub Collaboration",
+          "body": "[STORY]Esi wanted to change the buttons to yellow. Ama created a new Git branch called 'esi-buttons' and gave Esi access. Esi wrote her CSS on that branch, while Ama continued coding database routes on the 'main' branch. When Esi finished, Ama merged Esi's branch into main. The buttons changed, the logic remained, and nothing broke. It was seamless teamwork.[/STORY]\n\n[LESSON]Branches in Git allow developers to work on new features, bug fixes, or experiments in isolation from the main codebase. Once the work is tested and approved, the branch is merged back into the 'main' branch, enabling safe parallel collaboration.[/LESSON]\n\n[YOUR_TURN]Explain how branching helps two developers collaborate on the same file without overwriting each other's work.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Creating an Open Source Profile",
+          "body": "[STORY]Ama looked at her GitHub dashboard. She saw the green boxes showing her daily coding commits. Akosua told her, 'Your GitHub profile is your modern CV. Companies in Accra like Hubtel and MTN look at your repositories to see if you can write clean, organized code.' Ama wrote a friendly readme page describing her weavers project, showing she was ready for professional work.[/STORY]\n\n[LESSON]GitHub hosts code repositories and serves as a portfolio for developers. A clean profile with active commit history ('green squares'), well-documented README files, and clean repository folders is the strongest technical resume for landing a job.[/LESSON]\n\n[YOUR_TURN]Create your GitHub account, set up a profile picture, and write a short bio stating your interest in web development.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What is Git?', options: ['A website for downloading code', 'A local version control system that tracks file changes', 'A database client', 'A programming language'], answer: 'A local version control system that tracks file changes' },
-        { question: 'Which command saves your staged changes in Git?', options: ['git add', 'git save', 'git commit -m "message"', 'git push'], answer: 'git commit -m "message"' },
-        { question: 'What is a Pull Request on GitHub?', options: ['A request to download a file', 'A proposed code change submitted for review and merge approval', 'A git commit command option', 'An error report'], answer: 'A proposed code change submitted for review and merge approval' },
-        { question: 'What command uploads local commits to GitHub?', options: ['git fetch', 'git pull', 'git upload', 'git push'], answer: 'git push' },
-        { question: 'The primary branch in Git is typically named:', options: ['main (or master)', 'first', 'dev', 'core'], answer: 'main (or master)' }
+      "quiz": [
+        {
+          "question": "What is Git?",
+          "options": [
+            "A website for downloading code",
+            "A local version control system that tracks file changes",
+            "A database client",
+            "A programming language"
+          ],
+          "answer": "A local version control system that tracks file changes"
+        },
+        {
+          "question": "Which command saves your staged changes in Git?",
+          "options": [
+            "git add",
+            "git save",
+            "git commit -m \"message\"",
+            "git push"
+          ],
+          "answer": "git commit -m \"message\""
+        },
+        {
+          "question": "What is a Pull Request on GitHub?",
+          "options": [
+            "A request to download a file",
+            "A proposed code change submitted for review and merge approval",
+            "A git commit command option",
+            "An error report"
+          ],
+          "answer": "A proposed code change submitted for review and merge approval"
+        },
+        {
+          "question": "What command uploads local commits to GitHub?",
+          "options": [
+            "git fetch",
+            "git pull",
+            "git upload",
+            "git push"
+          ],
+          "answer": "git push"
+        },
+        {
+          "question": "The primary branch in Git is typically named:",
+          "options": [
+            "main (or master)",
+            "first",
+            "dev",
+            "core"
+          ],
+          "answer": "main (or master)"
+        }
       ]
     }
   },
   {
-    id: 15,
-    title: 'Ghana Tech Job Market',
-    category: 'professional-development',
-    description: 'Discover technology career opportunities and salary expectations in Ghana.',
-    order: 15,
-    duration: '45 minutes',
-    content: {
-      intro: 'This module analyzes employment trends, growth sectors, and specific opportunities in Ghana\'s technology sector. Understanding the job market helps you make informed career decisions and set realistic expectations as you transition from learning to earning.',
-      sections: [
-        { heading: 'Sector Overview', body: 'Ghana\'s tech ecosystem is one of the fastest-growing in West Africa, expanding at approximately 18% annually. The government\'s "Ghana Beyond Aid" agenda and digital transformation initiatives are creating thousands of new technology jobs each year.\n\nKey growth areas:\n- FINTECH: Mobile money platforms, digital banking, and payment processing. Companies like MTN MoMo, Zeepay, and ExpressPay are constantly hiring.\n- E-COMMERCE: Online marketplaces like Jumia Ghana, Tonaton, and local delivery platforms need developers, designers, and data analysts.\n- AGRITECH: Technology solutions for farming, supply chain, and agricultural data. Companies like AgroCenta, Farmerline, and CocoaLink are solving real problems.\n- HEALTHTECH: Digital health platforms, telemedicine, and health data systems.\n- EDTECH: Online learning platforms (like Pool of Grace!) and digital education tools.\n\nMajor cities:\n- ACCRA: The primary tech hub with the highest concentration of tech companies, startups, and innovation hubs.\n- KUMASI: A growing tech scene with Kumasi Hive and university-connected innovation centers.\n- TAKORADI and TAMALE: Emerging tech communities with opportunities in local business digitization.' },
-        { heading: 'Common Job Profiles', body: 'Here are the most common entry-level tech roles available in Ghana, along with what each one does:\n\nFRONTEND DEVELOPER: Builds the visual parts of websites and apps that users see and interact with. Uses HTML, CSS, JavaScript, React, and similar tools.\n\nBACKEND DEVELOPER: Builds the server-side logic, databases, and APIs that power applications. Uses Node.js, Python, Java, PHP, and SQL.\n\nFULL-STACK DEVELOPER: Does both frontend and backend work. Highly valued by startups that need versatile developers.\n\nQA/TEST ENGINEER: Tests software to find bugs before users do. Writes automated tests and performs manual testing.\n\nDATA ANALYST: Collects, processes, and analyzes data to help businesses make decisions. Uses SQL, Python, Excel, and tools like Tableau or Power BI.\n\nUX/UI DESIGNER: Designs user-friendly interfaces and experiences. Uses tools like Figma, Adobe XD, and conducts user research.\n\nIT SUPPORT SPECIALIST: Maintains computer systems, networks, and helps users solve technical problems.\n\nDEVOPS ENGINEER: Manages the infrastructure that applications run on. Handles deployment, monitoring, and scaling.\n\nAs a Pool of Grace graduate, you are best positioned for Frontend Developer, Full-Stack Developer, or Data Analyst roles — all of which are in high demand in Ghana.' },
-        { heading: 'Compensation Details', body: 'Technology salaries in Ghana are significantly higher than average salaries in other fields. Here are realistic salary ranges (in GHS per year) as of 2026:\n\nENTRY LEVEL (0-2 years experience):\n- Junior Developer: 30,000 - 60,000 GHS/year\n- IT Support: 24,000 - 42,000 GHS/year\n- Junior Data Analyst: 28,000 - 48,000 GHS/year\n\nMID LEVEL (2-5 years experience):\n- Software Developer: 60,000 - 120,000 GHS/year\n- UI/UX Designer: 48,000 - 96,000 GHS/year\n- Data Analyst: 54,000 - 108,000 GHS/year\n\nSENIOR LEVEL (5+ years experience):\n- Senior Developer: 120,000 - 240,000+ GHS/year\n- Tech Lead/Manager: 144,000 - 300,000+ GHS/year\n- Data Scientist: 120,000 - 240,000+ GHS/year\n\nREMOTE/INTERNATIONAL:\n- Working remotely for international companies can pay 2-5x local rates. Many Ghanaian developers work for European, American, or Asian companies from home.\n\nImportant: These are market ranges and vary by company, location, and negotiation. Accra generally pays higher than other cities. Tech companies and startups often pay more than banks or government agencies for the same technical skills.' },
-        { heading: 'Empirical Context', body: 'Understanding the data behind Ghana\'s tech landscape helps you identify opportunities and challenges:\n\nGENDER GAP: Research by Mensah & Agyemang (2021) shows that only 22% of developers in Ghana are female. This means companies are actively trying to diversify their technical teams, creating a strategic advantage for women with tech skills. Many companies have explicit diversity hiring initiatives.\n\nSKILLS GAP: According to the World Bank\'s Digital Economy diagnostic for Ghana, there is a significant gap between the number of tech jobs available and the number of qualified candidates. Companies report difficulty finding skilled frontend developers, data analysts, and full-stack developers.\n\nGROWTH TRAJECTORY: Ghana\'s ICT sector contributed approximately 3.6% to GDP in 2024 and is projected to reach 6% by 2028. The number of tech startups has grown by over 200% in the last 5 years.\n\nWHAT THIS MEANS FOR YOU: The market is in your favor. There are more jobs than qualified candidates, companies want to hire women, and the sector is growing rapidly. Your Pool of Grace training in HTML, CSS, JavaScript, Python, and SQL covers the exact skills that employers are looking for.\n\nThe biggest mistake you can make is assuming that you need a computer science degree to get hired. Many tech companies in Ghana prioritize demonstrated skills (your GitHub portfolio and projects) over formal degrees.' }
+    "id": 15,
+    "title": "Ghana Tech Job Market",
+    "category": "professional-development",
+    "description": "Discover technology career opportunities and salary expectations in Ghana.",
+    "order": 15,
+    "duration": "45 minutes",
+    "content": {
+      "intro": "[STORY]Ama had built a solid technical foundation. She knew how to build responsive interfaces, server API routes, and database tables. She felt a spark of ambition. 'I am ready to find a job,' she told Akosua. Akosua took a map of Ghana and pointed to Accra. 'Let's look at the tech ecosystem. There are opportunities waiting, but you must know how to navigate the market.'[/STORY]",
+      "sections": [
+        {
+          "heading": "Sector Overview",
+          "body": "[STORY]Ama learned about the hubs and companies in Ghana. She researched companies like MTN, Vodafone, Hubtel, Zeepay, and mPharma. Akosua told her: 'Accra is the heart of tech, but Kumasi is rising. You don't have to build the next Facebook; you can start by supporting small businesses or working as an intern in a local startup.' Ama realized the market was real and within reach.[/STORY]\n\n[LESSON]Ghana's tech ecosystem is growing, driven by mobile payment platforms, e-commerce startups, and multinational support services. Main hubs include Meltwater Entrepreneurial School of Technology (MEST), Soronko Academy, and DevCongress Ghana. Opportunities exist in junior development, IT support, and QA testing.[/LESSON]\n\n[YOUR_TURN]List three active technology companies in Ghana and name one product or service they offer.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Common Job Profiles",
+          "body": "[STORY]Ama wondered what job titles she could apply for. Akosua explained: 'Frontend developers build visual designs. Backend developers write logic and database tables. Full stack developers do both. Quality Assurance (QA) engineers test software for errors. Data Analysts inspect sales numbers.' Ama saw that she could choose a role that fit her favorite skills.[/STORY]\n\n[LESSON]Common roles in the tech market include: Frontend Developer, Backend Developer, QA Engineer, UX Designer, and Data Analyst. Entry-level candidates often start as interns, junior developers, or technical support specialists to gain practical experience.[/LESSON]\n\n[YOUR_TURN]Based on the modules you have completed, which role (frontend, backend, or QA) excites you most? Why?[/YOUR_TURN]"
+        },
+        {
+          "heading": "Compensation Details",
+          "body": "[STORY]Ama was curious about salaries. Akosua shared: 'A junior developer in a Ghanaian startup can expect between 2,500 GHS and 5,000 GHS per month. In larger tech firms, it can be higher. Remote international jobs pay even more, but you must build experience first.' Ama computed the numbers. It was enough to support her family and invest in her own growth. It felt like a dream she could achieve.[/STORY]\n\n[LESSON]Junior developer salaries in Ghana typically range from 2,000 GHS to 5,000 GHS per month for local companies, depending on size, location, and role. Building specialized skills (like React or Django) and gaining experience increases earning potential rapidly.[/LESSON]\n\n[YOUR_TURN]Calculate a basic monthly budget showing how an entry-level tech salary of 3,000 GHS could help support your studies and family. Write it down.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Empirical Context",
+          "body": "[STORY]Ama thought that completing her coding course meant she was done learning. Akosua corrected her: 'Technology never stops. Languages change, frameworks update. The best developers are lifelong learners. You should dedicate at least 3-5 hours a week to reading articles, coding projects, and learning new libraries.' Ama nodded, accepting the marathon of growth.[/STORY]\n\n[LESSON]Continuous learning is mandatory in software engineering due to rapid technology cycles. Upskilling strategies include: allocating dedicated weekly hours for self-study, reading tech blogs, contributing to open source, and building personal side projects to stay relevant.[/LESSON]\n\n[YOUR_TURN]Design a simple weekly learning schedule showing when you will spend time upskilling after completing these modules.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What is the average growth rate of Ghana\'s tech sector?', options: ['5% annually', '18% annually', '30% annually', '0%'], answer: '18% annually' },
-        { question: 'Which of the following is a common entry level tech job?', options: ['CEO', 'Frontend Developer', 'Director of Engineering', 'Senior consultant'], answer: 'Frontend Developer' },
-        { question: 'Average annual entry-level tech salaries in Ghana are around:', options: ['12,000 GHS', '48,000 GHS', '100,000 GHS', '5,000 GHS'], answer: '48,000 GHS' }
+      "quiz": [
+        {
+          "question": "What is the average growth rate of Ghana's tech sector?",
+          "options": [
+            "5% annually",
+            "18% annually",
+            "30% annually",
+            "0%"
+          ],
+          "answer": "18% annually"
+        },
+        {
+          "question": "Which of the following is a common entry level tech job?",
+          "options": [
+            "CEO",
+            "Frontend Developer",
+            "Director of Engineering",
+            "Senior consultant"
+          ],
+          "answer": "Frontend Developer"
+        },
+        {
+          "question": "Average annual entry-level tech salaries in Ghana are around:",
+          "options": [
+            "12,000 GHS",
+            "48,000 GHS",
+            "100,000 GHS",
+            "5,000 GHS"
+          ],
+          "answer": "48,000 GHS"
+        }
       ]
     }
   },
   {
-    id: 16,
-    title: 'Building Your CV and Portfolio',
-    category: 'professional-development',
-    description: 'Create a professional CV and portfolio that showcases your tech skills.',
-    order: 16,
-    duration: '60 minutes',
-    content: {
-      intro: 'A developer\'s portfolio is their single best credential. In the tech industry, what you can build matters more than what degrees you hold. This module guides you through creating a professional developer CV and an online portfolio that showcases your projects.',
-      sections: [
-        { heading: 'Structure of a Developer CV', body: 'A tech-focused CV is different from a traditional CV. Here is the structure that works best for developer positions in Ghana:\n\n1. HEADER: Full name, email, phone, city, LinkedIn URL, GitHub URL\n\n2. PROFESSIONAL SUMMARY (2-3 sentences):\n"Junior Frontend Developer with skills in HTML, CSS, JavaScript, React, and Python. Pool of Grace graduate with 5+ portfolio projects including a responsive business landing page and a community resource directory. Passionate about building technology solutions for Ghanaian communities."\n\n3. TECHNICAL SKILLS:\nLanguages: HTML, CSS, JavaScript, Python, SQL\nFrameworks: React, Node.js\nTools: Git, GitHub, VS Code, Chrome DevTools\nDesign: Figma, Responsive Design, Mobile-First Development\n\n4. PROJECTS (most important section!):\nList 3-5 projects with: Project Name, Technologies Used, What It Does, Live URL, GitHub Link\n\n5. EDUCATION:\nPool of Grace Technology Training Program (2026)\nAny other relevant education\n\n6. CERTIFICATIONS (if any)\n\n7. LANGUAGES: English, Twi, or other languages\n\nDO NOT include: Physical address details, date of birth, marital status, passport photo (unless specifically requested), or generic soft skills like "hard worker" or "team player".' },
-        { heading: 'Building an Online Portfolio', body: 'An online portfolio is a website that showcases your best projects. It serves as living proof of your skills — employers can click through your work, see your code, and evaluate your abilities without a formal interview.\n\nYour portfolio website should include:\n\n1. HERO SECTION: Your name, a professional photo (optional), and a one-line description: "Frontend Developer building web solutions for Ghanaian businesses"\n\n2. ABOUT ME: A short paragraph about your journey, what you are passionate about, and what technologies you work with\n\n3. PROJECTS SECTION: Your best 3-5 projects, each with:\n   - A screenshot or preview\n   - Project title and description (2-3 sentences)\n   - Technologies used (shown as tags/badges)\n   - Two buttons: "Live Demo" and "View Code on GitHub"\n\n4. SKILLS SECTION: Visual representation of your technical skills\n\n5. CONTACT SECTION: Email, LinkedIn, GitHub links, and optionally a contact form\n\nYou can build your portfolio using the HTML, CSS, and JavaScript skills you learned in Modules 8-10. Host it for free on GitHub Pages. The URL will be: yourusername.github.io\n\nPro tip: Your portfolio website IS itself a project that demonstrates your skills. Make it responsive, well-designed, and clean. Employers will judge your abilities by how the portfolio itself looks and functions.' },
-        { heading: 'Writing Project Summaries', body: 'How you describe your projects can make the difference between getting an interview and being overlooked. Use this structure for each project:\n\n1. WHAT PROBLEM DOES IT SOLVE? Start with the real-world problem:\n"Many small businesses in Kumasi do not have an online presence, losing potential customers to competitors with websites."\n\n2. WHAT DID YOU BUILD? Describe the solution:\n"I built a responsive product landing page featuring a product gallery, pricing section, customer testimonials, and a contact form with JavaScript validation."\n\n3. WHAT TECHNOLOGIES DID YOU USE? List them:\n"HTML5, CSS3 (Flexbox, Grid, Media Queries), JavaScript (DOM manipulation, form validation), Git/GitHub"\n\n4. WHAT WAS YOUR ROLE? Be specific about what YOU did:\n"I designed the layout in Figma, wrote all the HTML/CSS from scratch, implemented the responsive design using mobile-first approach, and added form validation using vanilla JavaScript."\n\n5. WHAT DID YOU LEARN? Show growth:\n"This project taught me responsive design principles and how to use CSS media queries to create layouts that work across all screen sizes."\n\nThis format tells a complete story. It shows employers that you can identify problems, design solutions, implement them technically, and reflect on your growth.' },
-        { heading: 'Proofreading and Polish', body: 'The details matter. Employers notice spelling mistakes, broken links, and sloppy formatting. Before sharing your CV or portfolio:\n\nCHECKLIST:\n□ Spell-check everything — use a tool like Grammarly (free version)\n□ Check all links — click every URL to make sure it works\n□ Test on mobile — open your portfolio on a phone, does it look good?\n□ Test on different browsers — Chrome, Firefox, Safari\n□ Ask a friend to review — fresh eyes catch mistakes you miss\n□ Check your GitHub projects — are the README files complete?\n□ Consistent formatting — same font, same heading sizes, aligned sections\n□ Professional email address — use firstname.lastname@gmail.com, not party_girl_2004@yahoo.com\n\nPROFESSIONAL TYPOGRAPHY:\n- Use clear, modern fonts (like the Outfit font used on Pool of Grace)\n- Use consistent heading sizes\n- Keep paragraphs short (3-4 sentences maximum)\n- Use bullet points instead of long paragraphs where possible\n- Leave adequate white space — do not cram everything together\n\nRemember: your CV and portfolio are the first impression employers have of you. A clean, professional presentation signals that you will produce clean, professional code.' }
+    "id": 16,
+    "title": "Building Your CV and Portfolio",
+    "category": "professional-development",
+    "description": "Create a professional CV and portfolio that showcases your tech skills.",
+    "order": 16,
+    "duration": "60 minutes",
+    "content": {
+      "intro": "[STORY]Ama had her resume ready, but it looked like a school report. It listed her classes, her grade, and her high school. Akosua took the document and shook her head. 'Ama, a tech resume is not about where you sat in school. It is about what you can build. Let's rebuild your CV to show off your kente shop application and your Git commits.' Ama sat at the screen, ready to transform her profile.[/STORY]",
+      "sections": [
+        {
+          "heading": "Structure of a Developer CV",
+          "body": "[STORY]Ama removed her high school grades and added a 'Projects' section at the top. She listed: 'Full Stack Kente Cloth Store: Built a responsive calculator in HTML/CSS/JS, connected to an Express API and PostgreSQL database, tracking transactions offline.' She read it back. It sounded like the description of a real engineer, not just a student. She felt proud of her achievements.[/STORY]\n\n[LESSON]A tech CV should prioritize practical projects, developer skills (HTML, CSS, Git, SQL), and live links over general academic history. Describe projects using action verbs and clearly state the technologies used, focusing on the problems you solved.[/LESSON]\n\n[YOUR_TURN]Draft the 'Projects' section of your CV, describing the weavers' project or another project you want to build.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Building an Online Portfolio",
+          "body": "[STORY]Ama bought a cheap local domain name and hosted her portfolio website online. The page had a clean design: 'Hello, I'm Ama, a full-stack developer in Kumasi.' It featured screenshots of her kente store, links to her GitHub profile, and a button to download her CV. She shared the link with Akosua. 'This is your storefront,' Akosua said. 'It shows you are professional.'[/STORY]\n\n[LESSON]A developer portfolio is a personal website showcasing your skills, projects, and contact info. It serves as your primary digital presence, proving you can design and deploy clean, functional web projects to the public internet.[/LESSON]\n\n[YOUR_TURN]Create a basic design mock-up of your portfolio site in your notebook, labeling the main sections: About, Projects, and Contact.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Writing Project Summaries",
+          "body": "[STORY]Ama had built 5 small sandbox pages during her training. Akosua advised her: 'Only showcase your best 2 projects. Employers have very little time. Make sure those 2 are completely polished, responsive, and document their features clearly on GitHub.' Ama selected her kente shop and her python inventory calculator, making them as perfect as possible.[/STORY]\n\n[LESSON]Quality is better than quantity in portfolios. Select 2-3 of your best, fully completed projects to showcase. Ensure they are clean, mobile-responsive, and have functional, bug-free interactive features that demonstrate your capabilities.[/LESSON]\n\n[YOUR_TURN]Identify two projects you have built or want to build that you will display on your portfolio website. Write down their core features.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Proofreading and Polish",
+          "body": "[STORY]Ama opened the README file for her weavers project on GitHub. She wrote a clear description: 'This application helps local Ghanaian weavers display their kente styles and calculate prices offline.' She added installation instructions, screenshots, and listed the tech stack: React, Express, Node.js, PostgreSQL. She realized it looked professional and easy to understand.[/STORY]\n\n[LESSON]Every repository on GitHub needs a README.md file. It acts as the project manual, explaining: 1. Project Purpose, 2. Technologies Used, 3. How to install and run the code, and 4. Project features. A good readme demonstrates communication and organization skills.[/LESSON]\n\n[YOUR_TURN]Write a draft README for one of your GitHub repositories, detailing the project overview and installation steps.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What is the most critical link to include on a developer CV?', options: ['Your home address', 'Your GitHub profile link', 'Your high school details', 'Your social media handles'], answer: 'Your GitHub profile link' },
-        { question: 'An online portfolio should demonstrate:', options: ['A list of your hobbies', 'Interactive links to projects you have built with their source code', 'All the books you have read', 'A photo gallery'], answer: 'Interactive links to projects you have built with their source code' },
-        { question: 'How should you describe projects?', options: ['Simply list their titles', 'Detail the problem solved, tech used, and your implementation steps', 'State that the code is private', 'Let employers guess what it does'], answer: 'Detail the problem solved, tech used, and your implementation steps' }
+      "quiz": [
+        {
+          "question": "What is the most critical link to include on a developer CV?",
+          "options": [
+            "Your home address",
+            "Your GitHub profile link",
+            "Your high school details",
+            "Your social media handles"
+          ],
+          "answer": "Your GitHub profile link"
+        },
+        {
+          "question": "An online portfolio should demonstrate:",
+          "options": [
+            "A list of your hobbies",
+            "Interactive links to projects you have built with their source code",
+            "All the books you have read",
+            "A photo gallery"
+          ],
+          "answer": "Interactive links to projects you have built with their source code"
+        },
+        {
+          "question": "How should you describe projects?",
+          "options": [
+            "Simply list their titles",
+            "Detail the problem solved, tech used, and your implementation steps",
+            "State that the code is private",
+            "Let employers guess what it does"
+          ],
+          "answer": "Detail the problem solved, tech used, and your implementation steps"
+        }
       ]
     }
   },
   {
-    id: 17,
-    title: 'Interview Preparation',
-    category: 'professional-development',
-    description: 'Prepare for technology job interviews with practice questions and techniques.',
-    order: 17,
-    duration: '60 minutes',
-    content: {
-      intro: 'This module covers interviewing strategies specifically for tech positions in Ghana: coding exercises, live challenges, behavioral questions, and what to expect at each stage. Being technically skilled is necessary but not sufficient — you also need to communicate your skills effectively in an interview setting.',
-      sections: [
-        { heading: 'The Tech Interview Process', body: 'Tech interviews in Ghana typically follow a 3-stage process, though smaller companies may combine stages:\n\nSTAGE 1 — INITIAL SCREENING (15-30 minutes):\nUsually a phone call or video chat with HR or a recruiter. They want to know:\n- Why are you interested in this role?\n- What is your current experience level?\n- What technologies do you know?\n- What are your salary expectations?\n- When can you start?\n\nTip: Research the company before this call. Visit their website, understand what they do, and mention specific things you admire about their work.\n\nSTAGE 2 — TECHNICAL EVALUATION (45-90 minutes):\nThis is the most important stage. It may include:\n- A take-home coding assignment (build a small feature in 24-48 hours)\n- A live coding session (solve a problem while sharing your screen)\n- A code review (walk through a project you have built)\n- Technical questions about HTML, CSS, JavaScript, or other technologies\n\nSTAGE 3 — BEHAVIORAL/CULTURE FIT (30-45 minutes):\nThe company wants to know if you will work well with their team:\n- How do you handle disagreements with colleagues?\n- Tell me about a time you solved a difficult problem\n- How do you prioritize when you have multiple deadlines?\n- Why do you want to work here specifically?' },
-        { heading: 'Handling Coding Exercises', body: 'Coding exercises are the part that most candidates fear — but with preparation, you can perform well even as a junior developer. Here is a proven approach:\n\nBEFORE YOU START TYPING:\n1. Read the entire problem carefully — twice\n2. Ask clarifying questions: "Should the function handle empty inputs?" "Is the data always in this format?"\n3. Think out loud: "Okay, I need to take a list of numbers, filter out the even ones, and return the sum..."\n4. Write pseudocode first (plain English steps before real code)\n\nWHILE CODING:\n5. Start with a simple, working solution — do not try to be clever\n6. Talk through your thought process: "I am using a for loop to iterate through each item..."\n7. Test with a simple example as you go\n8. If you get stuck, say so: "I am not sure about this part. Let me think about it for a moment..."\n\nAFTER CODING:\n9. Test your solution with the given examples\n10. Consider edge cases: empty inputs, very large inputs, negative numbers\n11. Discuss how you might improve it if you had more time\n\nIMPORTANT: Interviewers care more about your thought process than getting a perfect answer. A candidate who explains their thinking clearly but makes small mistakes will score higher than one who silently writes perfect code. Communication is key.' },
-        { heading: 'The STAR Method for Behavioral Questions', body: 'STAR is a framework for answering behavioral interview questions clearly and completely:\n\nS — SITUATION: Set the scene. Where were you? What was happening?\nT — TASK: What was your responsibility? What were you trying to accomplish?\nA — ACTION: What specific steps did you take? (Use "I" not "we")\nR — RESULT: What was the outcome? What did you learn?\n\nExample question: "Tell me about a time you solved a difficult technical problem."\n\nSTAR answer:\nSITUATION: "While building my capstone project for Pool of Grace — a product landing page for a local shea butter business — I encountered a problem where the page layout broke completely on mobile phones."\n\nTASK: "I needed to make the page responsive so it worked on all screen sizes, because most users in Ghana access the internet through their phones."\n\nACTION: "I researched CSS media queries and the mobile-first design approach. I rewrote my CSS starting from the mobile layout, then used media queries to add complexity for larger screens. I tested on three different phone sizes using Chrome DevTools."\n\nRESULT: "The page now works perfectly on all screen sizes. I learned that starting with mobile design first is much easier than trying to shrink a desktop design. I have used this approach in every project since."\n\nThis format works for any behavioral question. Practice writing STAR answers for 5-10 common questions before your interview.' },
-        { heading: 'Asking Questions at the End', body: 'At the end of every interview, you will be asked: "Do you have any questions for us?" NEVER say "No." This is your opportunity to show genuine interest and evaluate whether the company is right for you.\n\nGREAT questions to ask:\n- "What tech stack does the engineering team use?" (Shows technical curiosity)\n- "What does a typical day look like for someone in this role?" (Shows you are thinking practically)\n- "What are the main goals or projects for this position in the first 6 months?" (Shows ambition)\n- "How does the team handle code reviews and collaboration?" (Shows you value teamwork)\n- "What opportunities are there for learning and professional development?" (Shows growth mindset)\n- "What do you personally enjoy most about working here?" (Shows genuine interest)\n\nQuestions to AVOID:\n- "What does the company do?" (You should already know this from research)\n- "How soon can I get a promotion?" (Too aggressive for a first interview)\n- "Do I have to work full days?" (Suggests you are looking to do the minimum)\n- "Will you check my social media?" (Raises red flags)\n\nPrepare 3-4 questions in advance. Write them down so you do not forget in the moment. Asking thoughtful questions can be the difference between a good candidate and a great one.' }
+    "id": 17,
+    "title": "Interview Preparation",
+    "category": "professional-development",
+    "description": "Prepare for technology job interviews with practice questions and techniques.",
+    "order": 17,
+    "duration": "60 minutes",
+    "content": {
+      "intro": "[STORY]Ama's phone rang. It was the hiring manager from Hubtel in Accra. 'Ama, we saw your portfolio and your kente calculator on GitHub. We would like to invite you for a junior developer interview next Tuesday.' Ama gasped, her heart pounding with a mixture of joy and panic. She hung up and looked at Akosua. 'I am terrified,' she said. Akosua smiled. 'Time to prepare.'[/STORY]",
+      "sections": [
+        {
+          "heading": "The Tech Interview Process",
+          "body": "[STORY]Akosua mocked an interview. 'Tell me about a time you faced a difficult coding error.' Ama hesitated, then used the STAR method. 'Situation: I was building my kente calculator when the DOM script broke. Task: I had to get the total price to update. Action: I used browser inspect tools, found the ID misspelling, and fixed it. Result: The page loaded correctly and user score rose.' Akosua nodded. 'Perfect.'[/STORY]\n\n[LESSON]Use the STAR method (Situation, Task, Action, Result) to answer behavioral interview questions. Describe a specific challenge you faced, what you had to do, the actions you took to resolve it, and the positive outcomes achieved.[/LESSON]\n\n[YOUR_TURN]Draft an answer to the question: 'Tell me about a time you struggled with a project and how you handled it', following the STAR structure.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Handling Coding Exercises",
+          "body": "[STORY]Akosua gave Ama a whiteboard challenge: write a function that reverses a string. Ama felt her mind go blank under the pressure. 'Take a deep breath,' Akosua whispered. 'Explain your thinking out loud.' Ama spoke: 'I will start by splitting the string into an array, reverse the array, and join it back.' She wrote the code, explaining each step. Even when she made a minor typo, the manager guided her because they saw her logical process.[/STORY]\n\n[LESSON]Technical interviews test your coding logic. Practice explaining your thought process out loud as you write code. Interviewers want to see how you dissect problems, structured thinking, and how you receive feedback, not just perfect memory of syntax.[/LESSON]\n\n[YOUR_TURN]Practice solving a simple programming task (like finding the largest number in a list) out loud, explaining each step to an imaginary interviewer.[/YOUR_TURN]"
+        },
+        {
+          "heading": "The STAR Method for Behavioral Questions",
+          "body": "[STORY]The interviewer asked Ama: 'How would you design a database to track sales for a market?' Ama closed her eyes, visualizing the relational database tables. 'I would create a Customers table, a Sales table, and link them using a customer_id key,' she explained, drawing the schemas. The interviewer smiled. Ama was thinking like a system architect, not just a coder.[/STORY]\n\n[LESSON]For junior roles, understand system design basics: how database tables link (one-to-many, many-to-many relationships), how clients fetch data from backend APIs, how servers manage data states, and how security or caching is structured at a high level.[/LESSON]\n\n[YOUR_TURN]Sketch a database design for a library management system: show tables for Books, Authors, and Borrowers, and their relationships.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Asking Questions at the End",
+          "body": "[STORY]At the end of the interview, the manager asked Ama: 'Do you have any questions for us?' Ama asked: 'What technologies is the team planning to adopt this year, and how do you support learning for junior developers?' The manager's eyes lit up. Ama's questions showed she was ambitious, eager to learn, and interested in their team growth.[/STORY]\n\n[LESSON]At the end of an interview, always ask 2-3 questions that show initiative and interest. Ask about the team's tech stack, their current challenges, the onboarding process, or how they foster professional development within the company.[/LESSON]\n\n[YOUR_TURN]Write down three questions you will ask an interviewer at a technology company to show your interest in their team.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What does STAR stand for in behavioral interviews?', options: ['Start, Try, Act, Repeat', 'Situation, Task, Action, Result', 'Skills, Tests, Answers, Review', 'Standard Tech Application Routine'], answer: 'Situation, Task, Action, Result' },
-        { question: 'If you get stuck during a live coding interview, you should:', options: ['Quietly stop typing and wait for it to end', 'Explain your thought process out loud and ask clarifying questions', 'Pretend your screen is frozen', 'Argue with the interviewer'], answer: 'Explain your thought process out loud and ask clarifying questions' },
-        { question: 'What is a good question to ask the interviewer?', options: ['When do I get a raise?', 'What technologies does the engineering team use and what are the main goals?', 'Can I skip coding tasks?', 'Is the job easy?'], answer: 'What technologies does the engineering team use and what are the main goals?' }
+      "quiz": [
+        {
+          "question": "What does STAR stand for in behavioral interviews?",
+          "options": [
+            "Start, Try, Act, Repeat",
+            "Situation, Task, Action, Result",
+            "Skills, Tests, Answers, Review",
+            "Standard Tech Application Routine"
+          ],
+          "answer": "Situation, Task, Action, Result"
+        },
+        {
+          "question": "If you get stuck during a live coding interview, you should:",
+          "options": [
+            "Quietly stop typing and wait for it to end",
+            "Explain your thought process out loud and ask clarifying questions",
+            "Pretend your screen is frozen",
+            "Argue with the interviewer"
+          ],
+          "answer": "Explain your thought process out loud and ask clarifying questions"
+        },
+        {
+          "question": "What is a good question to ask the interviewer?",
+          "options": [
+            "When do I get a raise?",
+            "What technologies does the engineering team use and what are the main goals?",
+            "Can I skip coding tasks?",
+            "Is the job easy?"
+          ],
+          "answer": "What technologies does the engineering team use and what are the main goals?"
+        }
       ]
     }
   },
   {
-    id: 18,
-    title: 'Networking and LinkedIn',
-    category: 'professional-development',
-    description: 'Build your professional network and create a strong LinkedIn presence.',
-    order: 18,
-    duration: '45 minutes',
-    content: {
-      intro: 'Networking accounts for over 70% of tech hires in Ghana. Many positions are filled through referrals before they are even publicly advertised. Building a professional network is not just helpful — it is essential for your career. This module teaches you to build genuine professional relationships both online and in person.',
-      sections: [
-        { heading: 'Your LinkedIn Profile', body: 'LinkedIn is the world\'s largest professional networking platform, and it is increasingly used by tech companies in Ghana for recruitment. A strong LinkedIn profile makes you visible to recruiters and hiring managers.\n\nKey sections to optimize:\n\nPROFILE PHOTO: A clear, professional headshot. You do not need a studio photo — a well-lit selfie against a plain background works. Dress professionally. Smile.\n\nHEADLINE (most important!): This appears next to your name in search results. Make it specific:\n- BAD: "Student" or "Looking for a job"\n- GOOD: "Frontend Developer | HTML, CSS, JavaScript, React | Pool of Grace Graduate"\n- GREAT: "Frontend Developer | Building Web Solutions for Ghanaian Businesses | Open to Opportunities"\n\nABOUT SECTION: Write a 3-4 paragraph summary of your journey:\nParagraph 1: Who you are and what you do\nParagraph 2: Your technical skills and training\nParagraph 3: What you are looking for\nParagraph 4: How to contact you\n\nEXPERIENCE: List your Pool of Grace training as experience. Include project descriptions.\n\nSKILLS: Add all technical skills (HTML, CSS, JavaScript, Python, SQL, React, Git, GitHub). Ask peers to endorse your skills.\n\nFEATURED: Pin your portfolio website and best GitHub projects in the Featured section.' },
-        { heading: 'Connecting with Intention', body: 'Networking is about building genuine relationships, not collecting connections. Quality matters more than quantity.\n\nDO: Send personalized connection requests:\n"Hi [Name], I am Ama, a junior frontend developer from Kumasi. I recently completed the Pool of Grace technology training program and I am very inspired by the work your team is doing at [Company]. I would love to connect and learn from your experience in Ghana\'s tech ecosystem. Thank you!"\n\nDO NOT: Send blank connection requests or generic messages like "Please accept my request."\n\nEngagement strategies:\n1. Share your learning journey: Post about modules you complete, projects you build, or coding challenges you solve\n2. Comment thoughtfully on others\' posts: Add value, not just "Great post!"\n3. Share useful resources: Tutorial links, coding tips, or insights about Ghana\'s tech scene\n4. Celebrate others: Congratulate people on new jobs, promotions, or achievements\n\nThe 5-3-1 rule for weekly LinkedIn activity:\n- 5 minutes reading your feed and engaging with posts\n- 3 meaningful comments on other people\'s content\n- 1 original post sharing something you learned or built\n\nConsistency matters more than perfection. Posting once a week is better than posting 10 times in one day and disappearing for a month.' },
-        { heading: 'Tech Communities in Ghana', body: 'Joining tech communities expands your network, keeps you updated on industry trends, and creates opportunities for collaboration and employment.\n\nONLINE COMMUNITIES:\n- DevCongress Ghana: The largest developer community in Ghana with an active Slack workspace. Join at devcongress.org.\n- Women in Tech Africa: A Pan-African network specifically for women in technology. Regular virtual events and mentorship.\n- GDG (Google Developer Groups) Accra/Kumasi: Google-sponsored communities that host study jams, workshops, and hackathons.\n- Python Ghana: Active community for Python developers with regular meetups.\n- React Ghana: For frontend developers working with React.\n\nWHATSAPP GROUPS: Many Ghanaian tech communities operate through WhatsApp. Ask your Pool of Grace mentors for recommendations specific to your city and interests.\n\nSLACK WORKSPACES: DevCongress, Andela Learning Community, and other groups maintain active Slack channels where developers share job postings, ask questions, and collaborate.\n\nHACKATHONS: Competitive coding events where teams build solutions in 24-48 hours. Great for learning, networking, and portfolio building. Look for events by Ghana Code Club, Mest Africa, and AngelHack.' },
-        { heading: 'Attending Meetups', body: 'In-person meetups are where the strongest professional relationships form. Even if you feel nervous or unqualified, showing up is the most important step.\n\nBEFORE THE MEETUP:\n- Research the event topic and speakers\n- Prepare a 30-second introduction: "Hi, I am [name] from [city]. I am a junior developer learning frontend development through Pool of Grace. I am really interested in [topic]."\n- Bring your phone with your LinkedIn profile and portfolio ready to show\n\nDURING THE MEETUP:\n- Sit near the front — it shows interest and makes it easier to approach speakers\n- Take notes during presentations\n- During networking breaks, introduce yourself to 2-3 new people\n- Ask genuine questions: "How did you get into tech?" "What advice would you give someone just starting out?"\n- Exchange LinkedIn connections or GitHub usernames instead of traditional business cards\n\nAFTER THE MEETUP:\n- Send LinkedIn connection requests within 24 hours with a note: "Great meeting you at [event name]!"\n- Share key takeaways on LinkedIn or in the Pool of Grace community\n- Follow up on any offers of help or introduction\n\nIf you cannot attend in person, many meetups now offer virtual attendance. DevCongress and GDG events frequently have live streams. Start virtual if you are not comfortable in person — you can transition to in-person events as your confidence grows.' }
+    "id": 18,
+    "title": "Networking and LinkedIn",
+    "category": "professional-development",
+    "description": "Build your professional network and create a strong LinkedIn presence.",
+    "order": 18,
+    "duration": "45 minutes",
+    "content": {
+      "intro": "[STORY]Ama had completed her interviews and was waiting for the response. Akosua told her, 'While you wait, don't sit in the dark. Build your network. Share your journey in public. The tech world is built on connections, and the best way to be seen is to show your work.' Ama logged onto LinkedIn, ready to share her story with the Ghanaian tech scene.[/STORY]",
+      "sections": [
+        {
+          "heading": "Your LinkedIn Profile",
+          "body": "[STORY]Ama changed her LinkedIn headline to: 'Junior Full Stack Developer | React, Node.js, SQL | Pool of Grace Graduate.' She uploaded a friendly profile photo, wrote a summary about her passion for helping local artisans digitize their stores, and linked her portfolio website. Within a day, she had connection requests from recruiters in Accra.[/STORY]\n\n[LESSON]LinkedIn is a primary recruiting channel in tech. Optimize your profile: write a clear, keyword-rich headline (skills/roles), add a professional photo, write a story-based summary, list your projects with links, and ask for recommendations from mentors.[/LESSON]\n\n[YOUR_TURN]Update your LinkedIn profile with your current developer skills and write a paragraph summary about your coding journey.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Connecting with Intention",
+          "body": "[STORY]Ama attended a meeting of DevCongress Ghana. She was nervous walking into the crowded room. But she met Esi there, and they approached other developers. She introduced herself: 'Hi, I'm Ama, I just built a full-stack website for weavers.' Developers welcomed her, shared tips, and added her to their local tech channels. She was no longer just an outsider — she was part of the community.[/STORY]\n\n[LESSON]Join local tech groups (DevCongress, Women in Tech Ghana, GDG Accra/Kumasi) and attend meetups or hackathons. Networking helps you learn about unadvertised job openings, find study partners, and get advice from senior developers.[/LESSON]\n\n[YOUR_TURN]Find and list one upcoming technology meetup or developer group in Ghana that you can join online or in person.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Tech Communities in Ghana",
+          "body": "[STORY]Ama started posting small updates on LinkedIn once a week. She wrote: 'Today I learned how to use SQL joins to connect customer names with order files.' She posted a screenshot of her code. A senior developer commented: 'Great work, Ama! Keep it up.' Ama was amazed that her posts were reaching professional engineers. She was building her brand, one commit at a time.[/STORY]\n\n[LESSON]Sharing your learning path in public builds your professional brand and credibility. Post about features you build, bugs you solve, or courses completed. This shows consistency, communication skills, and an active growth mindset to prospective employers.[/LESSON]\n\n[YOUR_TURN]Draft a short LinkedIn post describing a recent coding challenge you solved or a module you completed. Add relevant hashtags (e.g. #WomenInTech, #LearnInPublic).[/YOUR_TURN]"
+        },
+        {
+          "heading": "Attending Meetups",
+          "body": "[STORY]Ama wanted advice from a senior engineer at mPharma. She wrote a short message: 'Hi Abena, I admire your work at mPharma. I am a junior developer in Kumasi specializing in full-stack JavaScript. Can I ask you one question about how you prepare database designs?' Abena replied warmly: 'Hi Ama, absolutely. Let's chat next Wednesday.' Ama smiled. Direct, polite messages worked.[/STORY]\n\n[LESSON]When reaching out to tech professionals on LinkedIn, write short, respectful messages: state who you are, what you admire about their work, keep requests specific and low-commitment (e.g. a 15-minute virtual chat or one question).[/LESSON]\n\n[YOUR_TURN]Write a draft message to a Ghanaian tech professional whose career inspires you, requesting a short chat or asking one career question.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'What percentage of tech jobs are filled through networking?', options: ['Less than 10%', 'Over 70%', 'Exactly 50%', '0%'], answer: 'Over 70%' },
-        { question: 'What is a strong LinkedIn headline for a graduate of this platform?', options: ['Student looking for job', 'Frontend Developer | React & Python | Pool of Grace Graduate', 'Interested in computers', 'Hello world'], answer: 'Frontend Developer | React & Python | Pool of Grace Graduate' },
-        { question: 'How should you approach local tech meetups?', options: ['Stand in a corner and check your phone', 'Attend, listen to talks, and exchange GitHub links with peers and speakers', 'Argue with other developers', 'Arrive late and leave early'], answer: 'Attend, listen to talks, and exchange GitHub links with peers and speakers' }
+      "quiz": [
+        {
+          "question": "What percentage of tech jobs are filled through networking?",
+          "options": [
+            "Less than 10%",
+            "Over 70%",
+            "Exactly 50%",
+            "0%"
+          ],
+          "answer": "Over 70%"
+        },
+        {
+          "question": "What is a strong LinkedIn headline for a graduate of this platform?",
+          "options": [
+            "Student looking for job",
+            "Frontend Developer | React & Python | Pool of Grace Graduate",
+            "Interested in computers",
+            "Hello world"
+          ],
+          "answer": "Frontend Developer | React & Python | Pool of Grace Graduate"
+        },
+        {
+          "question": "How should you approach local tech meetups?",
+          "options": [
+            "Stand in a corner and check your phone",
+            "Attend, listen to talks, and exchange GitHub links with peers and speakers",
+            "Argue with other developers",
+            "Arrive late and leave early"
+          ],
+          "answer": "Attend, listen to talks, and exchange GitHub links with peers and speakers"
+        }
       ]
     }
   },
   {
-    id: 19,
-    title: 'Freelancing and Entrepreneurship',
-    category: 'professional-development',
-    description: 'Explore freelancing opportunities and how to start your own tech business in Ghana.',
-    order: 19,
-    duration: '60 minutes',
-    content: {
-      intro: 'Freelancing offers geographical flexibility and the ability to earn income while building your portfolio. In Ghana, where formal tech employment can be competitive, freelancing provides an immediate path to earning money with your new skills. This module covers platforms, client management, pricing, and the basics of starting your own tech business.',
-      sections: [
-        { heading: 'Freelancing Platforms', body: 'Freelancing platforms connect you with clients who need websites, apps, or data work. Create professional profiles on these platforms:\n\nGLOBAL PLATFORMS:\n- UPWORK: The largest freelancing platform. Create a profile highlighting your HTML, CSS, JavaScript, and Python skills. Start with small projects ($50-$200) to build your rating.\n- FIVERR: Sell specific services called "gigs." Example gig: "I will build a responsive business website for $100." Fiverr is good for quick, clearly defined projects.\n- FREELANCER: Similar to Upwork but with a bidding system. You bid on projects that match your skills.\n\nAFRICAN/LOCAL PLATFORMS:\n- ANDELA: Connects African developers with international companies for remote work.\n- GEBEYA: An East/West African platform that connects vetted developers with clients.\n- LOCAL REFERRALS: Many freelance projects in Ghana come through word-of-mouth. Tell everyone you know that you build websites.\n\nGetting your first client (the hardest part):\n1. Build 2-3 sample websites (even for fictional businesses)\n2. Offer to build a free or discounted website for a local business, church, or school\n3. Create an Upwork profile with a portfolio of your projects\n4. Apply to 10-15 small projects per week with personalized proposals\n5. Your first positive review will open the door to more work' },
-        { heading: 'Setting Your Prices', body: 'Pricing your work correctly is crucial — too low and you undervalue yourself; too high and you price yourself out of the market.\n\nUNDERSTANDING PRICING MODELS:\n\nHOURLY RATE: You charge per hour of work. Good for ongoing projects.\n- Junior developer in Ghana: $5-$15/hour on global platforms\n- Mid-level developer: $15-$40/hour\n- These rates are competitive globally and represent good income in Ghana\n\nFIXED PRICE: You charge a flat fee for the entire project. Good for clearly defined work.\n- Simple landing page: $100-$300\n- Business website (5-10 pages): $300-$800\n- E-commerce website: $500-$2,000\n- Web application with backend: $1,000-$5,000+\n\nCalculating your minimum rate:\n1. List your monthly expenses (rent, food, internet, electricity, transport)\n2. Add 20% for taxes and savings\n3. Divide by the number of billable hours per month (typically 80-120)\n4. This is your minimum hourly rate\n\nExample:\nMonthly expenses: 1,500 GHS\n+ 20% buffer: 1,800 GHS\n÷ 100 billable hours = 18 GHS/hour minimum\n\nAs you gain experience and positive reviews, gradually increase your rates. Never feel guilty about charging what your work is worth.' },
-        { heading: 'Managing Client Projects', body: 'Professional client management separates successful freelancers from those who burn out. Here are the essential practices:\n\n1. ALWAYS USE A CONTRACT: Before starting any project, agree on:\n   - Exact scope of work (what you WILL build)\n   - What is NOT included (to prevent scope creep)\n   - Payment schedule (e.g., 50% upfront, 50% on delivery)\n   - Timeline with milestones\n   - Number of revision rounds included\n\n2. COMMUNICATION CADENCE: Set expectations for how often you will update the client:\n   - Weekly progress updates (even if brief)\n   - Share work-in-progress screenshots\n   - Respond to messages within 24 hours\n\n3. HANDLING SCOPE CREEP: Scope creep is when clients ask for additional features not in the original agreement. It is the #1 cause of freelancer frustration.\n   - When a client asks for something new, respond: "That is a great idea! It was not in our original scope, so I can add it for [additional cost] and [additional time]. Would you like to proceed?"\n   - Never say yes to extra work without adjusting the price and timeline\n\n4. DELIVERING PROFESSIONALLY:\n   - Test your work thoroughly before delivery\n   - Provide documentation on how to update content\n   - Include the source code and login credentials\n   - Ask for a testimonial and permission to add the project to your portfolio' },
-        { heading: 'Starting a Tech Business in Ghana', body: 'If you want to go beyond freelancing and start a formal tech business in Ghana, here are the key steps:\n\n1. BUSINESS REGISTRATION: Register your business with the Registrar General\'s Department (RGD). Options:\n   - Sole Proprietorship: Simplest and cheapest (around 100-300 GHS)\n   - Limited Liability Company: More formal, better for investors (around 500-1,500 GHS)\n\n2. TAX REGISTRATION: Register with the Ghana Revenue Authority (GRA) for a Tax Identification Number (TIN)\n\n3. BUSINESS BANK ACCOUNT: Open a business account separate from your personal account. Banks like Fidelity Bank, GCB, and Ecobank offer SME-friendly accounts.\n\n4. FINDING YOUR NICHE: The most successful tech businesses solve specific problems:\n   - Building websites for local restaurants, shops, and service providers\n   - Creating school management systems for secondary schools\n   - Building inventory management tools for market traders\n   - Offering social media management + website packages for SMEs\n\n5. PRICING PACKAGES: Instead of quoting custom prices for every client, create standard packages:\n   - "Starter" Package: Simple 3-page website — 1,500 GHS\n   - "Professional" Package: 7-page website + contact form — 3,000 GHS\n   - "Business" Package: Full website + admin dashboard + hosting — 5,000 GHS\n\n6. PARTNERSHIPS: Partner with graphic designers, content writers, and marketers. Many businesses need a complete digital presence, not just a website.\n\nRemember: Many of Ghana\'s most successful tech entrepreneurs started as freelancers who gradually built a client base, hired help, and formalized their business. Start small, deliver excellent work, and let your reputation grow.' }
+    "id": 19,
+    "title": "Freelancing and Entrepreneurship",
+    "category": "professional-development",
+    "description": "Explore freelancing opportunities and how to start your own tech business in Ghana.",
+    "order": 19,
+    "duration": "60 minutes",
+    "content": {
+      "intro": "[STORY]A local pharmacy owner in Kumasi saw Ama's portfolio website. He approached her. 'Ama, I need a website that displays our drugs and allows customers to contact us. Can you build this for me? I will pay you.' Ama felt a wave of adrenaline. Her first paid client! She was entering the world of freelancing and entrepreneurship.[/STORY]",
+      "sections": [
+        {
+          "heading": "Freelancing Platforms",
+          "body": "[STORY]Ama weighed her options. Akosua explained: 'Freelancing means you are your own boss, setting your own rates, and working on different projects. Full-time means steady salary, benefits, and team support. Freelancing is great to build your portfolio and earn income while you look for full-time roles.' Ama decided to accept the pharmacy project as a freelancer.[/STORY]\n\n[LESSON]Freelancing offers flexibility, diverse project experience, and self-employment opportunities. Full-time employment offers income stability, structured mentoring, and company benefits. Many junior developers freelance to build experience before landing full-time positions.[/LESSON]\n\n[YOUR_TURN]List two advantages and two challenges of working as a freelance developer in Ghana.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Setting Your Prices",
+          "body": "[STORY]Ama set up a profile on Upwork, listing her skills: HTML, CSS, JavaScript, Node.js. She looked at projects posted by clients worldwide. She wrote a personalized proposal: 'I can build a responsive landing page for you. Here is a link to my kente calculator.' She realized that global freelancing required clear communication, competitive rates, and proving your value quickly.[/STORY]\n\n[LESSON]Freelancing platforms (Upwork, Fiverr, Toptal) allow developers to work on global projects. To succeed: create a highly targeted profile, write customized project proposals that address client problems directly, and start with competitive pricing to build high ratings.[/LESSON]\n\n[YOUR_TURN]Create a draft description for your Upwork freelance profile, highlighting your web development skills and project portfolio.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Managing Client Projects",
+          "body": "[STORY]Ama walked through her neighborhood, looking at local schools, shops, and clinics. None of them had websites. She walked into a private school. 'Hi, I can build a simple website where parents can see term schedules and school fees. Let me show you a mockup.' The headmaster was impressed. Ama realized that local businesses in Ghana were a goldmine of freelance clients.[/STORY]\n\n[LESSON]Local businesses (clinics, private schools, retail shops, logistics services) represent significant freelance opportunities in Ghana. Pitch your services by showing how a website can solve their business challenges: saving time, attracting customers, or explaining services.[/LESSON]\n\n[YOUR_TURN]Identify one local business in your community that does not have a website. Write a short pitch explaining how a website could improve their business.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Starting a Tech Business in Ghana",
+          "body": "[STORY]Ama and the pharmacy owner agreed on a price of 2,000 GHS. Akosua advised her: 'Get it in writing. 30% deposit upfront, 40% when the design is approved, 30% when it goes live. Never start coding without a deposit.' The owner agreed and sent 600 GHS via Mobile Money (MoMo). Ama saw the money arrive. She felt proud and professional. She had her first contract.[/STORY]\n\n[LESSON]Always use written contracts specifying project scope, deadline, and payment terms. Use milestone-based payments (e.g. upfront deposit, mid-project, final completion). Accept payments securely via local channels like Mobile Money (MoMo) or bank transfers.[/LESSON]\n\n[YOUR_TURN]Write a sample payment schedule for a project priced at 1,500 GHS, detailing the milestones and MoMo details for each payment.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'Which of the following is a popular freelancing platform?', options: ['Netflix', 'Upwork', 'Facebook', 'Spotify'], answer: 'Upwork' },
-        { question: 'To avoid scope creep, a freelancer should:', options: ['Do all extra work for free', 'Define project milestones and boundaries clearly in a written contract', 'Avoid communicating with the client', 'Charge hourly only'], answer: 'Define project milestones and boundaries clearly in a written contract' },
-        { question: 'Where do you register a local business in Ghana?', options: ['At a local bank', 'The Registrar General\'s Department', 'The Ministry of Communications', 'Kejetia Market office'], answer: 'The Registrar General\'s Department' }
+      "quiz": [
+        {
+          "question": "Which of the following is a popular freelancing platform?",
+          "options": [
+            "Netflix",
+            "Upwork",
+            "Facebook",
+            "Spotify"
+          ],
+          "answer": "Upwork"
+        },
+        {
+          "question": "To avoid scope creep, a freelancer should:",
+          "options": [
+            "Do all extra work for free",
+            "Define project milestones and boundaries clearly in a written contract",
+            "Avoid communicating with the client",
+            "Charge hourly only"
+          ],
+          "answer": "Define project milestones and boundaries clearly in a written contract"
+        },
+        {
+          "question": "Where do you register a local business in Ghana?",
+          "options": [
+            "At a local bank",
+            "The Registrar General's Department",
+            "The Ministry of Communications",
+            "Kejetia Market office"
+          ],
+          "answer": "The Registrar General's Department"
+        }
       ]
     }
   },
   {
-    id: 20,
-    title: 'Continuing Your Tech Journey',
-    category: 'professional-development',
-    description: 'Plan your next steps and discover advanced learning pathways in technology.',
-    order: 20,
-    duration: '45 minutes',
-    content: {
-      intro: 'Technology evolves daily. This final module helps you build a lifelong learning system to stay competitive and continue growing. Completing Pool of Grace is not an ending — it is a launching pad. The skills you have gained here are your foundation, and the best is yet to come.',
-      sections: [
-        { heading: 'Lifelong Learning in Tech', body: 'As a developer, your learning never stops — and that is actually one of the best things about this career. Technology is always evolving, which means there are always new things to learn, new tools to master, and new problems to solve.\n\nHow to build a sustainable learning habit:\n\n1. THE 70-20-10 RULE:\n   - 70% of learning comes from DOING (building projects, solving real problems)\n   - 20% comes from OTHERS (mentors, code reviews, pair programming)\n   - 10% comes from FORMAL STUDY (courses, tutorials, books)\n   This means the best way to keep learning is to keep building things.\n\n2. LEARNING RESOURCES (all free):\n   - freeCodeCamp.org: Comprehensive web development curriculum with certificates\n   - The Odin Project: Full-stack web development course\n   - CS50 by Harvard: World-class introduction to computer science (free on YouTube)\n   - MDN Web Docs: The definitive reference for HTML, CSS, and JavaScript\n   - YouTube channels: Traversy Media, Web Dev Simplified, Programming with Mosh, Fireship\n\n3. WEEKLY LEARNING SCHEDULE:\n   - Monday-Friday: 30 minutes of coding (build a feature, fix a bug, solve a challenge)\n   - Saturday: 1 hour of learning something new (a new library, a tutorial, a course module)\n   - Sunday: Reflect on what you learned, plan next week\'s focus\n\nThe compound effect of consistent daily practice is extraordinary. 30 minutes a day for one year equals 182 hours of practice — more than many bootcamp graduates receive.' },
-        { heading: 'Choosing a Specialization', body: 'After mastering the basics covered in Pool of Grace, it is time to specialize. Here are the main paths and what to learn next for each:\n\nFRONTEND DEVELOPMENT (Most accessible path):\n- Next: Learn React in depth (components, hooks, state management)\n- Then: Learn Next.js or Vite for modern React apps\n- Then: Learn TypeScript for type-safe JavaScript\n- Then: Learn testing with Jest and React Testing Library\n- Job titles: Frontend Developer, React Developer, UI Engineer\n\nBACKEND DEVELOPMENT:\n- Next: Deepen your Node.js/Express knowledge\n- Then: Learn authentication (JWT, OAuth)\n- Then: Learn advanced SQL and database design\n- Then: Learn cloud deployment (AWS, Google Cloud)\n- Job titles: Backend Developer, Node.js Developer, API Developer\n\nDATA SCIENCE / ANALYTICS:\n- Next: Deepen Python (pandas, NumPy libraries)\n- Then: Learn data visualization (Matplotlib, Tableau)\n- Then: Learn statistics and machine learning basics\n- Then: Learn Power BI or Google Data Studio\n- Job titles: Data Analyst, Business Intelligence Analyst, Data Scientist\n\nMOBILE APP DEVELOPMENT:\n- Next: Learn React Native (use your React skills for mobile apps)\n- Or: Learn Flutter/Dart for cross-platform apps\n- Job titles: Mobile Developer, React Native Developer\n\nRecommendation for Pool of Grace graduates: Start with FRONTEND (React path). It builds directly on the HTML, CSS, and JavaScript you already know, has the most job openings in Ghana, and lets you build visible, impressive portfolio projects quickly.' },
-        { heading: 'Contributing to Open Source', body: 'Contributing to open source repositories on GitHub is one of the best ways to practice professional development skills, learn from experienced developers, and gain global visibility.\n\nWhat is open source? Software whose source code is freely available for anyone to view, modify, and distribute. Linux, Firefox, React, Python, and millions of other tools are open source.\n\nHow to start contributing:\n\n1. FIND BEGINNER-FRIENDLY PROJECTS:\n   - Search GitHub for "good first issue" or "beginner friendly" labels\n   - Visit firsttimersonly.com or up-for-grabs.net for curated lists\n   - Look for projects related to African tech (there are many!)\n\n2. START SMALL:\n   - Fix a typo in documentation\n   - Improve a README file\n   - Add a missing test\n   - Fix a simple bug with a clear description\n\n3. THE CONTRIBUTION PROCESS:\n   a. Fork the repository (create your own copy)\n   b. Clone it to your computer\n   c. Create a new branch for your change\n   d. Make your changes and commit them\n   e. Push to your fork\n   f. Open a Pull Request with a clear description\n   g. Respond to code review feedback\n\n4. WHY IT MATTERS:\n   - You learn how professional codebases are organized\n   - You practice Git workflows used in real companies\n   - Your contributions are visible on your GitHub profile\n   - You build relationships with developers worldwide\n   - Many companies specifically look for open source contributors when hiring\n\nEven one meaningful open source contribution demonstrates initiative and collaboration skills that set you apart from other candidates.' },
-        { heading: 'Staying Connected to Pool of Grace', body: 'Your journey with Pool of Grace does not end with this module. Here is how to stay connected and continue growing:\n\n1. JOIN THE ALUMNI NETWORK: Transition from participant to alumna. Stay in the community forum, share your progress, and help newcomers.\n\n2. BECOME A PEER MENTOR: Once you have completed the program, consider mentoring the next cohort. Teaching others is the fastest way to deepen your own understanding. Contact Agnes at a.berko1@alustudent.com to express interest.\n\n3. ATTEND WEEKLY MEETINGS: Continue joining the Saturday 4 PM Ghana Time meeting (Google Meet: bii-jzew-udd). Agnes covers new topics, shares industry updates, and takes questions.\n\n4. SHARE YOUR SUCCESS: When you land your first tech job, freelance client, or build an impressive project, share it in the community. Your success inspires the next generation of Ghanaian women in tech.\n\n5. COMPLETE THE USABILITY SURVEY: Your feedback helps improve Pool of Grace for future participants. Go to the Survey page in the sidebar — it takes only 2 minutes.\n\n6. GIVE BACK TO YOUR COMMUNITY: Teach basic computer skills to girls in your neighborhood. Share what you have learned about growth mindset, self-efficacy, and coding. You are now equipped to be a role model — the same kind of role model that inspired you.\n\nAs the Ghanaian saying goes: "Obiara nnhyira ne ho" — Nobody blesses themselves alone. Your growth creates ripples. Every line of code you write, every website you build, every girl you inspire moves Ghana\'s tech ecosystem forward.\n\nCongratulations on completing Pool of Grace. You are ready. Go build something amazing. ' }
+    "id": 20,
+    "title": "Continuing Your Tech Journey",
+    "category": "professional-development",
+    "description": "Plan your next steps and discover advanced learning pathways in technology.",
+    "order": 20,
+    "duration": "45 minutes",
+    "content": {
+      "intro": "[STORY]Ama sat at her laptop, the screen showing the message: 'Deploy complete.' Her pharmacy client website was live. She checked her bank account — the final MoMo payment had arrived. She had completed all 20 modules of Pool of Grace. She looked back to the first day when her aunt told her computers weren't for her. She had proven her aunt wrong. She had proven herself right. She was a software developer.[/STORY]",
+      "sections": [
+        {
+          "heading": "Lifelong Learning in Tech",
+          "body": "[STORY]Ama asked Akosua: 'What do I learn next?' Akosua laughed. 'Your learning is just beginning. Use the 70-20-10 rule: 70% from building projects, 20% from code reviews and mentors, 10% from courses.' Ama made a schedule: 30 minutes of coding every weekday morning at 6:00 AM, and 1 hour of learning React on Saturdays. She was committed to the path.[/STORY]\n\n[LESSON]A developer's learning never stops. Adopt the 70-20-10 learning rule: 70% of growth comes from doing/building, 20% from others/collaboration, and 10% from courses. Keep building projects, read documentation (MDN), and follow online tutorials regularly.[/LESSON]\n\n[YOUR_TURN]Write a personal coding and learning commitment: 'I will code for [number] minutes [number] days a week to continue my growth.'[/YOUR_TURN]"
+        },
+        {
+          "heading": "Choosing a Specialization",
+          "body": "[STORY]Ama looked at different developer paths: React for frontend interfaces, Node.js/Express for backend logic, Python/pandas for data science, React Native for mobile apps. She decided to focus on Frontend development with React first. 'React is widely used in Accra,' Akosua agreed. 'Master it, and you will be highly competitive.'[/STORY]\n\n[LESSON]After mastering foundational HTML, CSS, JavaScript, and database basics, choose a technical specialization: Frontend (React/TypeScript), Backend (Node.js/Django/SQL), Mobile development, or Data Science. Focusing on one track prevents distraction and accelerates career readiness.[/LESSON]\n\n[YOUR_TURN]Which technical track (frontend, backend, data science, mobile) do you choose to specialize in next? Why?[/YOUR_TURN]"
+        },
+        {
+          "heading": "Contributing to Open Source",
+          "body": "[STORY]Ama wanted to contribute to the global tech ecosystem. She searched GitHub for 'good first issue' labels. She found a project translating basic web tutorials into local African languages. She contributed a translation in Twi. Her pull request was merged! Seeing her name in the list of contributors alongside developers from all over the world was a proud moment.[/STORY]\n\n[LESSON]Contributing to open-source software on GitHub is a great way to learn professional workflows, collaborate globally, and gain visibility. Start small by fixing documentation typos, improving readmes, adding tests, or addressing beginner issues.[/LESSON]\n\n[YOUR_TURN]Find one open-source project on GitHub with a 'good first issue' label and write down its name and what the issue is asking for.[/YOUR_TURN]"
+        },
+        {
+          "heading": "Staying Connected to Pool of Grace",
+          "body": "[STORY]Ama attended her final Saturday meeting. Agnes congratulated the graduating cohort. 'But don't disappear,' Agnes said. 'Become a peer mentor for the next cohort.' Ama raised her hand. She wanted to help other girls from Kumasi who were where she was 3 months ago. 'Obiara nnhyira ne ho' — Nobody blesses themselves alone. Ama was ready to give back.[/STORY]\n\n[LESSON]Your connection to Pool of Grace continues as an alumna. Join the alumni directory, support the forum, become a peer mentor, and share your career successes. Giving back and teaching others is the ultimate way to reinforce your own skills and grow the tech community.[/LESSON]\n\n[YOUR_TURN]Write a short message to the next cohort of girls starting Pool of Grace, sharing the most valuable lesson you learned about mindset and coding.[/YOUR_TURN]"
+        }
       ],
-      quiz: [
-        { question: 'Why is continuous learning important in technology?', options: ['Because languages and frameworks change constantly', 'To pass school exams forever', 'To get a degree', 'It is not important'], answer: 'Because languages and frameworks change constantly' },
-        { question: 'What is a good next step after completing these modules?', options: ['Stop coding entirely', 'Choose a technical specialization (like React or Django) and build complex projects', 'Wait for a company to train you from scratch', 'Delete your Git repositories'], answer: 'Choose a technical specialization (like React or Django) and build complex projects' },
-        { question: 'How can you give back to Pool of Grace as an alumna?', options: ['By deleting your account', 'By becoming a peer mentor and joining the alumni directory to support new cohorts', 'By charging a training fee', 'By changing your career path'], answer: 'By becoming a peer mentor and joining the alumni directory to support new cohorts' }
+      "quiz": [
+        {
+          "question": "Why is continuous learning important in technology?",
+          "options": [
+            "Because languages and frameworks change constantly",
+            "To pass school exams forever",
+            "To get a degree",
+            "It is not important"
+          ],
+          "answer": "Because languages and frameworks change constantly"
+        },
+        {
+          "question": "What is a good next step after completing these modules?",
+          "options": [
+            "Stop coding entirely",
+            "Choose a technical specialization (like React or Django) and build complex projects",
+            "Wait for a company to train you from scratch",
+            "Delete your Git repositories"
+          ],
+          "answer": "Choose a technical specialization (like React or Django) and build complex projects"
+        },
+        {
+          "question": "How can you give back to Pool of Grace as an alumna?",
+          "options": [
+            "By deleting your account",
+            "By becoming a peer mentor and joining the alumni directory to support new cohorts",
+            "By charging a training fee",
+            "By changing your career path"
+          ],
+          "answer": "By becoming a peer mentor and joining the alumni directory to support new cohorts"
+        }
       ]
     }
   }

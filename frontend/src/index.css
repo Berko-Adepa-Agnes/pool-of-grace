@@ -1326,3 +1326,248 @@ textarea.premium-input { resize: vertical; min-height: 90px; }
     padding: 28px 22px;
   }
 }
+
+/* =========================================================
+   STORYTELLING NOTES STYLES
+   ========================================================= */
+
+/* Story intro block — the opening narrative */
+.story-intro {
+  background: linear-gradient(135deg, #fef9ef, #fdf3e0);
+  border-left: 5px solid var(--secondary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 22px 24px;
+  margin-bottom: 28px;
+  position: relative;
+  font-style: italic;
+  line-height: 1.9;
+  font-size: 14.5px;
+  color: #5a4a2a;
+}
+.story-intro::before {
+  content: '📖';
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  font-size: 28px;
+  background: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Story block — narrative sections within a module section */
+.story-block {
+  background: linear-gradient(135deg, #fffcf5, #fef8ec);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  margin-bottom: 18px;
+  border: 1px solid #f0e6d0;
+  font-style: italic;
+  line-height: 1.85;
+  font-size: 14px;
+  color: #5a4a2a;
+  position: relative;
+}
+.story-block::before {
+  content: '📖';
+  font-size: 16px;
+  margin-right: 6px;
+  font-style: normal;
+}
+
+/* Lesson callout — key educational takeaway from the story */
+.lesson-callout {
+  background: linear-gradient(135deg, #e8f5e9, #f1f8f1);
+  border-left: 5px solid var(--primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 18px 22px;
+  margin: 18px 0;
+  position: relative;
+}
+.lesson-callout::before {
+  content: '🌟';
+  position: absolute;
+  top: -10px;
+  left: -12px;
+  font-size: 22px;
+  background: #fff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.lesson-callout-title {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.lesson-callout p {
+  color: var(--text-main);
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* Reflection prompt — "Your Turn" interactive section */
+.your-turn-prompt {
+  background: linear-gradient(135deg, #f3e8ff, #ede0ff);
+  border: 2px solid #d4bfff;
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  margin: 20px 0;
+  position: relative;
+}
+.your-turn-prompt::before {
+  content: '✍️';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  font-size: 20px;
+  background: #fff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.your-turn-title {
+  font-weight: 700;
+  color: #5a3e8a;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.your-turn-prompt p {
+  color: #4a3570;
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* =========================================================
+   ILLUSTRATED LESSON STYLES (Resources Tab)
+   ========================================================= */
+.illustrated-lesson-card {
+  background: #fff;
+  border: 2px solid var(--primary-pale);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  margin-bottom: 16px;
+  transition: var(--transition);
+}
+.illustrated-lesson-card:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-sm);
+}
+.illustrated-lesson-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.illustrated-lesson-step:last-child {
+  border-bottom: none;
+}
+.illustrated-lesson-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.illustrated-lesson-content {
+  flex: 1;
+  min-width: 0;
+}
+.illustrated-lesson-content h4 {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.illustrated-lesson-content p {
+  color: var(--text-main);
+  font-size: 13.5px;
+  line-height: 1.7;
+  margin: 0;
+}
+.external-videos-toggle {
+  background: var(--bg-main);
+  border: 1px solid var(--primary-pale);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: var(--transition);
+}
+.external-videos-toggle:hover {
+  border-color: var(--primary-light);
+}
+.external-videos-toggle h4 {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+.external-videos-toggle span {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* Story content inside sections — richer paragraph formatting */
+.story-section-body {
+  color: var(--text-main);
+  font-size: 14px;
+  line-height: 1.85;
+}
+.story-section-body p {
+  margin-bottom: 14px;
+}
+.story-section-body p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .story-intro {
+    padding: 18px 16px;
+    font-size: 13.5px;
+  }
+  .story-intro::before {
+    top: -10px;
+    left: -8px;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+  .lesson-callout {
+    padding: 14px 16px;
+  }
+  .your-turn-prompt {
+    padding: 14px 16px;
+  }
+  .illustrated-lesson-card {
+    padding: 16px;
+  }
+}

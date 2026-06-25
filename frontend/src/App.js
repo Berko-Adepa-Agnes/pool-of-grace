@@ -1284,6 +1284,152 @@ function ModulesList({ openModule, lang, modules }) {
 }
 
 /* =========================================================
+   MODULE VIEW HELPERS
+   ========================================================= */
+const renderStoryContent = (text) => {
+  if (!text) return null;
+  const parts = text.split(/(\[STORY\][\s\S]*?\[\/STORY\]|\[LESSON\][\s\S]*?\[\/LESSON\]|\[YOUR_TURN\][\s\S]*?\[\/YOUR_TURN\])/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('[STORY]')) {
+      const content = part.replace('[STORY]','').replace('[/STORY]','').trim();
+      return <div key={i} className="story-block">{content}</div>;
+    } else if (part.startsWith('[LESSON]')) {
+      const content = part.replace('[LESSON]','').replace('[/LESSON]','').trim();
+      return <div key={i} className="lesson-callout"><div className="lesson-callout-title">{"Lesson from Ama's Story"}</div><p>{content}</p></div>;
+    } else if (part.startsWith('[YOUR_TURN]')) {
+      const content = part.replace('[YOUR_TURN]','').replace('[/YOUR_TURN]','').trim();
+      return <div key={i} className="your-turn-prompt"><div className="your-turn-title">✍️ Your Turn</div><p>{content}</p></div>;
+    } else if (part.trim()) {
+      return <p key={i}>{part.trim()}</p>;
+    }
+    return null;
+  }).filter(Boolean);
+};
+
+const moduleLectureMap = {
+  1: [
+    { title: 'What is Self-Worth?', body: 'Self-worth is the deep, unshakeable belief that you are valuable simply because you exist. It is not something you earn through grades, marriage, or approval from others — it is your birthright. In Ghana, many young women are socialized to believe their worth is tied to domestic achievement. This lesson helps you recognize that you are intrinsically valuable and fully capable of entering the tech space.' },
+    { title: 'Identifying Your Limiting Beliefs', body: 'A limiting belief is a negative thought you accept as a fact. "I am not smart enough for coding," "Tech is for men," or "Girls from my town do not become developers." These are not facts — they are fears planted by socialization. Research shows that these stereotypes are absorbed as early as age 6, but they can be unlearned.' },
+    { title: 'The Growth Mindset Shift', body: 'Replace "I cannot do this" with "I cannot do this YET." A growth mindset, pioneered by Carol Dweck, is the belief that abilities are developed through effort and practice rather than fixed at birth. This shift transforms coding from an intimidating test of intelligence into an exciting path of learning.' },
+    { title: 'Your Worth Declaration', body: 'Write down: "I am worthy of learning tech. My background does not limit my potential. I will practice daily, make mistakes, and learn step by step." Put this in a place where you will see it every day as your psychological anchor.' }
+  ],
+  2: [
+    { title: 'Understanding Social Stereotypes', body: 'Traditional expectations in Ghana often direct girls toward market trading or housekeeping, presenting tech as a masculine field. This division is not based on ability, but on history. Dismantling this barrier starts with understanding that your brain is just as suited for logic and code as anyone else\'s.' },
+    { title: 'Setting Constructive Boundaries', body: 'When family or friends say computers are "too hard" or "not for women," answer with respect but firmness. Acknowledge their concern, state your goals, show them data about tech careers in Accra/Kumasi, and ask them to support your effort.' },
+    { title: 'Ghanaian Tech Pioneers', body: 'Draw inspiration from pioneers: Ethel Cofie (Founder of Women in Tech Africa), Farida Bedwei (pioneering Software Engineer who built banking systems while managing cerebral palsy), and Regina Honu (founder of Soronko Academy). They proved that Ghanaian women can lead the global tech space.' },
+    { title: 'Leveraging Cultural Strengths', body: 'Ghanaian culture values community and sharing. In tech, this translates to "developer communities" where developers collaborate, share code, and review each other\'s work. You are already culturally equipped to be an amazing team player.' }
+  ],
+  3: [
+    { title: 'What is Self-Efficacy?', body: 'Self-efficacy is the specific belief that you can succeed at a particular task (like writing a function or styling a button). Unlike general self-esteem, self-efficacy is a skill you can build step-by-step through practice, regardless of your past experiences.' },
+    { title: 'The Four Sources of Confidence', body: 'Psychologist Albert Bandura identified four sources: Mastery Experiences (getting code to run), Vicarious Learning (seeing other girls code), Social Persuasion (mentor encouragement), and Emotional States (interpreting code anxiety as excitement to learn).' },
+    { title: 'The Power of Small Wins', body: 'Do not try to build a huge app on day one. Start by writing one paragraph tag. When it works, celebrate! Then add a bold tag. By breaking complex tasks into tiny, manageable steps, you stack "mastery experiences" and build massive confidence.' },
+    { title: 'Managing Coding Stress', body: 'When your screen is full of red error messages, your heart rate might spike. Reframe this reaction: the computer is not shouting at you; it is giving you a map of exactly what to fix. Read the error out loud to engage your logical brain.' }
+  ],
+  4: [
+    { title: 'Embracing Mistakes as the Method', body: 'In tech, failure is the core way we learn. Professional programmers write broken code every single day. If your code runs perfectly on the first try, you probably did not learn anything new. Bugs are expected and normal.' },
+    { title: 'Reading Error Messages', body: 'Error messages are diagnostic tools. Look at the line number, search for the error code, and check for simple typos. The computer is giving you hints on where the issue is. Treat debugging like solving a fun riddle.' },
+    { title: 'Overcoming Perfectionism', body: 'Many women feel pressure to code perfectly due to "stereotype threat" (the fear of confirming negative gender stereotypes). Let go of perfectionism. The fastest developers are those who write messy drafts, break them, and fix them.' },
+    { title: 'Ghanaian Developer Resilience', body: 'dumsor (power outages), expensive mobile data, and slow internet are real challenges. Build resilience by saving your work constantly, downloading notes for offline reading, and studying during stable hours.' }
+  ],
+  5: [
+    { title: 'Defining Your Tech Vision', body: 'Why are you learning to code? Is it to build websites for local businesses, analyze agricultural data, create mobile apps, or support your family? Clear vision keeps you motivated when the lessons get difficult.' },
+    { title: 'Writing SMART Learning Goals', body: 'Instead of "I will learn JavaScript," set SMART goals: "I will spend 30 minutes every Monday and Wednesday coding JavaScript functions." This keeps goals specific, measurable, and highly realistic.' },
+    { title: 'Creating Your Study Routine', body: 'Create a dedicated block of time for study. Let your household know that during this time, you are in the "focus room." Even 30 minutes of uninterrupted study is better than 2 hours of distracted reading.' },
+    { title: 'Tracking Your Milestones', body: 'Keep a simple physical notebook or digital doc where you tick off every module completed. Seeing your progress visually builds momentum and acts as a shield against imposter syndrome.' }
+  ],
+  6: [
+    { title: 'Why Tech is Collaborative', body: 'The image of the lone coder in a dark room is a myth. Modern software is built by teams using collaboration tools. Being able to explain your code, listen to ideas, and help others is just as important as writing logic.' },
+    { title: 'Forming Study Circles', body: 'Connect with 2-3 other learners in this cohort. Create a WhatsApp or Telegram group to share questions. If you get stuck on a bug for more than 20 minutes, post a screenshot in your circle. Peer learning is extremely fast.' },
+    { title: 'Giving and Receiving Feedback', body: 'When reviewing peer projects, be encouraging and specific. Instead of "Nice page," say "I love the color contrast, and your buttons are clear. Maybe check the margin on the text." Welcome suggestions on your own work as growth.' },
+    { title: 'Engaging with Your Mentors', body: 'Mentors are here to guide you, not just give you answers. When asking a mentor for help: show the error, explain what you expected to happen, and list what you have already tried. This shows initiative and helps them guide you.' }
+  ],
+  7: [
+    { title: 'The Dopamine of Celebration', body: 'When you finish a major goal, your brain needs recognition to cement the learning. Celebrating releases dopamine, which makes your brain want to learn more. Never skip celebrating your hard-won milestones.' },
+    { title: 'Keeping a Win Log', body: 'Write down every breakthrough you make. "Fixed a tricky div layout," "Successfully declared my first list," "Understood how a loop works." Review this log whenever you feel stuck or discouraged.' },
+    { title: 'Designing Healthy Rewards', body: 'Establish simple, healthy rewards for completing modules. It could be enjoying a cup of Sobolo, calling a friend, or taking a walk. Tie these rewards directly to completing your goals.' },
+    { title: 'Reviewing Your Foundational Growth', body: 'Reflect on how much your mindset has changed since Module 1. You have built self-worth, identified limiting beliefs, and learned to handle failures. You are now mentally ready for technical coding.' }
+  ],
+  8: [
+    { title: 'HTML: The Skeleton of the Web', body: 'HTML (HyperText Markup Language) uses "tags" to tell the browser what content is. Think of tags as labels: `<h1>` for main titles, `<p>` for paragraphs, and `<a>` for links. Every website begins as an HTML skeleton.' },
+    { title: 'CSS: The Style and Colors', body: 'CSS (Cascading Style Sheets) turns a plain HTML skeleton into a beautiful page. You use CSS to change fonts, apply colors, add margins, and structure layouts. It is the creative design layer of the web.' },
+    { title: 'The Box Model Concept', body: 'In CSS, everything is a box. Every element has Content, Padding (space inside the border), Border (the outline), and Margin (space outside the border). Mastering the box model is the secret to perfect layouts.' },
+    { title: 'Writing Your First Page Code', body: 'Open a text editor. Write `<html>`, add a `<body>`, place a heading and a paragraph, then save the file as `index.html`. Open it in your browser to see your first webpage come to life offline.' }
+  ],
+  9: [
+    { title: 'JavaScript: The Engine of Action', body: 'If HTML is the skeleton and CSS is the clothing, JavaScript is the muscles and brain. It makes your page interactive — responding to clicks, showing animations, calculating numbers, and validating form data.' },
+    { title: 'Variables and Data Types', body: 'Variables are containers for storing information. Think of them like labeled boxes at a market stall. You can store numbers, text ("strings"), lists of items ("arrays"), or yes/no values ("booleans").' },
+    { title: 'Control Flow (If/Else Conditions)', body: 'Control flow allows your program to make decisions. "IF the user score is 3 or more, THEN show the pass screen, ELSE show the try-again screen." This logic makes your application dynamic.' },
+    { title: 'Functions: The Reusable Recipes', body: 'A function is a block of code designed to perform a particular task. Think of it like a recipe for Jollof rice: you define the steps once, and you can run ("call") it whenever you need to prepare the dish.' }
+  ],
+  10: [
+    { title: 'Structuring a Web Project', body: 'A clean web project has three main files: `index.html` (structure), `style.css` (design), and `script.js` (logic). Link them together in your HTML file so they load as one functional application.' },
+    { title: 'Making it Responsive', body: 'Use CSS media queries to ensure your website looks stunning on small phone screens, tablets, and large laptops. Set widths using percentages or flexbox instead of fixed pixels.' },
+    { title: 'DOM Manipulation Basics', body: 'The Document Object Model (DOM) is the tree of HTML elements that JavaScript can interact with. You can select elements using JS, change their text, modify their CSS styles, or listen for user clicks.' },
+    { title: 'Testing and Running Locally', body: 'Run your project locally in your web browser. Right-click the page, select "Inspect", and open the Console. This is where you can see JavaScript outputs, debug errors, and test changes instantly offline.' }
+  ],
+  11: [
+    { title: 'Introduction to Python', body: 'Python is a highly readable programming language used for web development, data analysis, and artificial intelligence. Its clean syntax reads almost like English, making it perfect for beginners.' },
+    { title: 'Lists, Dictionaries, and Tuples', body: 'Python has powerful built-in structures to store data. Lists store ordered sequences (e.g., shopping list). Dictionaries store key-value pairs (e.g., student name and their score). Tuples store fixed records.' },
+    { title: 'Writing Loops and Iteration', body: 'Loops let you repeat a block of code. A `for` loop goes through a list one item at a time (e.g., printing every name). A `while` loop runs as long as a condition is true (e.g., checking user input).' },
+    { title: 'Creating Python Functions', body: 'Define functions using the `def` keyword. Pass inputs ("parameters") into the function, process them, and output results using `return`. Python functions are clean, indentation-scoped, and highly reusable.' }
+  ],
+  12: [
+    { title: 'What is a Relational Database?', body: 'Databases store app data in structured tables (like digital spreadsheets) containing rows and columns. Relational databases connect tables together using matching IDs (Primary and Foreign Keys).' },
+    { title: 'SQL: The Language of Queries', body: 'SQL (Structured Query Language) is how we talk to databases. We use SQL commands to fetch data (SELECT), add new records (INSERT), update existing data (UPDATE), and remove records (DELETE).' },
+    { title: 'Filtering and Sorting Results', body: 'Refine database queries using the `WHERE` clause to filter data (e.g., users from Kumasi) and `ORDER BY` to sort results (e.g., highest score first). This lets you extract exactly what you need.' },
+    { title: 'Joining Multiple Tables', body: 'Use `JOIN` statements to link rows from two or more tables based on a related column. This allows you to combine user information with their corresponding test scores in one clean report.' }
+  ],
+  13: [
+    { title: 'Full Stack Architecture', body: 'A full-stack application has three layers: the Frontend (HTML/CSS/React that users see), the Backend (Express/Python server that processes logic), and the Database (SQL/PostgreSQL that stores data).' },
+    { title: 'What is an API?', body: 'An Application Programming Interface (API) is the bridge between frontend and backend. It transmits data back and forth using standard requests (GET to fetch data, POST to save data) in JSON format.' },
+    { title: 'Setting up an Express Server', body: 'Express is a minimal web framework for Node.js. It listens on a specific network port (e.g., 5000), accepts incoming API requests, runs backend logic, and returns the appropriate data to the user.' },
+    { title: 'Connecting Frontend and Backend', body: 'Use JavaScript\'s `fetch()` function in the frontend to request data from your Express backend routes. Learn to display this fetched data dynamically inside your React application.' }
+  ],
+  14: [
+    { title: 'What is Version Control?', body: 'Version control tracks changes made to files over time. It lets you save snapshots of your codebase, experiment with new features safely in branches, and easily roll back to previous versions if code breaks.' },
+    { title: 'Git Basics: Add, Commit, Push', body: 'Git is the tool that tracks local files. `git add` selects files to save. `git commit` takes a snapshot with a descriptive message. `git push` uploads your local commits to a remote server like GitHub.' },
+    { title: 'Collaborating with Branches', body: 'Branches let multiple developers work on different features of the same project simultaneously. When a feature is finished, you merge the branch back into the main codebase without disturbing other team members.' },
+    { title: 'Building Your GitHub Profile', body: 'GitHub is the Facebook of developers. Create a clean profile, write a friendly README about yourself, and display your repositories. Employers will look at your GitHub profile to assess your practical coding skills.' }
+  ],
+  15: [
+    { title: 'Ghana\'s Tech Ecosystem', body: 'Ghana\'s tech space is growing rapidly. Learn about major tech hubs like Meltwater Entrepreneurial School of Technology (MEST), Soronko Academy, and companies hiring tech talent like Hubtel, Zeepay, and mPharma.' },
+    { title: 'Key Roles in the Tech Market', body: 'Explore different career paths: Frontend Developer (building interfaces), Backend Developer (managing servers), QA Engineer (testing software), UI/UX Designer, and Technical Support Specialist.' },
+    { title: 'Average Junior Developer Salaries', body: 'Junior developers in Ghana can expect entry-level salaries ranging from 2,000 GHS to 5,000 GHS per month depending on the company size. Foreign remote jobs or specialized roles can pay significantly more.' },
+    { title: 'Continuous Upskilling Strategy', body: 'Tech changes quickly. Successful developers dedicate at least 3-5 hours a week to learning new frameworks, reading technical blogs, and building personal side projects to stay competitive in the job market.' }
+  ],
+  16: [
+    { title: 'Crafting a Modern Tech CV', body: 'Traditional CVs focus on degrees; tech CVs focus on what you can build. Highlight your projects, list your technical skills (HTML, CSS, Git), and link directly to your GitHub profile and live websites.' },
+    { title: 'Creating a Portfolio Website', body: 'A developer portfolio is a personal website showcasing your skills. It should include an "About Me" section, a list of projects with screenshots and links, your contact info, and a download link for your CV.' },
+    { title: 'Choosing Your Project Showcase', body: 'Quality over quantity. Showcase 2-3 solid, clean projects that work perfectly. Make sure they are well-documented on GitHub, showing that you can write clean code and explain your work clearly.' },
+    { title: 'Writing Compelling Project Readmes', body: 'Every repository needs a `README.md`. Explain what problem the project solves, what technologies you used to build it, how to install and run it locally, and what features you plan to add next.' }
+  ],
+  17: [
+    { title: 'Behavioral Interviews: STAR Method', body: 'Prepare for soft-skill questions using the STAR framework: Situation, Task, Action you took, and Result achieved. For example, explain how you resolved a bug or managed a study project under pressure.' },
+    { title: 'Tackling the Technical Interview', body: 'Technical tests assess your coding logic. Practice explaining your thinking out loud as you write code. Interviewers want to see how you solve problems, not just if you get the perfect syntax.' },
+    { title: 'System Design Basics', body: 'For junior roles, understand the basics of app design: how database tables link, how frontend calls backend APIs, and how user authentication works. Be ready to sketch a simple architecture.' },
+    { title: 'Asking Insightful Questions', body: 'At the end of the interview, ask questions that show enthusiasm: "What tech stack does the team use?", "What does a typical day look like here?", or "How does the company support junior developers?"' }
+  ],
+  18: [
+    { title: 'Optimizing Your LinkedIn Profile', body: 'LinkedIn is a powerful job search tool. Write a professional headline (e.g., "Junior Frontend Developer | React | HTML/CSS"), add a friendly photo, and write a summary about your tech journey and projects.' },
+    { title: 'Connecting with Ghana\'s Tech Scene', body: 'Join local developer groups like DevCongress Ghana, attend tech meetups, and participate in hackathons. Networking helps you hear about job openings before they are publicly advertised.' },
+    { title: 'Sharing Your Learning in Public', body: 'Post regular updates on LinkedIn or Twitter about what you are building. "Just finished styling my first responsive nav menu!" or "Fixed a stubborn database query today." This builds your professional brand.' },
+    { title: 'Drafting Professional Messages', body: 'When reaching out to recruiters or mentors, write brief, polite messages: state who you are, what you admire about their work, and ask a specific, low-commitment question about the industry.' }
+  ],
+  19: [
+    { title: 'Freelancing vs. Full-Time Jobs', body: 'Freelancing lets you work on short-term projects for multiple clients, offering flexibility and diverse experience. Full-time jobs offer steady income, benefits, and structured team learning.' },
+    { title: 'Navigating Upwork and Fiverr', body: 'Freelancing platforms allow you to bid on global projects. Create a detailed profile, start with competitive rates to gain positive reviews, and submit personalized proposals that address client problems directly.' },
+    { title: 'Finding Local Clients in Ghana', body: 'Look around your community. Small businesses, local clinics, private schools, and restaurants often need websites or simple digital tools. Offer to build their digital presence at affordable rates.' },
+    { title: 'Setting Up Contracts and MoMo Payments', body: 'Always agree on the scope of work and payment terms in writing before coding. Use milestones (e.g., 30% upfront, 40% halfway, 30% on completion) and accept payments easily via Mobile Money (MoMo) or bank transfer.' }
+  ],
+  20: [
+    { title: 'The Marathon of Continuous Learning', body: 'Completing these modules is just the beginning. The tech landscape constantly evolves. Develop a habit of reading documentation, exploring new libraries, and coding a little bit every single week.' },
+    { title: 'Becoming an Alumna Mentor', body: 'Help the next cohort of Pool of Grace. Answer peer questions on the community forum, share your career progress, and offer encouragement. Teaching others is the ultimate way to reinforce your own skills.' },
+    { title: 'Making Open Source Contributions', body: 'Find beginner-friendly repositories on GitHub with "good first issue" labels. Contributing to documentation or fixing minor bugs in open source projects builds confidence and shows collaboration skills.' },
+    { title: 'Your Next Development Specialization', body: 'Choose a specific area to master next: deep dive into React for advanced interfaces, study Node.js/Express for backend systems, or learn Data Science with Python. Focus on one track at a time.' }
+  ]
+};
+
+/* =========================================================
    MODULE VIEW  (Canvas-style tabs)
    ========================================================= */
 function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showToast, isOnline }) {
@@ -1292,6 +1438,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
   const [answers, setAnswers]     = useState({});
   const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
+  const [showExternalVideos, setShowExternalVideos] = useState(false);
 
   // Study Timer (Pomodoro)
   const [timerSeconds, setTimerSeconds] = useState(25 * 60);
@@ -1652,11 +1799,12 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
       {/* Tab content */}
       <div className="premium-card" style={{ borderRadius:'0 0 14px 14px',padding:'clamp(20px,4vw,34px)',minHeight:'380px' }}>
 
-        {/* NOTES */}
+        {/* NOTES — Storytelling Format */}
         {activeTab === 'notes' && (
           <div>
-            <div style={{ background:'var(--bg-main)',padding:'18px',borderRadius:'10px',borderLeft:`4px solid ${catColor()}`,marginBottom:'26px' }}>
-              <p style={{ color:'var(--text-main)',fontSize:'14px',lineHeight:'1.8',margin:0 }}>{content.intro}</p>
+            {/* Story-style intro */}
+            <div className="story-intro">
+              {renderStoryContent(content.intro)}
             </div>
             {content.sections.map((s,i)=>(
               <div key={i} style={{ marginBottom:'24px',paddingBottom:'24px',borderBottom:i<content.sections.length-1?'1px solid #f0f0f0':'none' }}>
@@ -1666,7 +1814,9 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                   </div>
                   <h2 style={{ color:'var(--primary)',fontSize:'clamp(15px,2.5vw,17px)',fontWeight:'700',margin:0 }}>{s.heading}</h2>
                 </div>
-                <p style={{ color:'var(--text-main)',fontSize:'14px',lineHeight:'1.8',margin:0,paddingLeft:'40px' }}>{s.body}</p>
+                <div style={{ paddingLeft:'40px' }} className="story-section-body">
+                  {renderStoryContent(s.body)}
+                </div>
               </div>
             ))}
             {/* Try It Yourself — Practice Lab Link (for tech modules) */}
@@ -1698,7 +1848,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
           </div>
         )}
 
-        {/* RESOURCES */}
+        {/* RESOURCES — Illustrated Lessons (Offline-First) */}
         {activeTab === 'resources' && (
           <div>
             {/* Offline study pack control */}
@@ -1717,12 +1867,12 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
               </button>
             </div>
 
-            {/* Offline Alert Warning */}
+            {/* Offline Alert */}
             {!isOnline && (
               <div className="alert-warning" style={{ marginBottom:'22px' }}>
                 <h4 style={{ fontWeight:'700', marginBottom:'6px', fontSize:'14px' }}>Offline Mode Active</h4>
                 <p style={{ margin:0, fontSize:'13px', lineHeight:'1.5' }}>
-                  YouTube video links are disabled. You can listen to the pre-downloaded Audio Lecture or download the PDF Study Guide below to continue learning offline.
+                  All illustrated lessons and audio lectures are available offline. External video links require an internet connection.
                 </p>
               </div>
             )}
@@ -1733,7 +1883,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                 <Icons.Video2 /> Audio Lecture Guide
               </h3>
               <p style={{ color:'var(--text-muted)', fontSize:'13px', marginBottom:'16px' }}>
-                Listen to Agnes' voice lecture for Stage {module.order} (useful for low-bandwidth or offline learning).
+                Listen to Agnes' voice lecture for Stage {module.order} (works offline after first download).
               </p>
               
               <audio 
@@ -1756,35 +1906,63 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
               </div>
             </div>
 
-            <h2 className="section-heading">Videos for: {module.title}</h2>
+            {/* Illustrated Lesson — Main Content (Offline-Friendly) */}
+            <h2 className="section-heading" style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+              Illustrated Lesson: {module.title}
+            </h2>
             <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'22px' }}>
-              Curated educational videos specifically for <strong>Stage {module.order}: {module.title}</strong>. {isOnline ? 'Click any link to watch on YouTube (requires internet).' : 'Requires internet connection to watch.'}
+              A step-by-step visual walkthrough for <strong>Stage {module.order}</strong>. This lesson works fully offline — no internet needed.
             </p>
-            <div style={{ display:'flex',flexDirection:'column',gap:'10px',marginBottom:'30px', opacity: isOnline ? 1 : 0.65 }}>
-              {videoLinks.map((v,i)=>(
-                <a 
-                  key={i} 
-                  href={isOnline ? v.url : undefined} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="video-link-item" 
-                  style={{ cursor: isOnline ? 'pointer' : 'not-allowed' }}
-                  onClick={e => { if(!isOnline) e.preventDefault(); }}
-                >
-                  <div className="video-icon-box">
-                    <Icons.Video2 />
+            
+            {(moduleLectureMap[module.id] || moduleLectureMap[1]).map((step, si) => (
+              <div key={si} className="illustrated-lesson-card">
+                <div className="illustrated-lesson-step">
+                  <div className="illustrated-lesson-num" style={{ background: catColor() }}>{si + 1}</div>
+                  <div className="illustrated-lesson-content">
+                    <h4>{step.title}</h4>
+                    <p>{step.body}</p>
                   </div>
-                  <div style={{ flex:1,minWidth:0 }}>
-                    <div style={{ fontWeight:'600',fontSize:'14px',color:'var(--primary)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis' }}>{v.title}</div>
-                    <div style={{ fontSize:'12px',color:'var(--text-muted)',marginTop:'2px' }}>
-                      {isOnline ? 'YouTube — Click to watch' : 'YouTube — Internet Required'}
-                    </div>
-                  </div>
-                  {isOnline && <Icons.ExternalLink />}
-                </a>
-              ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Collapsible External Videos (Online Only) */}
+            <div 
+              className="external-videos-toggle" 
+              onClick={() => setShowExternalVideos && setShowExternalVideos(prev => !prev)}
+              style={{ cursor: 'pointer' }}
+            >
+              <h4>External Video Links (requires internet)</h4>
+              <span>{showExternalVideos ? '▲ Hide' : '▼ Show'}</span>
             </div>
-            <div className="alert-info">
+            {showExternalVideos && (
+              <div style={{ marginTop:'12px', display:'flex',flexDirection:'column',gap:'10px',marginBottom:'30px', opacity: isOnline ? 1 : 0.5 }}>
+                {videoLinks.map((v,i)=>(
+                  <a 
+                    key={i} 
+                    href={isOnline ? v.url : undefined} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="video-link-item" 
+                    style={{ cursor: isOnline ? 'pointer' : 'not-allowed' }}
+                    onClick={e => { if(!isOnline) e.preventDefault(); }}
+                  >
+                    <div className="video-icon-box">
+                      <Icons.Video2 />
+                    </div>
+                    <div style={{ flex:1,minWidth:0 }}>
+                      <div style={{ fontWeight:'600',fontSize:'14px',color:'var(--primary)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis' }}>{v.title}</div>
+                      <div style={{ fontSize:'12px',color:'var(--text-muted)',marginTop:'2px' }}>
+                        {isOnline ? 'External — Click to watch' : 'Requires internet'}
+                      </div>
+                    </div>
+                    {isOnline && <Icons.ExternalLink />}
+                  </a>
+                ))}
+              </div>
+            )}
+
+            <div className="alert-info" style={{ marginTop: '24px' }}>
               <h4 style={{ fontWeight:'700',marginBottom:'10px',fontSize:'14px' }}>Additional Reading</h4>
               <ul style={{ color:'var(--text-main)',fontSize:'13px',lineHeight:'2.1',paddingLeft:'18px',margin:0 }}>
                 {(module.category === 'self-worth' ? [
