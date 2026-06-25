@@ -1429,12 +1429,30 @@ const moduleLectureMap = {
   ]
 };
 
+const getYouTubeEmbedUrl = (url) => {
+  if (!url) return '';
+  let videoId = '';
+  if (url.includes('youtube.com/watch')) {
+    const match = url.match(/[?&]v=([^&#]+)/);
+    videoId = match ? match[1] : '';
+  } else if (url.includes('youtu.be/')) {
+    const parts = url.split('youtu.be/');
+    videoId = parts[1] ? parts[1].split(/[?&]/)[0] : '';
+  }
+  return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : '';
+};
+
+const canEmbed = (url) => {
+  return url && (url.includes('youtube.com/watch') || url.includes('youtu.be/'));
+};
+
 /* =========================================================
    MODULE VIEW  (Canvas-style tabs)
    ========================================================= */
 function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showToast, isOnline }) {
 
   const [activeTab, setActiveTab] = useState('notes');
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const [answers, setAnswers]     = useState({});
   const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
@@ -1937,15 +1955,45 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
             </div>
             {showExternalVideos && (
               <div style={{ marginTop:'12px', display:'flex',flexDirection:'column',gap:'10px',marginBottom:'30px', opacity: isOnline ? 1 : 0.5 }}>
+                
+                {/* Inline video player container */}
+                {selectedVideo && isOnline && (
+                  <div className="premium-card animate-fade-in" style={{ padding:'16px', marginBottom:'14px', position:'relative', border:'2px solid var(--primary-light)', background:'#fff' }}>
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'12px' }}>
+                      <h4 style={{ color:'var(--primary)', margin:0, fontWeight:'700', fontSize:'14px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'80%' }}>
+                        Playing: {selectedVideo.title}
+                      </h4>
+                      <button 
+                        onClick={() => setSelectedVideo(null)} 
+                        className="btn-outline"
+                        style={{ padding:'4px 10px', fontSize:'11px', cursor:'pointer' }}
+                      >
+                        ✕ Close Player
+                      </button>
+                    </div>
+                    <div style={{ position:'relative', paddingBottom:'56.25%', height:0, overflow:'hidden', borderRadius:'8px', background:'#000' }}>
+                      <iframe 
+                        title={selectedVideo.title}
+                        src={getYouTubeEmbedUrl(selectedVideo.url)} 
+                        frameBorder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowFullScreen 
+                        style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%' }}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {videoLinks.map((v,i)=>(
-                  <a 
+                  <div 
                     key={i} 
-                    href={isOnline ? v.url : undefined} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
                     className="video-link-item" 
                     style={{ cursor: isOnline ? 'pointer' : 'not-allowed' }}
-                    onClick={e => { if(!isOnline) e.preventDefault(); }}
+                    onClick={() => {
+                      if (isOnline && canEmbed(v.url)) {
+                        setSelectedVideo(v);
+                      }
+                    }}
                   >
                     <div className="video-icon-box">
                       <Icons.Video2 />
@@ -1953,11 +2001,21 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                     <div style={{ flex:1,minWidth:0 }}>
                       <div style={{ fontWeight:'600',fontSize:'14px',color:'var(--primary)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis' }}>{v.title}</div>
                       <div style={{ fontSize:'12px',color:'var(--text-muted)',marginTop:'2px' }}>
-                        {isOnline ? 'External — Click to watch' : 'Requires internet'}
+                        {isOnline ? (canEmbed(v.url) ? 'Click to play inline' : 'External Link') : 'Requires internet'}
                       </div>
                     </div>
-                    {isOnline && <Icons.ExternalLink />}
-                  </a>
+                    {isOnline && (
+                      <a 
+                        href={v.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:'4px', color:'var(--text-muted)' }}
+                        onClick={e => e.stopPropagation()}
+                      >
+                        <Icons.ExternalLink />
+                      </a>
+                    )}
+                  </div>
                 ))}
               </div>
             )}
@@ -1966,23 +2024,29 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
               <h4 style={{ fontWeight:'700',marginBottom:'10px',fontSize:'14px' }}>Additional Reading</h4>
               <ul style={{ color:'var(--text-main)',fontSize:'13px',lineHeight:'2.1',paddingLeft:'18px',margin:0 }}>
                 {(module.category === 'self-worth' ? [
-                  'Bandura, A. (1997). Self-efficacy: The exercise of control. W. H. Freeman.',
-                  'Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House.',
-                  'UNICEF Ghana (2022). Girls in STEM Education Report.',
-                  'Master, A., et al. (2021). Gender stereotypes about interests emerge early. PNAS.',
+                  { text: 'Bandura, A. (1997). Self-efficacy: The exercise of control. W. H. Freeman.', url: 'https://books.google.com.gh/books?id=eJ-PN9g54tcC' },
+                  { text: 'Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House.', url: 'https://books.google.com.gh/books?id=g-4lDAAAQBAJ' },
+                  { text: 'UNICEF Ghana (2022). Girls in STEM Education Report.', url: 'https://www.unicef.org/ghana/reports' },
+                  { text: 'Master, A., et al. (2021). Gender stereotypes about interests emerge early. PNAS.', url: 'https://www.pnas.org/doi/10.1073/pnas.2100030118' },
                 ] : module.category === 'technical-skills' ? [
-                  'MDN Web Docs — HTML, CSS, JavaScript Reference (developer.mozilla.org)',
-                  'freeCodeCamp.org — Free online coding curriculum',
-                  'W3Schools — Interactive web tutorials (w3schools.com)',
-                  'The Odin Project — Full stack web development course (theodinproject.com)',
-                  'CS50 by Harvard — Free intro to computer science (cs50.harvard.edu)',
+                  { text: 'MDN Web Docs — HTML, CSS, JavaScript Reference', url: 'https://developer.mozilla.org' },
+                  { text: 'freeCodeCamp.org — Free online coding curriculum', url: 'https://www.freecodecamp.org' },
+                  { text: 'W3Schools — Interactive web tutorials', url: 'https://www.w3schools.com' },
+                  { text: 'The Odin Project — Full stack web development course', url: 'https://www.theodinproject.com' },
+                  { text: 'CS50 by Harvard — Free intro to computer science', url: 'https://cs50.harvard.edu/x/' },
                 ] : [
-                  'AmaliTech Ghana — Career Development Resources',
-                  'LinkedIn Learning — Professional Development Courses',
-                  'Women in Tech Africa — Network and Opportunities',
-                  'MEST Africa — Entrepreneurship and Tech Skills',
-                  'DevCongress Ghana — Community Events and Mentorship',
-                ]).map((ref,i)=><li key={i}>{ref}</li>)}
+                  { text: 'AmaliTech Ghana — Career Development Resources', url: 'https://amalitech.org/careers' },
+                  { text: 'LinkedIn Learning — Professional Development Courses', url: 'https://www.linkedin.com/learning' },
+                  { text: 'Women in Tech Africa — Network and Opportunities', url: 'http://www.womenintechafrica.com' },
+                  { text: 'MEST Africa — Entrepreneurship and Tech Skills', url: 'https://meltwater.org' },
+                  { text: 'DevCongress Ghana — Community Events and Mentorship', url: 'https://devcongress.org' },
+                ]).map((ref,i)=>(
+                  <li key={i}>
+                    <a href={ref.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>
+                      {ref.text}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -2541,6 +2605,7 @@ function CareerResources({ lang }) {
   void lang;
   const [filterType, setFilterType]         = useState('All');
   const [filterLocation, setFilterLocation] = useState('All');
+  const [selectedVideo, setSelectedVideo]   = useState(null);
 
   const jobs = [
     { title:'Frontend Developer Intern',        company:'Hubtel Ghana',            type:'Internship',  location:'Accra',    link:'https://hubtel.com/careers' },
@@ -2576,17 +2641,65 @@ function CareerResources({ lang }) {
       {/* Educational Videos */}
       <div className="premium-card" style={{ padding:'clamp(20px,4vw,28px)',marginBottom:'30px' }}>
         <h3 className="section-heading">Educational Career Videos</h3>
-        <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'18px' }}>Curated videos to prepare for your tech career. Click any link to open on YouTube.</p>
+        <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'18px' }}>Curated videos to prepare for your tech career. Click a video to watch inline or open in a new tab.</p>
+        
+        {/* Inline video player container */}
+        {selectedVideo && (
+          <div className="premium-card animate-fade-in" style={{ padding:'16px', marginBottom:'18px', position:'relative', border:'2px solid var(--primary-light)', background:'#fff' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'12px' }}>
+              <h4 style={{ color:'var(--primary)', margin:0, fontWeight:'700', fontSize:'14px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'80%' }}>
+                Playing: {selectedVideo.title}
+              </h4>
+              <button 
+                onClick={() => setSelectedVideo(null)} 
+                className="btn-outline"
+                style={{ padding:'4px 10px', fontSize:'11px', cursor:'pointer' }}
+              >
+                ✕ Close Player
+              </button>
+            </div>
+            <div style={{ position:'relative', paddingBottom:'56.25%', height:0, overflow:'hidden', borderRadius:'8px', background:'#000' }}>
+              <iframe 
+                title={selectedVideo.title}
+                src={getYouTubeEmbedUrl(selectedVideo.url)} 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%' }}
+              />
+            </div>
+          </div>
+        )}
+
         <div style={{ display:'flex',flexDirection:'column',gap:'9px' }}>
           {educationalVideos.map((v,i)=>(
-            <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" className="video-link-item">
+            <div 
+              key={i} 
+              className="video-link-item" 
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                if (canEmbed(v.url)) {
+                  setSelectedVideo(v);
+                }
+              }}
+            >
               <div className="video-icon-box"><Icons.Video /></div>
               <div style={{ flex:1,minWidth:0 }}>
                 <div style={{ fontWeight:'600',fontSize:'14px',color:'var(--primary)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{v.title}</div>
-                <div style={{ fontSize:'12px',color:'var(--text-muted)',marginTop:'2px' }}>YouTube — Click to watch</div>
+                <div style={{ fontSize:'12px',color:'var(--text-muted)',marginTop:'2px' }}>
+                  {canEmbed(v.url) ? 'Click to play inline' : 'External Link'}
+                </div>
               </div>
-              <Icons.ExternalLink />
-            </a>
+              <a 
+                href={v.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:'4px', color:'var(--text-muted)' }}
+                onClick={e => e.stopPropagation()}
+              >
+                <Icons.ExternalLink />
+              </a>
+            </div>
           ))}
         </div>
       </div>
