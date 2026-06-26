@@ -17,3 +17,7 @@ npm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+# FIX 8: Protect participant data files from Git
+# Contains user passwords, personal stories, onboarding responses
+backend/db_data/

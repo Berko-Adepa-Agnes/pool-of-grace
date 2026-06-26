@@ -25,3 +25,5 @@ services:
           property: connectionString
       - key: REACT_APP_API_URL
         value: /api
+      - key: FRONTEND_URL
+        value: https://pool-of-grace.onrender.com

@@ -1968,7 +1968,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                         className="btn-outline"
                         style={{ padding:'4px 10px', fontSize:'11px', cursor:'pointer' }}
                       >
-                        ✕ Close Player
+                        X Close Player
                       </button>
                     </div>
                     <div style={{ position:'relative', paddingBottom:'56.25%', height:0, overflow:'hidden', borderRadius:'8px', background:'#000' }}>
@@ -2655,7 +2655,7 @@ function CareerResources({ lang }) {
                 className="btn-outline"
                 style={{ padding:'4px 10px', fontSize:'11px', cursor:'pointer' }}
               >
-                ✕ Close Player
+                X Close Player
               </button>
             </div>
             <div style={{ position:'relative', paddingBottom:'56.25%', height:0, overflow:'hidden', borderRadius:'8px', background:'#000' }}>
@@ -4344,11 +4344,11 @@ function PrivacyPage({ lang }) {
     },
     {
       title:'4. Confidentiality and Data Security',
-      content:`All participants are assigned unique identification codes. Your name and personal identifiers will never appear in research reports, academic publications, or conference presentations.\n\nOnly the researcher (Agnes Berko) and the academic supervisor (Ndinelao Iitumba, ALU) will have access to identifiable information. All findings are reported in aggregate form.\n\nElectronic data is stored on password-protected devices. Audio recordings are encrypted. Interview transcripts are de-identified before analysis. Data will be retained for five (5) years following project completion and then securely destroyed.`,
+      content:`All participants are assigned unique identification codes (e.g., POG001, POG002, etc.). Your name and personal identifiers will never appear in research reports, academic publications, or conference presentations.\n\nOnly the researcher (Agnes Berko) and the academic supervisor (Ndinelao Iitumba, ALU) will have access to identifiable information. All findings are reported in aggregate form.\n\nElectronic data is stored securely on a password-protected Google Drive. Audio recordings are encrypted. Interview transcripts are anonymized by removing all names before analysis. Data will be retained for five (5) years following project completion and then securely destroyed.`,
     },
     {
       title:'5. Data Storage and Retention',
-      content:`• Electronic data: stored on password-protected, encrypted devices\n• Session recordings: stored securely and de-identified\n• Consent forms: stored separately from all research data\n• Retention period: 5 years from project completion date (2031)\n• Disposal: all data will be securely destroyed after the retention period`,
+      content:`• Assign ID codes: POG001, POG002, etc. for all participants\n• Store consent forms separately: locked cabinet or password-protected folder\n• Store data securely: password-protected Google Drive\n• Anonymize transcripts: remove all names before analysis\n• Retain data: keep for 5 years after project completion (2031)\n• Destroy data: securely delete and destroy all data after 5 years`,
     },
     {
       title:'6. Protection of Vulnerable Participants',
@@ -4361,6 +4361,10 @@ function PrivacyPage({ lang }) {
     {
       title:'8. Contact Information',
       content:`Researcher:\nAgnes Adepa Berko\nEmail: a.berko1@alustudent.com\nOffice Hours: Tuesdays, Fridays, Saturdays — 2:00 PM to 3:00 PM Ghana Time\n\nAcademic Supervisor:\nNdinelao Iitumba\nAfrican Leadership University (ALU)\n\nFor any privacy concerns, questions about your data, or to request withdrawal from the study, please contact the researcher directly.`,
+    },
+    {
+      title:'9. Research Methodology and Data Collection Plan',
+      content:`Below is the outline of tasks and actions forming the data collection plan for this capstone study:\n\n• Interviews: Schedule and conduct 15 semi-structured interviews\n• Transcribing: Transcribe interviews (or use AI transcription tool)\n• Analyzing: Use thematic analysis in NVivo (or manually)\n• Beta Testing: Schedule and conduct User Acceptance Testing (UAT) with 20 participants\n• SUS Survey: Administer the System Usability Scale (SUS) survey after UAT\n• Feedback Interviews: Conduct 20–30 minute feedback sessions after UAT`,
     },
   ];
 
@@ -5158,7 +5162,7 @@ function AchievementsPage({ user, modules, lang }) {
     { id:'loop_master', name:'Loop Master', icon:'*', color:'#2980b9', desc:'Complete 5 practice challenges', earned: practiceCompleted.length >= 5, category:'Practice' },
     { id:'debug_queen', name:'Debug Queen', icon:'*', color:'#8e44ad', desc:'Complete 10 practice challenges', earned: practiceCompleted.length >= 10, category:'Practice' },
     { id:'full_stack_warrior', name:'Full Stack Warrior', icon:'*', color:'#c0392b', desc:'Complete 15 practice challenges', earned: practiceCompleted.length >= 15, category:'Practice' },
-    { id:'xp_collector', name:'XP Collector', icon:'⭐', color:'#f39c12', desc:'Earn 500 XP in Practice Lab', earned: practiceXp >= 500, category:'Practice' },
+    { id:'xp_collector', name:'XP Collector', icon:'*', color:'#f39c12', desc:'Earn 500 XP in Practice Lab', earned: practiceXp >= 500, category:'Practice' },
 
     // Streak badges
     { id:'streak_3', name:'3-Day Streak', icon:'*', color:'#e67e22', desc:'Maintain a 3-day learning streak', earned: streak.count >= 3, category:'Dedication' },

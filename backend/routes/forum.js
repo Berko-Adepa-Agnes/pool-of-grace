@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const db = require('../db');
 
 // Helper middleware to get authenticated user detail
-const getUserInfo = (req, res, next) => {
+// FIX 7: Look up user in DB to get their first name instead of leaking email
+const getUserInfo = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Unauthorized. Please login.' });
@@ -12,7 +13,11 @@ const getUserInfo = (req, res, next) => {
   try {
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'poolofgrace_secret_key_2026');
-    req.userName = `${decoded.firstName || 'User'} ${decoded.lastName || ''}`.trim() || decoded.email;
+
+    // Look up user in database to get their actual first name (not email)
+    const users = await db.getUsers();
+    const user = users.find(u => u.id === decoded.id);
+    req.userName = user ? `${user.firstName} ${user.lastName || ''}`.trim() : 'Participant';
     next();
   } catch (err) {
     // If verification fails but token was provided, fall back or deny

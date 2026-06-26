@@ -1,25 +1,104 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const xss = require('xss');
 require('dotenv').config();
 const db = require('./db');
 const seed = require('./seed');
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+/* =========================================================
+   FIX 1: Security Headers (helmet)
+   Adds X-Frame-Options, X-Content-Type-Options,
+   Strict-Transport-Security, and more.
+   ========================================================= */
+app.use(helmet({
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+  crossOriginEmbedderPolicy: false,
+}));
+
+/* =========================================================
+   FIX 2: Restrict CORS to known origins
+   Only your frontend can call the API.
+   ========================================================= */
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5000',
+  process.env.FRONTEND_URL,       // Set in production (e.g. your Render URL)
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, same-origin in prod)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
+
+app.use(express.json({ limit: '1mb' }));
+
+/* =========================================================
+   FIX 4: XSS Input Sanitization Middleware
+   Strips malicious HTML/JS from all string fields in
+   request bodies before they reach route handlers.
+   ========================================================= */
+const sanitizeValue = (value) => {
+  if (typeof value === 'string') {
+    return xss(value);
+  }
+  if (Array.isArray(value)) {
+    return value.map(sanitizeValue);
+  }
+  if (value && typeof value === 'object') {
+    const sanitized = {};
+    for (const key of Object.keys(value)) {
+      sanitized[key] = sanitizeValue(value[key]);
+    }
+    return sanitized;
+  }
+  return value;
+};
+
+app.use((req, res, next) => {
+  if (req.body && typeof req.body === 'object') {
+    req.body = sanitizeValue(req.body);
+  }
+  next();
+});
+
+/* =========================================================
+   FIX 3: Rate Limiting on Auth Routes
+   Max 10 login/register attempts per IP per 15 minutes.
+   ========================================================= */
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,   // 15 minutes
+  max: 10,                      // 10 attempts per window
+  message: { message: 'Too many attempts. Please try again after 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 app.get('/api', (req, res) => {
   res.json({ message: 'Pool of Grace API is running!' });
 });
 
-app.use('/api/auth', require('./routes/auth'));
+app.use('/api/auth', authLimiter, require('./routes/auth'));
 app.use('/api/modules', require('./routes/modules'));
 
-// New persistent routes
+// Persistent routes
 app.use('/api/mentorship', require('./routes/mentorship'));
 app.use('/api/forum', require('./routes/forum'));
+
+/* FIX 5: Mount the careers route */
+app.use('/api/careers', require('./routes/careers'));
 
 // Serve React frontend in production
 if (process.env.NODE_ENV === 'production') {
