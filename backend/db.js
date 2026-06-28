@@ -44,7 +44,8 @@ if (process.env.DATABASE_URL) {
   try {
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      // Neon requires SSL. Use SSL unless connecting to a local Postgres instance
+      ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
       connectionTimeoutMillis: 5000
     });
     usePostgres = true;
