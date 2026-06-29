@@ -2,6 +2,7 @@ services:
   - type: web
     name: pool-of-grace
     env: node
+    autoDeploy: true
     buildCommand: npm run build
     startCommand: npm run start:prod
     envVars:
