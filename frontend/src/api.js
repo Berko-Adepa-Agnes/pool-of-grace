@@ -27,6 +27,7 @@ export const saveOnboarding = (onboardingData) => API.post('/auth/onboarding', {
 export const getModules = () => API.get('/modules');
 export const getModule = (id) => API.get('/modules/' + id);
 export const completeModuleQuiz = (id, score) => API.post('/modules/' + id + '/complete', { score });
+export const completeModuleStep = (id, payload) => API.post('/modules/' + id + '/complete', payload);
 
 export const getMentors = () => API.get('/mentorship/mentors');
 export const bookMentorship = (bookingData) => API.post('/mentorship/book', bookingData);
