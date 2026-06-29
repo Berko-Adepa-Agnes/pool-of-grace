@@ -552,7 +552,8 @@ export default function App() {
 
   if (page === 'dashboard')     return <><ToastBar/><AuthenticatedPortal><Dashboard user={user} go={setPage} completionsCount={completionsCount} sessionsCount={sessionsCount} lang={lang} /></AuthenticatedPortal></>;
   if (page === 'modules')       return <><ToastBar/><AuthenticatedPortal><ModulesList openModule={openModule} lang={lang} modules={modules} /></AuthenticatedPortal></>;
-  if (page === 'moduleView')    return <><ToastBar/><AuthenticatedPortal><ModuleView module={selectedModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} showToast={showToast} isOnline={isOnline} /></AuthenticatedPortal></>;
+  const currentModule = selectedModule ? (modules.find(m => m.id === selectedModule.id) || selectedModule) : null;
+  if (page === 'moduleView')    return <><ToastBar/><AuthenticatedPortal><ModuleView module={currentModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} showToast={showToast} isOnline={isOnline} /></AuthenticatedPortal></>;
   if (page === 'schedule')      return <><ToastBar/><AuthenticatedPortal><Schedule go={setPage} lang={lang} onBooked={()=>{ fetchStats(); showToast('Session booked! Check your inbox for details.'); }} /></AuthenticatedPortal></>;
   if (page === 'forum')         return <><ToastBar/><AuthenticatedPortal><Forum lang={lang} /></AuthenticatedPortal></>;
   if (page === 'career')        return <AuthenticatedPortal><CareerResources lang={lang} /></AuthenticatedPortal>;
