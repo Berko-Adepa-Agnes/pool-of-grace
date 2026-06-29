@@ -2252,25 +2252,22 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                     {score>=3?'This module is now complete.':'You need at least 3 correct to pass.'}
                   </div>
                 </div>
-                {content.quiz.map((q,qi)=>(
+                {Object.keys(answers).length > 0 && content.quiz.map((q,qi)=>(
                   <div key={qi} style={{ marginBottom:'12px',padding:'16px',borderRadius:'10px',background:answers[qi]===q.answer?'#f4fff4':'#fff5f5',border:'1px solid '+(answers[qi]===q.answer?'#c3e6c3':'#f5c6cb') }}>
                     <p style={{ color:'var(--text-main)',fontSize:'13px',fontWeight:'600',marginBottom:'6px' }}>Q{qi+1}: {q.question}</p>
                     <p style={{ fontSize:'13px',margin:'3px 0',color:'var(--text-muted)' }}>Your answer: <span style={{ fontWeight:'600',color:answers[qi]===q.answer?'#2d7a2d':'#721c24' }}>{answers[qi]||'Not answered'}</span></p>
                     {answers[qi]!==q.answer && <p style={{ fontSize:'13px',margin:'3px 0',color:'var(--primary)' }}>Correct: <span style={{ fontWeight:'600' }}>{q.answer}</span></p>}
                   </div>
                 ))}
-                {score >= 3 ? (
-                  <div style={{ display:'flex',gap:'10px',marginTop:'18px',flexWrap:'wrap' }}>
-                    {nextMod && <button className="btn-primary" style={{ background:catColor() }} onClick={()=>openModule(nextMod)}>Next: Stage {nextMod.order}</button>}
-                    <button className="btn-outline" onClick={()=>go('modules')}>All Modules</button>
-                    <button className="btn-outline" onClick={()=>setActiveTab('grades')}>View Grade</button>
-                  </div>
-                ) : (
-                  <button className="btn-primary" style={{ background:'#d9534f',marginTop:'10px' }}
+                <div style={{ display:'flex',gap:'10px',marginTop:'18px',flexWrap:'wrap' }}>
+                  {score >= 3 && nextMod && <button className="btn-primary" style={{ background:catColor() }} onClick={()=>openModule(nextMod)}>Next: Stage {nextMod.order}</button>}
+                  <button className="btn-outline" onClick={()=>go('modules')}>All Modules</button>
+                  <button className="btn-outline" onClick={()=>setActiveTab('grades')}>View Grade</button>
+                  <button className="btn-outline" style={{ border:'1px solid #d9534f',color:'#d9534f' }}
                     onClick={()=>{ setAnswers({}); setQuizSubmitted(false); setScore(0); }}>
-                    Try Again
+                    {score >= 3 ? 'Retake Quiz' : 'Try Again'}
                   </button>
-                )}
+                </div>
               </div>
             )}
           </div>
