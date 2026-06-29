@@ -32,8 +32,10 @@ router.get('/', async (req, res) => {
         const completion = userCompletions.find(c => c.moduleId === m.id);
         return {
           ...m,
-          completed: !!completion,
-          score: completion ? completion.score : null
+          completed: completion ? (completion.score >= 3 && completion.assignmentCompleted && completion.projectCompleted) : false,
+          score: completion ? completion.score : null,
+          assignmentCompleted: completion ? completion.assignmentCompleted : false,
+          projectCompleted: completion ? completion.projectCompleted : false
         };
       });
       return res.json({ modules: modulesWithStatus });
@@ -61,8 +63,10 @@ router.get('/:id', async (req, res) => {
       return res.json({
         module: {
           ...module,
-          completed: !!completion,
-          score: completion ? completion.score : null
+          completed: completion ? (completion.score >= 3 && completion.assignmentCompleted && completion.projectCompleted) : false,
+          score: completion ? completion.score : null,
+          assignmentCompleted: completion ? completion.assignmentCompleted : false,
+          projectCompleted: completion ? completion.projectCompleted : false
         }
       });
     }
@@ -81,11 +85,11 @@ router.post('/:id/complete', async (req, res) => {
       return res.status(401).json({ message: 'Unauthorized. Please login.' });
     }
 
-    const { score } = req.body;
+    const { score, assignmentCompleted, projectCompleted } = req.body;
     const moduleId = parseInt(req.params.id);
 
-    await db.saveCompletion(userId, moduleId, score || 0);
-    res.json({ message: 'Progress saved successfully', completed: true, score });
+    await db.saveCompletion(userId, moduleId, score, assignmentCompleted, projectCompleted);
+    res.json({ message: 'Progress saved successfully', completed: true });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

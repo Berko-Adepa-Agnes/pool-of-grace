@@ -102,6 +102,8 @@ const INIT_SCHEMAS = {
       user_id INT NOT NULL,
       module_id INT NOT NULL,
       score INT NOT NULL,
+      assignment_completed BOOLEAN DEFAULT FALSE,
+      project_completed BOOLEAN DEFAULT FALSE,
       completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       UNIQUE(user_id, module_id)
     );
@@ -157,6 +159,9 @@ const initDb = async () => {
       for (const table in INIT_SCHEMAS) {
         await pool.query(INIT_SCHEMAS[table]);
       }
+      // Add missing columns if they don't exist yet
+      await pool.query(`ALTER TABLE completions ADD COLUMN IF NOT EXISTS assignment_completed BOOLEAN DEFAULT FALSE`);
+      await pool.query(`ALTER TABLE completions ADD COLUMN IF NOT EXISTS project_completed BOOLEAN DEFAULT FALSE`);
       console.log('PostgreSQL database schemas verified/created.');
     } catch (err) {
       console.error('Schema initialization failed, falling back to JSON...', err);
@@ -451,33 +456,48 @@ const db = {
         userId: c.user_id,
         moduleId: c.module_id,
         score: c.score,
+        assignmentCompleted: !!c.assignment_completed,
+        projectCompleted: !!c.project_completed,
         completedAt: c.completed_at
       }));
     }
     return readJson('completions');
   },
 
-  saveCompletion: async (userId, moduleId, score) => {
+  saveCompletion: async (userId, moduleId, score, assignmentCompleted, projectCompleted) => {
     if (usePostgres) {
       await pool.query(
-        `INSERT INTO completions (user_id, module_id, score)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (user_id, module_id) DO UPDATE SET score = EXCLUDED.score`,
-        [userId, moduleId, score]
+        `INSERT INTO completions (user_id, module_id, score, assignment_completed, project_completed)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (user_id, module_id) DO UPDATE SET 
+           score = CASE WHEN EXCLUDED.score IS NOT NULL THEN EXCLUDED.score ELSE completions.score END,
+           assignment_completed = CASE WHEN EXCLUDED.assignment_completed IS NOT NULL THEN EXCLUDED.assignment_completed ELSE completions.assignment_completed END,
+           project_completed = CASE WHEN EXCLUDED.project_completed IS NOT NULL THEN EXCLUDED.project_completed ELSE completions.project_completed END`,
+        [
+          userId, 
+          moduleId, 
+          score !== undefined && score !== null ? score : null, 
+          assignmentCompleted !== undefined && assignmentCompleted !== null ? assignmentCompleted : null, 
+          projectCompleted !== undefined && projectCompleted !== null ? projectCompleted : null
+        ]
       );
       return true;
     }
     const completions = readJson('completions');
     const index = completions.findIndex(c => c.userId === parseInt(userId) && c.moduleId === parseInt(moduleId));
     if (index !== -1) {
-      completions[index].score = score;
+      if (score !== undefined && score !== null) completions[index].score = score;
+      if (assignmentCompleted !== undefined && assignmentCompleted !== null) completions[index].assignmentCompleted = assignmentCompleted;
+      if (projectCompleted !== undefined && projectCompleted !== null) completions[index].projectCompleted = projectCompleted;
       completions[index].completedAt = new Date().toISOString();
     } else {
       completions.push({
         id: completions.length + 1,
         userId: parseInt(userId),
         moduleId: parseInt(moduleId),
-        score,
+        score: score || 0,
+        assignmentCompleted: !!assignmentCompleted,
+        projectCompleted: !!projectCompleted,
         completedAt: new Date().toISOString()
       });
     }

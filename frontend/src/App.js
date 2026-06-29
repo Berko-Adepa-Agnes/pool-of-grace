@@ -5,6 +5,7 @@ import {
   saveOnboarding,
   getModules,
   completeModuleQuiz,
+  completeModuleStep,
   getMentors,
   bookMentorship,
   getMentorshipSessions,
@@ -306,6 +307,7 @@ export default function App() {
       
       // Merge offline completions
       const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
+      let changed = false;
       mods = mods.map(m => {
         const comp = offlineComps[m.id];
         let quizScore = m.score || 0;
@@ -322,9 +324,19 @@ export default function App() {
            }
         }
         
+        // Write back to sync offline storage
+        if (!comp || comp.quizScore !== quizScore || comp.projectCompleted !== projDone || comp.assignmentCompleted !== assignDone) {
+          offlineComps[m.id] = { quizScore, projectCompleted: projDone, assignmentCompleted: assignDone };
+          changed = true;
+        }
+        
         const isCompleted = quizScore >= 3 && projDone && assignDone;
         return { ...m, completed: isCompleted, score: quizScore, quizScore: quizScore, projectCompleted: projDone, assignmentCompleted: assignDone };
       });
+
+      if (changed) {
+        localStorage.setItem('pog_offline_completions', JSON.stringify(offlineComps));
+      }
 
       setModules(mods);
       setCompletionsCount(mods.filter(m => m.completed).length);
@@ -1608,7 +1620,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
   const prevMod   = idx > 0 ? allSorted[idx-1] : null;
   const nextMod   = idx < allSorted.length-1 ? allSorted[idx+1] : null;
 
-  const handleAssignmentPassed = () => {
+  const handleAssignmentPassed = async () => {
     const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
     const comp = offlineComps[module.id];
     let currentObj = { quizScore: 0, projectCompleted: false, assignmentCompleted: false };
@@ -1622,6 +1634,14 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
       offlineComps[module.id] = currentObj;
       localStorage.setItem('pog_offline_completions', JSON.stringify(offlineComps));
       
+      try {
+        if (isOnline) {
+          await completeModuleStep(module.id, { assignmentCompleted: true });
+        }
+      } catch (err) {
+        console.error('Failed to save assignment progress to server:', err);
+      }
+      
       onQuizPassed(); // Refreshes global module state
       if (currentObj.quizScore >= 3 && currentObj.projectCompleted) {
          launchCelebration();
@@ -1630,7 +1650,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
     }
   };
 
-  const handleProjectPassed = () => {
+  const handleProjectPassed = async () => {
     const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
     const comp = offlineComps[module.id];
     let currentObj = { quizScore: 0, projectCompleted: false, assignmentCompleted: false };
@@ -1643,6 +1663,14 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
       currentObj.projectCompleted = true;
       offlineComps[module.id] = currentObj;
       localStorage.setItem('pog_offline_completions', JSON.stringify(offlineComps));
+      
+      try {
+        if (isOnline) {
+          await completeModuleStep(module.id, { projectCompleted: true });
+        }
+      } catch (err) {
+        console.error('Failed to save project progress to server:', err);
+      }
       
       onQuizPassed(); // Refreshes global module state
       if (currentObj.quizScore >= 3 && currentObj.assignmentCompleted) {
