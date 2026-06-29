@@ -35,7 +35,7 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, curl, same-origin in prod)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('onrender.com')) {
       return callback(null, true);
     }
     return callback(new Error('Not allowed by CORS'));
