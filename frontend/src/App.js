@@ -1589,8 +1589,8 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
     // Module 1: Understanding Your Worth
     1: [
       { title: 'The Power of Vulnerability — Brené Brown (TED)', url: 'https://www.youtube.com/watch?v=iCvmsMzlF7o' },
-      { title: 'Self-Worth Isn\'t A Feeling. It\'s A Decision — Laila Miller (TEDx)', url: 'https://www.youtube.com/watch?v=MEEaH_0R3kE' },
-      { title: 'How to Reclaim Your Self-Worth — Tess Holliday (TEDx)', url: 'https://www.youtube.com/watch?v=0_uM7z5c2Qo' },
+      { title: 'Your Body Language May Shape Who You Are — Amy Cuddy (TED)', url: 'https://www.youtube.com/watch?v=Ks-_Mh1QhMc' },
+      { title: 'The Power of Believing That You Can Improve — Carol Dweck (TED)', url: 'https://www.youtube.com/watch?v=_X0mgOOSpLU' },
     ],
     // Module 2: Breaking Cultural Barriers
     2: [
