@@ -302,13 +302,37 @@ export default function App() {
   const fetchStats = useCallback(async () => {
     try {
       const modRes = await getModules();
-      const mods   = modRes.data.modules;
+      let mods   = modRes.data.modules;
+      
+      // Merge offline completions
+      const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
+      mods = mods.map(m => {
+        if (offlineComps[m.id] !== undefined && (!m.completed || offlineComps[m.id] > m.score)) {
+          return { ...m, completed: true, score: offlineComps[m.id] };
+        }
+        return m;
+      });
+
       setModules(mods);
       setCompletionsCount(mods.filter(m => m.completed).length);
+      
       const sessRes = await getMentorshipSessions();
       setSessionsCount(sessRes.data.bookings.length);
     } catch (err) {
       console.error('Error loading stats:', err);
+      // Fallback: merge offline completions into existing state if API fails
+      setModules(prev => {
+        if (!prev || prev.length === 0) return prev;
+        const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
+        const updated = prev.map(m => {
+          if (offlineComps[m.id] !== undefined && (!m.completed || offlineComps[m.id] > m.score)) {
+            return { ...m, completed: true, score: offlineComps[m.id] };
+          }
+          return m;
+        });
+        setCompletionsCount(updated.filter(m => m.completed).length);
+        return updated;
+      });
     }
   }, []);
 
@@ -1565,18 +1589,32 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
     setScore(correct);
     setQuizSubmitted(true);
     if (correct >= 3) {
+      // Save offline progress to localStorage ALWAYS, just in case
+      const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
+      if (offlineComps[module.id] === undefined || offlineComps[module.id] < correct) {
+        offlineComps[module.id] = correct;
+        localStorage.setItem('pog_offline_completions', JSON.stringify(offlineComps));
+      }
+
       try {
-        await completeModuleQuiz(module.id, correct);
+        if (isOnline) {
+          await completeModuleQuiz(module.id, correct);
+        }
         onQuizPassed();
         launchCelebration();
         if (showToast) showToast(`Module complete! You scored ${correct}/${content.quiz.length} — well done!`);
       }
-      catch(err) { console.error(err); }
+      catch(err) { 
+        console.error(err); 
+        // If it fails (network error, offline), still update local UI state
+        onQuizPassed();
+        launchCelebration();
+        if (showToast) showToast(`Saved offline! You scored ${correct}/${content.quiz.length} — well done!`);
+      }
     } else {
       if (showToast) showToast(`Score: ${correct}/${content.quiz.length}. You need at least 3 correct to pass. Try again!`, 'error');
     }
   };
-
 
   const saveNote = () => {
     localStorage.setItem(`pog_note_${module.id}`, noteContent);
