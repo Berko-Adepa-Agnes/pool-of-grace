@@ -1588,9 +1588,9 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
   const moduleVideoMap = {
     // Module 1: Understanding Your Worth
     1: [
-      { title: 'The Power of Vulnerability — Brené Brown (TED)', url: 'https://www.youtube.com/watch?v=sTJ7AzBIJoI' },
-      { title: 'How to Build Self-Worth — Priyanka Chopra', url: 'https://www.youtube.com/watch?v=vVnK2e3JvS0' },
-      { title: 'Know Your Worth — Motivational Video for Women', url: 'https://www.youtube.com/watch?v=f-Btz22Q6B8' },
+      { title: 'The Power of Vulnerability — Brené Brown (TED)', url: 'https://www.youtube.com/watch?v=iCvmsMzlF7o' },
+      { title: 'Self-Worth Isn\'t A Feeling. It\'s A Decision — Laila Miller (TEDx)', url: 'https://www.youtube.com/watch?v=MEEaH_0R3kE' },
+      { title: 'How to Reclaim Your Self-Worth — Tess Holliday (TEDx)', url: 'https://www.youtube.com/watch?v=0_uM7z5c2Qo' },
     ],
     // Module 2: Breaking Cultural Barriers
     2: [
