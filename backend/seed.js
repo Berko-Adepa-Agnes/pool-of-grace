@@ -72,7 +72,8 @@ const modulesSeed = [
           "body": "[STORY]Ama sat by the stove, watching the water boil for fufu. She thought about how she had managed her mother's market stall budget last month when the prices fluctuated. She had calculated the profits, organized the stock, and handled the customers. It had been hard, but she had done it with patience and logical planning.[/STORY]\n\n[LESSON]You already possess the core qualities of a successful programmer. Patience helps you find bugs. Logical thinking helps you write instructions. Determination keeps you going when code breaks. Tech is simply a new language to apply the strengths you already have.[/LESSON]\n\n[YOUR_TURN]Think of a difficult situation in your life that you successfully resolved. What qualities did you use? How can they help you in coding?[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What is the definition of self-worth?",
           "options": [
@@ -153,7 +154,8 @@ const modulesSeed = [
           "body": "[STORY]Ama thought about her community savings group, the 'susu.' Everyone contributed money to a common pot, and each member took turns using it to grow their business. It was a system built on trust and mutual support. Akosua told her, 'Software development is just like a susu. We share our code and help each other build better things.'[/STORY]\n\n[LESSON]Not all cultural values are barriers. Ghanaian values of community support, resilience, and sharing are powerful assets in tech. The developer community relies on open source and collaborative forums where people contribute their knowledge to help everyone grow.[/LESSON]\n\n[YOUR_TURN]How can you bring the spirit of communal support to your coding journey and support your peers?[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What is a major cultural barrier for Ghanaian girls in tech?",
           "options": [
@@ -234,7 +236,8 @@ const modulesSeed = [
           "body": "[STORY]Ama typed a paragraph tag but forgot the closing bracket. The screen filled with red error text. Her heart raced. 'I broke it!' she gasped. Akosua laughed. 'You didn't break anything. The computer is just having a conversation with you. Read the message.' Ama read it: 'Expected closing tag on line 12.' She added the bracket, and the error vanished.[/STORY]\n\n[LESSON]Anxiety is a natural body response to errors. Reframe it: error messages are not grades or punishments. They are useful diagnostics telling you exactly what to fix. When you see an error, read it out loud to engage your logical brain and calm your emotions.[/LESSON]\n\n[YOUR_TURN]Next time you get a coding error, read it out loud and explain to yourself what the computer is asking for. Write down this experience.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "Who defined the concept of Self-Efficacy?",
           "options": [
@@ -315,7 +318,8 @@ const modulesSeed = [
           "body": "[STORY]When the power cut, Ama didn't stop. She saved her work, closed her laptop, and read her offline PDF study notes on her phone. When she had slow internet, she downloaded resources at a local cafe and practiced coding offline at home. She realized that these obstacles were actually making her a more creative and resilient developer.[/STORY]\n\n[LESSON]Resilience is key in Ghana's tech environment. Work within constraints: save work frequently (Ctrl+S), download learning materials for offline use, code offline using text editors, and connect with peers to share devices or internet hotspots.[/LESSON]\n\n[YOUR_TURN]List two practical ways you can continue learning during a power outage or when you run out of mobile data.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What is a growth mindset?",
           "options": [
@@ -396,7 +400,8 @@ const modulesSeed = [
           "body": "[STORY]Ama made a simple chart on her wall with 20 boxes. Every time she completed a module, she colored in a box with a red pen. Ticking off the boxes gave her a sense of progress. When she looked at the chart and saw 5 colored boxes, she realized she was no longer a complete beginner. She was moving forward.[/STORY]\n\n[LESSON]Visualizing your progress builds momentum and fights imposter syndrome. Keep a physical or digital milestone tracker. Ticking off completed tasks reinforces your mastery and reminds you how far you have come.[/LESSON]\n\n[YOUR_TURN]Create a physical tracker in your notebook or on your wall to mark your progress through these 20 modules.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What does the S in SMART stand for?",
           "options": [
@@ -477,7 +482,8 @@ const modulesSeed = [
           "body": "[STORY]Ama had a bug she couldn't solve for two hours. She wanted to message Akosua: 'My code is broken, help.' But she remembered Akosua's rule. She wrote instead: 'Hi Akosua, I am trying to center an image. I tried setting the margin to auto and changing display to block, but it is still aligned left. Here is my code.' Akosua replied in minutes, guiding her to the solution.[/STORY]\n\n[LESSON]Mentors are here to guide your thinking, not write code for you. When asking for help, describe the problem, show the error, explain what you expected, and list what you have already tried. This shows initiative and helps the mentor help you.[/LESSON]\n\n[YOUR_TURN]Draft a help request for a current bug you are facing, following the structured format: problem, expectation, and attempts made.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "Why is a peer network important in tech?",
           "options": [
@@ -558,7 +564,8 @@ const modulesSeed = [
           "body": "[STORY]Ama looked at her old charcoal declaration: 'I, Ama, can learn to code.' She smiled. She was no longer afraid of the red errors or the computer screens. She had built a solid mental house. She was ready to lay the technical bricks. She opened the HTML notes with excitement, ready for the next stage of her journey.[/STORY]\n\n[LESSON]A solid psychological foundation is required before learning technical skills. By building self-worth, setting goals, establishing community, and reframing failure, you have prepared your mind for the technical challenges ahead. You are ready to write code.[/LESSON]\n\n[YOUR_TURN]Reflect on how your mindset has changed since Module 1. Write down one major shift in your thinking.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "Why should you celebrate small steps in learning?",
           "options": [
@@ -639,7 +646,8 @@ const modulesSeed = [
           "body": "[STORY]Ama opened her text editor, saved a new file as `index.html`, and typed out the full structure: `<html>`, `<head>`, `<body>`. She linked a `style.css` file and added her kente details. She opened the file in her browser without any internet connection. It loaded perfectly! 'I built a webpage offline!' she cheered. Akosua nodded. 'You are now a creator.'[/STORY]\n\n[LESSON]To build a webpage, create a folder with `index.html` and `style.css`. Link them together using the `<link>` tag in the head. You can test and view your webpage locally in any web browser without needing an active internet connection.[/LESSON]\n\n[YOUR_TURN]Create a simple HTML page on your computer with a heading, paragraph, and styled background. View it in your browser.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What does HTML stand for?",
           "options": [
@@ -720,7 +728,8 @@ const modulesSeed = [
           "body": "[STORY]Ama had to calculate the total price for different customers. Instead of writing the discount logic over and over, Akosua showed her how to write a function. 'Think of Jollof rice,' Akosua said. 'You write the recipe once as a function, then you just call it with different ingredients.' Ama wrote a function `calculateTotal(price, qty)` and called it three times. It saved time and kept her code clean.[/STORY]\n\n[LESSON]A function is a reusable block of code designed to perform a specific task. You define the function once (with inputs called parameters), and then you can execute ('call') it multiple times with different values, returning a result.[/LESSON]\n\n[YOUR_TURN]Write a JavaScript function named `add` that takes two numbers as parameters and returns their sum.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "How do you declare a variable that cannot be reassigned?",
           "options": [
@@ -801,7 +810,8 @@ const modulesSeed = [
           "body": "[STORY]Ama opened her browser's developer console (Inspect element). She saw a red error message. Instead of panicking, she read it carefully: 'Cannot read property of null on line 15.' She realized she had misspelled the button ID. She fixed it, refreshed, and the console was clean. She tested the site offline multiple times. It worked flawlessly.[/STORY]\n\n[LESSON]Use browser developer tools (Right-click -> Inspect -> Console) to test and debug your code. The console displays JavaScript outputs and syntax errors, helping you pinpoint and resolve issues quickly. Testing locally requires no internet connection.[/LESSON]\n\n[YOUR_TURN]Open your browser's Developer Tools on any page. Locate the console tab and run a simple `console.log('Test')` command. Write down what happens.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What does DOM stand for?",
           "options": [
@@ -882,7 +892,8 @@ const modulesSeed = [
           "body": "[STORY]Ama wrote a function to calculate tax on her sales. She typed: `def calculate_tax(amount):\n    return amount * 0.05`. She passed 500 GHS into it, and it returned 25 GHS. She liked how she could wrap logic inside a clear name using the `def` keyword. Her code felt organized and reusable.[/STORY]\n\n[LESSON]In Python, you define functions using the `def` keyword, followed by the function name, parameters, and a colon. The function body must be indented, and values are returned using `return`. Python functions promote code reusability and clarity.[/LESSON]\n\n[YOUR_TURN]Write a Python function named `greet` that takes a name as a parameter and returns: 'Hello, ' + name.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "How does Python define blocks of code?",
           "options": [
@@ -963,7 +974,8 @@ const modulesSeed = [
           "body": "[STORY]Ama wanted to see the names of customers alongside the items they ordered. Since names were in one table and orders in another, she used a `JOIN`. She wrote: `SELECT customers.name, orders.item FROM customers JOIN orders ON customers.id = orders.customer_id;`. She saw the customer name and order item side by side. The database had bridged the tables perfectly.[/STORY]\n\n[LESSON]A `JOIN` clause combines rows from two or more tables based on a related column between them (typically foreign keys). Joining tables allows you to query normalized database structures to produce comprehensive, readable reports.[/LESSON]\n\n[YOUR_TURN]Write a basic query outline joining a `students` table and a `courses` table based on a shared `student_id` column.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What does SQL stand for?",
           "options": [
@@ -1044,7 +1056,8 @@ const modulesSeed = [
           "body": "[STORY]Ama went to her frontend JavaScript file. She used the `fetch()` function to call her new backend endpoint: `fetch('/api/kente').then(res => res.json()).then(data => { display(data); });`. She refreshed her webpage, and the data from her Express server appeared on her HTML screen. She had completed the link. She was officially a Full Stack developer![/STORY]\n\n[LESSON]To connect frontend and backend, use the browser's `fetch()` API or library calls to make asynchronous HTTP requests to backend routes. The frontend receives the JSON data, updates the React state or DOM elements, and displays the content to the user.[/LESSON]\n\n[YOUR_TURN]Write a simple JavaScript `fetch` call that requests data from `/api/status` and logs the result to the browser console.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What does a full-stack application include?",
           "options": [
@@ -1125,7 +1138,8 @@ const modulesSeed = [
           "body": "[STORY]Ama looked at her GitHub dashboard. She saw the green boxes showing her daily coding commits. Akosua told her, 'Your GitHub profile is your modern CV. Companies in Accra like Hubtel and MTN look at your repositories to see if you can write clean, organized code.' Ama wrote a friendly readme page describing her weavers project, showing she was ready for professional work.[/STORY]\n\n[LESSON]GitHub hosts code repositories and serves as a portfolio for developers. A clean profile with active commit history ('green squares'), well-documented README files, and clean repository folders is the strongest technical resume for landing a job.[/LESSON]\n\n[YOUR_TURN]Create your GitHub account, set up a profile picture, and write a short bio stating your interest in web development.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What is Git?",
           "options": [
@@ -1206,7 +1220,8 @@ const modulesSeed = [
           "body": "[STORY]Ama thought that completing her coding course meant she was done learning. Akosua corrected her: 'Technology never stops. Languages change, frameworks update. The best developers are lifelong learners. You should dedicate at least 3-5 hours a week to reading articles, coding projects, and learning new libraries.' Ama nodded, accepting the marathon of growth.[/STORY]\n\n[LESSON]Continuous learning is mandatory in software engineering due to rapid technology cycles. Upskilling strategies include: allocating dedicated weekly hours for self-study, reading tech blogs, contributing to open source, and building personal side projects to stay relevant.[/LESSON]\n\n[YOUR_TURN]Design a simple weekly learning schedule showing when you will spend time upskilling after completing these modules.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What is the average growth rate of Ghana's tech sector?",
           "options": [
@@ -1267,7 +1282,8 @@ const modulesSeed = [
           "body": "[STORY]Ama opened the README file for her weavers project on GitHub. She wrote a clear description: 'This application helps local Ghanaian weavers display their kente styles and calculate prices offline.' She added installation instructions, screenshots, and listed the tech stack: React, Express, Node.js, PostgreSQL. She realized it looked professional and easy to understand.[/STORY]\n\n[LESSON]Every repository on GitHub needs a README.md file. It acts as the project manual, explaining: 1. Project Purpose, 2. Technologies Used, 3. How to install and run the code, and 4. Project features. A good readme demonstrates communication and organization skills.[/LESSON]\n\n[YOUR_TURN]Write a draft README for one of your GitHub repositories, detailing the project overview and installation steps.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What is the most critical link to include on a developer CV?",
           "options": [
@@ -1328,7 +1344,8 @@ const modulesSeed = [
           "body": "[STORY]At the end of the interview, the manager asked Ama: 'Do you have any questions for us?' Ama asked: 'What technologies is the team planning to adopt this year, and how do you support learning for junior developers?' The manager's eyes lit up. Ama's questions showed she was ambitious, eager to learn, and interested in their team growth.[/STORY]\n\n[LESSON]At the end of an interview, always ask 2-3 questions that show initiative and interest. Ask about the team's tech stack, their current challenges, the onboarding process, or how they foster professional development within the company.[/LESSON]\n\n[YOUR_TURN]Write down three questions you will ask an interviewer at a technology company to show your interest in their team.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What does STAR stand for in behavioral interviews?",
           "options": [
@@ -1389,7 +1406,8 @@ const modulesSeed = [
           "body": "[STORY]Ama wanted advice from a senior engineer at mPharma. She wrote a short message: 'Hi Abena, I admire your work at mPharma. I am a junior developer in Kumasi specializing in full-stack JavaScript. Can I ask you one question about how you prepare database designs?' Abena replied warmly: 'Hi Ama, absolutely. Let's chat next Wednesday.' Ama smiled. Direct, polite messages worked.[/STORY]\n\n[LESSON]When reaching out to tech professionals on LinkedIn, write short, respectful messages: state who you are, what you admire about their work, keep requests specific and low-commitment (e.g. a 15-minute virtual chat or one question).[/LESSON]\n\n[YOUR_TURN]Write a draft message to a Ghanaian tech professional whose career inspires you, requesting a short chat or asking one career question.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "What percentage of tech jobs are filled through networking?",
           "options": [
@@ -1450,7 +1468,8 @@ const modulesSeed = [
           "body": "[STORY]Ama and the pharmacy owner agreed on a price of 2,000 GHS. Akosua advised her: 'Get it in writing. 30% deposit upfront, 40% when the design is approved, 30% when it goes live. Never start coding without a deposit.' The owner agreed and sent 600 GHS via Mobile Money (MoMo). Ama saw the money arrive. She felt proud and professional. She had her first contract.[/STORY]\n\n[LESSON]Always use written contracts specifying project scope, deadline, and payment terms. Use milestone-based payments (e.g. upfront deposit, mid-project, final completion). Accept payments securely via local channels like Mobile Money (MoMo) or bank transfers.[/LESSON]\n\n[YOUR_TURN]Write a sample payment schedule for a project priced at 1,500 GHS, detailing the milestones and MoMo details for each payment.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "Which of the following is a popular freelancing platform?",
           "options": [
@@ -1511,7 +1530,8 @@ const modulesSeed = [
           "body": "[STORY]Ama attended her final Saturday meeting. Agnes congratulated the graduating cohort. 'But don't disappear,' Agnes said. 'Become a peer mentor for the next cohort.' Ama raised her hand. She wanted to help other girls from Kumasi who were where she was 3 months ago. 'Obiara nnhyira ne ho' — Nobody blesses themselves alone. Ama was ready to give back.[/STORY]\n\n[LESSON]Your connection to Pool of Grace continues as an alumna. Join the alumni directory, support the forum, become a peer mentor, and share your career successes. Giving back and teaching others is the ultimate way to reinforce your own skills and grow the tech community.[/LESSON]\n\n[YOUR_TURN]Write a short message to the next cohort of girls starting Pool of Grace, sharing the most valuable lesson you learned about mindset and coding.[/YOUR_TURN]"
         }
       ],
-      "quiz": [
+      "projects": [{ "title": "Module Practical Project", "desc": "Apply what you learned in this module to a real-world scenario. Write a reflection and submit your work.", "minWords": 50 }],
+        "quiz": [
         {
           "question": "Why is continuous learning important in technology?",
           "options": [

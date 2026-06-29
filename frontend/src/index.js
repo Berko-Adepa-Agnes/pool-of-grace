@@ -10,11 +10,10 @@ root.render(
   </React.StrictMode>
 );
 
-// Register PWA service worker
+// Unregister PWA service worker to bust aggressive caching
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => console.log('Service Worker registered successfully!', reg.scope))
-      .catch(err => console.error('Service Worker registration failed:', err));
+  navigator.serviceWorker.ready.then(registration => {
+    registration.unregister();
+    console.log('Service Worker unregistered successfully to clear cache.');
   });
 }

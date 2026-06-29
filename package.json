@@ -1,0 +1,29 @@
+{
+  "name": "pool-of-grace-1",
+  "version": "1.0.0",
+  "description": "> **BSc. in Software Engineering — Capstone Project**  > **African Leadership University (ALU)**  > **Researcher:** Agnes Adepa Berko  > **Supervisor:** Ndinelao Iitumba  > **Date:** June 2026",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "start:prod": "cd backend && node server.js",
+    "build": "npm run install-all && cd frontend && npm run build",
+    "server": "cd backend && npm start",
+    "client": "cd frontend && npm start",
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Berko-Adepa-Agnes/pool-of-grace.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Berko-Adepa-Agnes/pool-of-grace/issues"
+  },
+  "homepage": "https://github.com/Berko-Adepa-Agnes/pool-of-grace#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

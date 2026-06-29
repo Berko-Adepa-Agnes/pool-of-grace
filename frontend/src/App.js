@@ -307,10 +307,23 @@ export default function App() {
       // Merge offline completions
       const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
       mods = mods.map(m => {
-        if (offlineComps[m.id] !== undefined && (!m.completed || offlineComps[m.id] > m.score)) {
-          return { ...m, completed: true, score: offlineComps[m.id] };
+        const comp = offlineComps[m.id];
+        let quizScore = m.score || 0;
+        let projDone = m.projectCompleted || false;
+        let assignDone = m.assignmentCompleted || false;
+
+        if (comp !== undefined) {
+           if (typeof comp === 'number') {
+              quizScore = Math.max(quizScore, comp);
+           } else {
+              quizScore = Math.max(quizScore, comp.quizScore || 0);
+              projDone = projDone || !!comp.projectCompleted;
+              assignDone = assignDone || !!comp.assignmentCompleted;
+           }
         }
-        return m;
+        
+        const isCompleted = quizScore >= 3 && projDone && assignDone;
+        return { ...m, completed: isCompleted, score: quizScore, quizScore: quizScore, projectCompleted: projDone, assignmentCompleted: assignDone };
       });
 
       setModules(mods);
@@ -325,10 +338,21 @@ export default function App() {
         if (!prev || prev.length === 0) return prev;
         const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
         const updated = prev.map(m => {
-          if (offlineComps[m.id] !== undefined && (!m.completed || offlineComps[m.id] > m.score)) {
-            return { ...m, completed: true, score: offlineComps[m.id] };
+          const comp = offlineComps[m.id];
+          let quizScore = m.score || 0;
+          let projDone = m.projectCompleted || false;
+
+          if (comp !== undefined) {
+             if (typeof comp === 'number') {
+                quizScore = Math.max(quizScore, comp);
+             } else {
+                quizScore = Math.max(quizScore, comp.quizScore || 0);
+                projDone = projDone || !!comp.projectCompleted;
+             }
           }
-          return m;
+          
+          const isCompleted = quizScore >= 3 && projDone;
+          return { ...m, completed: isCompleted, score: quizScore, quizScore: quizScore, projectCompleted: projDone };
         });
         setCompletionsCount(updated.filter(m => m.completed).length);
         return updated;
@@ -572,7 +596,7 @@ export default function App() {
   if (page === 'profile')       return <AuthenticatedPortal><ProfilePage user={user} lang={lang} modules={modules} /></AuthenticatedPortal>;
   if (page === 'survey')        return <><ToastBar/><AuthenticatedPortal><SUSPage lang={lang} showToast={showToast} /></AuthenticatedPortal></>;
   if (page === 'admin')         return <AuthenticatedPortal><Admin openAdminPanel={openAdminPanel} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'adminAction')   return <AuthenticatedPortal><AdminAction go={setPage} panel={selectedAdminPanel} lang={lang} /></AuthenticatedPortal>;
+  if (page === 'adminAction')   return <AuthenticatedPortal><AdminAction go={setPage} panel={selectedAdminPanel} lang={lang} modules={modules} /></AuthenticatedPortal>;
 
   return <Home go={setPage} lang={lang} LanguageToggle={LanguageToggle} />;
 }
@@ -1569,8 +1593,8 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
     }
     setDownloading(false);
   };
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [score, setScore]         = useState(0);
+  const [quizSubmitted, setQuizSubmitted] = useState((module?.quizScore || 0) > 0);
+  const [score, setScore]         = useState(module?.quizScore || 0);
   const [noteContent, setNoteContent] = useState('');
   const [noteSaved, setNoteSaved] = useState(false);
 
@@ -1584,16 +1608,68 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
   const prevMod   = idx > 0 ? allSorted[idx-1] : null;
   const nextMod   = idx < allSorted.length-1 ? allSorted[idx+1] : null;
 
+  const handleAssignmentPassed = () => {
+    const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
+    const comp = offlineComps[module.id];
+    let currentObj = { quizScore: 0, projectCompleted: false, assignmentCompleted: false };
+    if (comp !== undefined) {
+      if (typeof comp === 'number') currentObj.quizScore = comp;
+      else currentObj = { ...comp };
+    }
+    
+    if (!currentObj.assignmentCompleted) {
+      currentObj.assignmentCompleted = true;
+      offlineComps[module.id] = currentObj;
+      localStorage.setItem('pog_offline_completions', JSON.stringify(offlineComps));
+      
+      onQuizPassed(); // Refreshes global module state
+      if (currentObj.quizScore >= 3 && currentObj.projectCompleted) {
+         launchCelebration();
+         if (showToast) showToast('All tasks and quizzes completed! Module passed!', 'success');
+      }
+    }
+  };
+
+  const handleProjectPassed = () => {
+    const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
+    const comp = offlineComps[module.id];
+    let currentObj = { quizScore: 0, projectCompleted: false, assignmentCompleted: false };
+    if (comp !== undefined) {
+      if (typeof comp === 'number') currentObj.quizScore = comp;
+      else currentObj = { ...comp };
+    }
+    
+    if (!currentObj.projectCompleted) {
+      currentObj.projectCompleted = true;
+      offlineComps[module.id] = currentObj;
+      localStorage.setItem('pog_offline_completions', JSON.stringify(offlineComps));
+      
+      onQuizPassed(); // Refreshes global module state
+      if (currentObj.quizScore >= 3 && currentObj.assignmentCompleted) {
+         launchCelebration();
+         if (showToast) showToast('All tasks and quizzes completed! Module passed!', 'success');
+      }
+    }
+  };
+
   const submitQuiz = async () => {
     let correct = 0;
     content.quiz.forEach((q,i)=>{ if(answers[i]===q.answer) correct++; });
     setScore(correct);
     setQuizSubmitted(true);
     if (correct >= 3) {
-      // Save offline progress to localStorage ALWAYS, just in case
+      // Save offline progress to localStorage ALWAYS
       const offlineComps = JSON.parse(localStorage.getItem('pog_offline_completions') || '{}');
-      if (offlineComps[module.id] === undefined || offlineComps[module.id] < correct) {
-        offlineComps[module.id] = correct;
+      const comp = offlineComps[module.id];
+      let currentObj = { quizScore: 0, projectCompleted: false, assignmentCompleted: false };
+      if (comp !== undefined) {
+        if (typeof comp === 'number') currentObj.quizScore = comp;
+        else currentObj = { ...comp };
+      }
+      
+      if (currentObj.quizScore < correct) {
+        currentObj.quizScore = correct;
+        offlineComps[module.id] = currentObj;
         localStorage.setItem('pog_offline_completions', JSON.stringify(offlineComps));
       }
 
@@ -1602,15 +1678,22 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
           await completeModuleQuiz(module.id, correct);
         }
         onQuizPassed();
-        launchCelebration();
-        if (showToast) showToast(`Module complete! You scored ${correct}/${content.quiz.length} — well done!`);
+        if (currentObj.projectCompleted && currentObj.assignmentCompleted) {
+          launchCelebration();
+          if (showToast) showToast(`Quiz passed! Module complete!`, 'success');
+        } else {
+          if (showToast) showToast(`Quiz passed! Complete the Assignments and Project to finish the module.`, 'success');
+        }
       }
       catch(err) { 
         console.error(err); 
-        // If it fails (network error, offline), still update local UI state
         onQuizPassed();
-        launchCelebration();
-        if (showToast) showToast(`Saved offline! You scored ${correct}/${content.quiz.length} — well done!`);
+        if (currentObj.projectCompleted) {
+          launchCelebration();
+          if (showToast) showToast(`Saved offline! Module complete! You scored ${correct}/${content.quiz.length}.`, 'success');
+        } else {
+          if (showToast) showToast(`Saved offline! Quiz passed. Complete the practical project to finish the module.`, 'success');
+        }
       }
     } else {
       if (showToast) showToast(`Score: ${correct}/${content.quiz.length}. You need at least 3 correct to pass. Try again!`, 'error');
@@ -1753,6 +1836,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
     { key:'notes',      label:'Notes' },
     { key:'resources',  label:'Resources' },
     { key:'assignment', label:'Assignment' },
+    { key:'project',    label:'Project' },
     { key:'quiz',       label:'Quiz' },
     { key:'grades',     label:'Grades' },
   ];
@@ -2093,7 +2177,12 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
 
         {/* ASSIGNMENT */}
         {activeTab === 'assignment' && (
-          <AssignmentTab module={module} catColor={catColor} setActiveTab={setActiveTab} />
+          <AssignmentTab module={module} catColor={catColor} setActiveTab={setActiveTab} onAssignmentPassed={handleAssignmentPassed} />
+        )}
+
+        {/* PROJECT */}
+        {activeTab === 'project' && (
+          <ProjectTab module={module} catColor={catColor} setActiveTab={setActiveTab} onProjectPassed={handleProjectPassed} />
         )}
 
         {/* QUIZ */}
@@ -2161,36 +2250,75 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
 
         {/* GRADES */}
         {activeTab === 'grades' && (
-          <div>
+          <div className="animate-fade-in">
             <h2 className="section-heading">This Module's Grade</h2>
             <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'22px' }}>Your performance record for Stage {module.order}: {module.title}</p>
-            <div className="stat-grid" style={{ marginBottom:'26px' }}>
-              <div style={{ background:'var(--primary-pale)',padding:'22px',borderRadius:'12px',textAlign:'center' }}>
-                <div style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:'800',color:'var(--primary)',marginBottom:'4px' }}>
-                  {module.completed ? `${module.score}/5` : '--'}
-                </div>
-                <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Quiz Score</div>
-              </div>
-              <div style={{ background:module.completed?'#eafaea':'#fff5f5',padding:'22px',borderRadius:'12px',textAlign:'center' }}>
-                <div style={{ fontSize:'clamp(18px,3vw,24px)',fontWeight:'800',color:module.completed?'#1e5a2c':'#b93a3a',marginBottom:'4px' }}>
-                  {module.completed ? 'Passed' : 'Pending'}
-                </div>
-                <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Status</div>
-              </div>
-              <div style={{ background:'#fff8e1',padding:'22px',borderRadius:'12px',textAlign:'center' }}>
-                <div style={{ fontSize:'clamp(20px,3vw,26px)',fontWeight:'800',color:'#7a5b13',marginBottom:'4px' }}>
-                  {module.completed ? (module.score>=4?'A':module.score>=3?'B':'C') : '--'}
-                </div>
-                <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Grade</div>
-              </div>
-            </div>
-            {module.completed
-              ? <div className="alert-success">Stage complete! Continue to the next stage or review the notes to reinforce your learning.</div>
-              : <div className="alert-warning">Go to the Quiz tab and score at least 3/5 to earn your grade for this module.</div>
-            }
-            <button className="btn-primary" style={{ marginTop:'20px',background:catColor() }} onClick={()=>setActiveTab('quiz')}>
-              {module.completed ? 'Retake Quiz' : 'Take Quiz'}
-            </button>
+            
+            {(() => {
+              const qScore = (module.quizScore || 0) * 6;
+              const aScore = module.assignmentCompleted ? 30 : 0;
+              const pScore = module.projectCompleted ? 40 : 0;
+              const totalPct = qScore + aScore + pScore;
+              
+              const getGrade = (pct) =>
+                pct>=90 ? 'A+' : pct>=80 ? 'A' : pct>=65 ? 'B' : pct>=50 ? 'C' : 'F';
+
+              return (
+                <>
+                  <div className="stat-grid" style={{ marginBottom:'26px' }}>
+                    <div style={{ background:'var(--primary-pale)',padding:'22px',borderRadius:'12px',textAlign:'center' }}>
+                      <div style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:'800',color:'var(--primary)',marginBottom:'4px' }}>
+                        {totalPct}%
+                      </div>
+                      <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Total Score</div>
+                    </div>
+                    <div style={{ background:module.completed?'#eafaea':'#fff5f5',padding:'22px',borderRadius:'12px',textAlign:'center' }}>
+                      <div style={{ fontSize:'clamp(18px,3vw,24px)',fontWeight:'800',color:module.completed?'#1e5a2c':'#b93a3a',marginBottom:'4px' }}>
+                        {module.completed ? 'Passed' : 'Incomplete'}
+                      </div>
+                      <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Status</div>
+                    </div>
+                    <div style={{ background:'#fff8e1',padding:'22px',borderRadius:'12px',textAlign:'center' }}>
+                      <div style={{ fontSize:'clamp(20px,3vw,26px)',fontWeight:'800',color:'#7a5b13',marginBottom:'4px' }}>
+                        {totalPct > 0 ? getGrade(totalPct) : '--'}
+                      </div>
+                      <div style={{ fontSize:'12px',color:'var(--text-muted)' }}>Grade</div>
+                    </div>
+                  </div>
+
+                  <div className="table-responsive" style={{ marginBottom:'26px', border:'1px solid var(--primary-pale)', borderRadius:'8px', overflow:'hidden' }}>
+                    <table className="admin-table">
+                      <thead><tr><th>Component</th><th>Weight</th><th>Status/Score</th><th>Earned</th></tr></thead>
+                      <tbody>
+                        <tr>
+                          <td style={{ fontWeight:'600' }}>Quiz</td>
+                          <td>30%</td>
+                          <td>{module.quizScore||0}/5 correct</td>
+                          <td style={{ fontWeight:'700',color:'var(--primary)' }}>{qScore}%</td>
+                        </tr>
+                        <tr>
+                          <td style={{ fontWeight:'600' }}>Assignments</td>
+                          <td>30%</td>
+                          <td>{module.assignmentCompleted ? <span className="badge badge-green">Done</span> : <span className="badge" style={{background:'#fff8e1',color:'#7a5b13'}}>Pending</span>}</td>
+                          <td style={{ fontWeight:'700',color:'var(--primary)' }}>{aScore}%</td>
+                        </tr>
+                        <tr>
+                          <td style={{ fontWeight:'600' }}>Project</td>
+                          <td>40%</td>
+                          <td>{module.projectCompleted ? <span className="badge badge-green">Done</span> : <span className="badge" style={{background:'#fff8e1',color:'#7a5b13'}}>Pending</span>}</td>
+                          <td style={{ fontWeight:'700',color:'var(--primary)' }}>{pScore}%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {module.completed
+                    ? <div className="alert-success">Stage complete! Continue to the next stage or review the notes to reinforce your learning.</div>
+                    : <div className="alert-warning">You must complete the Quiz (score at least 3/5), Assignments, and Project to pass this module.</div>
+                  }
+                </>
+              );
+            })()}
           </div>
         )}
       </div>
@@ -2954,28 +3082,38 @@ function CareerResources({ lang }) {
    ========================================================= */
 function Grades({ modules, lang }) {
   void lang;
-  const done       = modules.filter(m=>m.completed);
-  const totalScore = done.reduce((sum,m)=>sum+(m.score||0),0);
-  const maxScore   = done.length * 5;
-  const overallPct = maxScore > 0 ? Math.round((totalScore/maxScore)*100) : 0;
+  const started    = modules.filter(m => m.completed || m.quizScore > 0 || m.assignmentCompleted || m.projectCompleted);
+  const fullyDone  = modules.filter(m => m.completed).length;
 
-  const getGrade = (score) =>
-    score>=5 ? { g:'A+', c:'#1e5a2c', bg:'#d4edd4' } :
-    score>=4 ? { g:'A',  c:'#1e5a2c', bg:'#eafaea' } :
-    score>=3 ? { g:'B',  c:'#7a5b13', bg:'#fff8e1' } :
-               { g:'C',  c:'#7e2a2a', bg:'#fff0f0' };
+  // Calculate module marks
+  const moduleMarks = started.map(m => {
+     const q = (m.quizScore || 0) * 6; // 0 to 30 (5 questions * 6%)
+     const a = m.assignmentCompleted ? 30 : 0; // 30% for assignments
+     const p = m.projectCompleted ? 40 : 0; // 40% for project
+     return q + a + p;
+  });
+  const totalEarned = moduleMarks.reduce((sum, val) => sum + val, 0);
+  const maxPossible = started.length * 100;
+  const overallPct = maxPossible > 0 ? Math.round((totalEarned/maxPossible)*100) : 0;
+
+  const getGrade = (pct) =>
+    pct>=90 ? { g:'A+', c:'#1e5a2c', bg:'#d4edd4' } :
+    pct>=80 ? { g:'A',  c:'#1e5a2c', bg:'#eafaea' } :
+    pct>=65 ? { g:'B',  c:'#7a5b13', bg:'#fff8e1' } :
+    pct>=50 ? { g:'C',  c:'#7e2a2a', bg:'#fff0f0' } :
+              { g:'F',  c:'#7e2a2a', bg:'#fff0f0' };
 
   return (
     <div className="animate-fade-in">
       <div className="page-header">
         <h2>My Grades</h2>
-        <p>Your quiz scores and module completion record</p>
+        <p>Your quiz scores and project submission records, scaled to 100% per module.</p>
       </div>
       <div className="stat-grid" style={{ marginBottom:'30px' }}>
         {[
-          { value:done.length,           label:'Modules Completed',  sub:'out of 20' },
-          { value:`${overallPct}%`,      label:'Overall Score',      sub:`${totalScore}/${maxScore} points` },
-          { value:20-done.length,        label:'Modules Remaining',  sub:'to full completion' },
+          { value:fullyDone,             label:'Modules Fully Passed',  sub:'both quiz & project' },
+          { value:`${overallPct}%`,      label:'Overall Average',       sub:`across ${started.length} started modules` },
+          { value:20-fullyDone,          label:'Modules Remaining',     sub:'to full completion' },
         ].map((s,i)=>(
           <div key={i} className="premium-card" style={{ padding:'22px',textAlign:'center',borderTop:'4px solid var(--primary-light)' }}>
             <div style={{ fontSize:'clamp(24px,4vw,32px)',fontWeight:'800',color:'var(--primary)',marginBottom:'4px' }}>{s.value}</div>
@@ -2985,11 +3123,11 @@ function Grades({ modules, lang }) {
         ))}
       </div>
 
-      {done.length === 0 ? (
+      {started.length === 0 ? (
         <div className="premium-card" style={{ padding:'56px',textAlign:'center' }}>
           <Icons.Grades />
           <h3 style={{ color:'var(--primary)',margin:'16px 0 8px' }}>No grades yet</h3>
-          <p style={{ color:'var(--text-muted)' }}>Complete your first module quiz to see your grades here.</p>
+          <p style={{ color:'var(--text-muted)' }}>Complete your first module quiz, assignment, or project to see your grades here.</p>
         </div>
       ) : (
         <div className="premium-card" style={{ overflow:'hidden' }}>
@@ -2999,19 +3137,37 @@ function Grades({ modules, lang }) {
           <div className="table-responsive">
             <table className="admin-table">
               <thead>
-                <tr><th>Stage</th><th>Module Title</th><th>Category</th><th>Score</th><th>Grade</th><th>Status</th></tr>
+                <tr><th>Stage</th><th>Module Title</th><th>Quiz (30%)</th><th>Assignments (30%)</th><th>Project (40%)</th><th>Total</th><th>Grade</th><th>Status</th></tr>
               </thead>
               <tbody>
-                {done.map((m,i)=>{
-                  const {g,c,bg} = getGrade(m.score);
+                {started.map((m)=>{
+                  const qScore = (m.quizScore || 0) * 6;
+                  const aScore = m.assignmentCompleted ? 30 : 0;
+                  const pScore = m.projectCompleted ? 40 : 0;
+                  const totalPct = qScore + aScore + pScore;
+                  const {g,c,bg} = getGrade(totalPct);
                   return (
                     <tr key={m.id}>
                       <td style={{ fontWeight:'600' }}>{m.order}</td>
                       <td style={{ fontWeight:'600' }}>{m.title}</td>
-                      <td style={{ textTransform:'capitalize' }}>{m.category.replace('-',' ')}</td>
-                      <td style={{ fontWeight:'700',color:'var(--primary)' }}>{m.score}/5</td>
-                      <td><span className="badge" style={{ background:bg,color:c }}>{g}</span></td>
-                      <td><span className="badge badge-green">Passed</span></td>
+                      <td style={{ fontWeight:'700',color:'var(--primary)' }}>{qScore}% <span style={{fontSize:'11px',fontWeight:'normal',color:'#888'}}>({m.quizScore||0}/5)</span></td>
+                      <td>
+                        {m.assignmentCompleted 
+                           ? <span style={{fontWeight:'700',color:'var(--primary)'}}>30% <span className="badge badge-green" style={{marginLeft:'6px',padding:'2px 6px',fontSize:'10px'}}>Done</span></span> 
+                           : <span style={{color:'#7a5b13'}}>0% <span className="badge" style={{background:'#fff8e1',marginLeft:'6px',padding:'2px 6px',fontSize:'10px'}}>Pending</span></span>}
+                      </td>
+                      <td>
+                        {m.projectCompleted 
+                           ? <span style={{fontWeight:'700',color:'var(--primary)'}}>40% <span className="badge badge-green" style={{marginLeft:'6px',padding:'2px 6px',fontSize:'10px'}}>Done</span></span> 
+                           : <span style={{color:'#7a5b13'}}>0% <span className="badge" style={{background:'#fff8e1',marginLeft:'6px',padding:'2px 6px',fontSize:'10px'}}>Pending</span></span>}
+                      </td>
+                      <td style={{ fontWeight:'800',color:totalPct>=50?'var(--primary)':'#7e2a2a' }}>{totalPct}%</td>
+                      <td>{totalPct > 0 ? <span className="badge" style={{ background:bg,color:c }}>{g}</span> : <span style={{ color:'#ccc' }}>—</span>}</td>
+                      <td>
+                        {m.completed 
+                           ? <span className="badge badge-green">Passed</span> 
+                           : <span className="badge" style={{background:'#fff0f0',color:'#7e2a2a'}}>Incomplete</span>}
+                      </td>
                     </tr>
                   );
                 })}
@@ -3429,11 +3585,33 @@ function Admin({ openAdminPanel, lang }) {
 /* =========================================================
    ADMIN ACTION
    ========================================================= */
-function AdminAction({ go, panel, lang }) {
+function AdminAction({ go, panel, lang, modules }) {
   void lang;
   const [sessionList, setSessionList] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [mentorList,  setMentorList]  = useState([]);
+  const [selectedModuleId, setSelectedModuleId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editMinWords, setEditMinWords] = useState(0);
+
+  const startEditProject = (m) => {
+    setSelectedModuleId(m.id);
+    const proj = m.content?.projects?.[0] || { title:'', desc:'', minWords:0 };
+    setEditTitle(proj.title);
+    setEditDesc(proj.desc);
+    setEditMinWords(proj.minWords);
+  };
+
+  const saveEditProject = () => {
+    alert(`In a real app, this would hit PUT /api/modules/${selectedModuleId}. Saving locally...`);
+    const m = modules?.find(x => x.id === selectedModuleId);
+    if(m) {
+      if(!m.content.projects) m.content.projects = [];
+      m.content.projects[0] = { title: editTitle, desc: editDesc, minWords: parseInt(editMinWords,10)||0 };
+    }
+    setSelectedModuleId(null);
+  };
 
   useEffect(()=>{
     if (panel==='sessions') getMentorshipSessions().then(r=>setSessionList(r.data.bookings)).catch(console.error);
@@ -3705,9 +3883,57 @@ function AdminAction({ go, panel, lang }) {
 
         {/* MODULES */}
         {panel === 'modules' && (
-          <div style={{ textAlign:'center',padding:'36px 0' }}>
-            <p style={{ color:'var(--text-muted)',marginBottom:'16px' }}>20 modules seeded with unique content, quizzes, and Ghana-specific examples.</p>
-            <button className="btn-primary" onClick={()=>go('modules')}>Open Modules Panel</button>
+          <div>
+            <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'22px' }}>Manage modules and their associated practical assignments/projects.</p>
+            
+            {selectedModuleId ? (
+              <div className="premium-card" style={{ padding:'20px',border:'2px solid var(--primary-pale)' }}>
+                <h3 style={{ color:'var(--primary)',marginBottom:'16px' }}>Edit Project for Module: {modules?.find(m=>m.id===selectedModuleId)?.title}</h3>
+                <div style={{ display:'flex',flexDirection:'column',gap:'14px' }}>
+                  <div>
+                    <label style={{ fontSize:'13px',fontWeight:'700',color:'var(--text-main)',display:'block',marginBottom:'5px' }}>Project Title</label>
+                    <input className="premium-input" value={editTitle} onChange={e=>setEditTitle(e.target.value)} style={{ marginBottom:0 }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize:'13px',fontWeight:'700',color:'var(--text-main)',display:'block',marginBottom:'5px' }}>Instructions / Description</label>
+                    <textarea style={{ width:'100%',minHeight:'100px',padding:'12px',border:'2px solid var(--primary-pale)',borderRadius:'9px',fontSize:'14px',fontFamily:'inherit',resize:'vertical',outline:'none' }}
+                      value={editDesc} onChange={e=>setEditDesc(e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize:'13px',fontWeight:'700',color:'var(--text-main)',display:'block',marginBottom:'5px' }}>Minimum Word Count (0 for optional)</label>
+                    <input type="number" className="premium-input" value={editMinWords} onChange={e=>setEditMinWords(e.target.value)} style={{ marginBottom:0,maxWidth:'150px' }} />
+                  </div>
+                  <div style={{ display:'flex',gap:'10px',marginTop:'10px' }}>
+                    <button className="btn-primary" onClick={saveEditProject}>Save Changes</button>
+                    <button className="btn-outline" onClick={()=>setSelectedModuleId(null)}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead><tr><th>Module</th><th>Title</th><th>Project Title</th><th>Min Words</th><th>Action</th></tr></thead>
+                  <tbody>
+                    {(modules||[]).map(m=>{
+                      const proj = m.content?.projects?.[0];
+                      return (
+                        <tr key={m.id}>
+                          <td style={{ fontWeight:'700' }}>Module {m.order}</td>
+                          <td>{m.title}</td>
+                          <td style={{ fontSize:'13px',color:'var(--text-muted)' }}>{proj ? proj.title : 'None'}</td>
+                          <td>{proj ? proj.minWords : '—'}</td>
+                          <td>
+                            <button className="btn-outline" style={{ fontSize:'12px',padding:'6px 14px' }} onClick={()=>startEditProject(m)}>
+                              Edit Project
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -3715,110 +3941,40 @@ function AdminAction({ go, panel, lang }) {
   );
 }
 
-/* =========================================================
-   ASSIGNMENT TAB (Rich — not just quiz)
-   ========================================================= */
-function AssignmentTab({ module, catColor, setActiveTab }) {
+function AssignmentTab({ module, catColor, setActiveTab, onAssignmentPassed }) {
   const [submissions, setSubmissions] = useState({});
   const [submitted, setSubmitted] = useState({});
   const [wordCounts, setWordCounts] = useState({});
 
   const selfWorthTasks = [
-    {
-      type: 'reflection',
-      title: 'Personal Reflection Essay',
-      desc: `Write a 150-200 word personal reflection on how "${module.title}" applies to your life and your journey into technology. Include one real experience that challenged you.`,
-      placeholder: 'Begin your reflection here... Be honest and specific about your experience.',
-      minWords: 80,
-    },
-    {
-      type: 'action-plan',
-      title: 'Action Plan',
-      desc: 'List 3 specific, concrete actions you will take THIS WEEK to apply what you learned. Be specific about the day and time you will do each action.',
-      placeholder: 'Action 1: ...\nAction 2: ...\nAction 3: ...',
-      minWords: 30,
-    },
-    {
-      type: 'affirmations',
-      title: 'Affirmation Cards',
-      desc: 'Write 5 personal affirmations related to this module\'s theme. Each affirmation should start with "I am" or "I can" and be specific to you as a young woman pursuing technology in Ghana.',
-      placeholder: '1. I am...\n2. I can...\n3. I am...\n4. I will...\n5. I deserve...',
-      minWords: 20,
-    },
-    {
-      type: 'peer-share',
-      title: 'Peer Sharing (Optional)',
-      desc: 'If comfortable, write one thing from this module you would like to share with a friend, classmate, or in the Community Forum. Explain why this lesson matters to you.',
-      placeholder: 'What would you share and why?',
-      minWords: 0,
-    },
+    { type: 'reflection', title: 'Personal Reflection Essay', desc: `Write a 150-200 word personal reflection on how "${module.title}" applies to your life and your journey into technology. Include one real experience that challenged you.`, placeholder: 'Begin your reflection here... Be honest and specific about your experience.', minWords: 80 },
+    { type: 'action-plan', title: 'Action Plan', desc: 'List 3 specific, concrete actions you will take THIS WEEK to apply what you learned. Be specific about the day and time you will do each action.', placeholder: 'Action 1: ...\nAction 2: ...\nAction 3: ...', minWords: 30 },
+    { type: 'affirmations', title: 'Affirmation Cards', desc: 'Write 5 personal affirmations related to this module\'s theme. Each affirmation should start with "I am" or "I can" and be specific to you as a young woman pursuing technology in Ghana.', placeholder: '1. I am...\n2. I can...\n3. I am...\n4. I will...\n5. I deserve...', minWords: 20 },
+    { type: 'peer-share', title: 'Peer Sharing (Optional)', desc: 'If comfortable, write one thing from this module you would like to share with a friend, classmate, or in the Community Forum. Explain why this lesson matters to you.', placeholder: 'What would you share and why?', minWords: 0 }
   ];
 
   const techTasks = [
-    {
-      type: 'practical',
-      title: 'Hands-On Coding Exercise',
-      desc: `Write or describe the code you built for "${module.title}". Paste your code OR explain step-by-step what you did and what each line does.`,
-      placeholder: 'Paste your code here, or describe exactly what you built step by step...',
-      minWords: 40,
-    },
-    {
-      type: 'explanation',
-      title: 'Technical Explanation',
-      desc: 'In your own words (100+ words), explain: (a) What you built, (b) Challenges you faced, (c) How you solved those challenges, (d) Key technical concepts from this module.',
-      placeholder: 'Write your technical explanation here...',
-      minWords: 60,
-    },
-    {
-      type: 'ghana-context',
-      title: 'Ghanaian Context Application',
-      desc: 'Describe ONE real problem in your community or Ghana that could be solved using the technical skill from this module. How would you build it? Who would it help?',
-      placeholder: 'Problem: ...\nSolution using this skill: ...\nWho benefits: ...',
-      minWords: 40,
-    },
-    {
-      type: 'debug-challenge',
-      title: 'Debug Challenge',
-      desc: 'Find and fix one error in a sample code snippet (write it in your notes), OR describe one bug you encountered in your own code and how you fixed it.',
-      placeholder: 'Describe the bug and your fix here...',
-      minWords: 20,
-    },
+    { type: 'practical', title: 'Hands-On Coding Exercise', desc: `Write or describe the code you built for "${module.title}". Paste your code OR explain step-by-step what you did and what each line does.`, placeholder: 'Paste your code here, or describe exactly what you built step by step...', minWords: 40 },
+    { type: 'explanation', title: 'Technical Explanation', desc: 'In your own words (100+ words), explain: (a) What you built, (b) Challenges you faced, (c) How you solved those challenges, (d) Key technical concepts from this module.', placeholder: 'Write your technical explanation here...', minWords: 60 },
+    { type: 'ghana-context', title: 'Ghanaian Context Application', desc: 'Describe ONE real problem in your community or Ghana that could be solved using the technical skill from this module. How would you build it? Who would it help?', placeholder: 'Problem: ...\nSolution using this skill: ...\nWho benefits: ...', minWords: 40 },
+    { type: 'debug-challenge', title: 'Debug Challenge', desc: 'Find and fix one error in a sample code snippet (write it in your notes), OR describe one bug you encountered in your own code and how you fixed it.', placeholder: 'Describe the bug and your fix here...', minWords: 20 }
   ];
 
   const careerTasks = [
-    {
-      type: 'company-research',
-      title: 'Company Research Report',
-      desc: `Research a specific tech company or role in Ghana related to "${module.title}". Write 150+ words covering: what they do, required skills, hiring process, and how you plan to apply.`,
-      placeholder: 'Company: ...\nWhat they do: ...\nSkills needed: ...\nHow I will apply: ...',
-      minWords: 80,
-    },
-    {
-      type: 'personal-action',
-      title: 'Personal Application Task',
-      desc: 'Complete ONE practical action from this module on your own profile or document. Examples: update your LinkedIn summary, write a CV section, practice an interview answer, or create a portfolio item.',
-      placeholder: 'What I did: ...\nHow it went: ...\nWhat I would improve: ...',
-      minWords: 30,
-    },
-    {
-      type: 'networking',
-      title: 'Networking Goal',
-      desc: 'Set ONE specific networking goal for this week. Write who you will connect with, how you will reach out, and why that connection matters for your tech career.',
-      placeholder: 'My networking goal: ...\nWho I will contact: ...\nWhat I will say: ...',
-      minWords: 30,
-    },
-    {
-      type: 'elevator-pitch',
-      title: 'Elevator Pitch',
-      desc: 'Write a 60-second elevator pitch about yourself as a tech professional. Include your skills, what you are building toward, and why someone should hire you or collaborate with you.',
-      placeholder: 'My name is... I am learning... I am passionate about... My goal is...',
-      minWords: 40,
-    },
+    { type: 'company-research', title: 'Company Research Report', desc: `Research a specific tech company or role in Ghana related to "${module.title}". Write 150+ words covering: what they do, required skills, hiring process, and how you plan to apply.`, placeholder: 'Company: ...\nWhat they do: ...\nSkills needed: ...\nHow I will apply: ...', minWords: 80 },
+    { type: 'personal-action', title: 'Personal Application Task', desc: 'Complete ONE practical action from this module on your own profile or document. Examples: update your LinkedIn summary, write a CV section, practice an interview answer, or create a portfolio item.', placeholder: 'What I did: ...\nHow it went: ...\nWhat I would improve: ...', minWords: 30 },
+    { type: 'networking', title: 'Networking Goal', desc: 'Set ONE specific networking goal for this week. Write who you will connect with, how you will reach out, and why that connection matters for your tech career.', placeholder: 'My networking goal: ...\nWho I will contact: ...\nWhat I will say: ...', minWords: 30 },
+    { type: 'elevator-pitch', title: 'Elevator Pitch', desc: 'Write a 60-second elevator pitch about yourself as a tech professional. Include your skills, what you are building toward, and why someone should hire you or collaborate with you.', placeholder: 'My name is... I am learning... I am passionate about... My goal is...', minWords: 40 }
   ];
 
-  const tasks = module.category === 'self-worth' ? selfWorthTasks
-    : module.category === 'technical-skills' ? techTasks
-    : careerTasks;
+  const tasks = module.category === 'self-worth' ? selfWorthTasks : module.category === 'technical-skills' ? techTasks : careerTasks;
+
+  const getSaved = useCallback((type) => localStorage.getItem(`pog_assign_${module.id}_${type}`) || '', [module.id]);
+  const allRequired = tasks.filter(t => t.minWords > 0).every(t => submitted[t.type] || getSaved(t.type));
+
+  useEffect(() => {
+    if (allRequired) onAssignmentPassed();
+  }, [allRequired, onAssignmentPassed]);
 
   const handleChange = (type, val) => {
     setSubmissions(prev => ({ ...prev, [type]: val }));
@@ -3829,24 +3985,19 @@ function AssignmentTab({ module, catColor, setActiveTab }) {
   const handleSubmit = (type, minWords) => {
     const wc = wordCounts[type] || 0;
     if (wc < minWords) { alert(`Please write at least ${minWords} words. You have ${wc} so far.`); return; }
-    const key = `pog_assign_${module.id}_${type}`;
-    localStorage.setItem(key, submissions[type] || '');
+    localStorage.setItem(`pog_assign_${module.id}_${type}`, submissions[type] || '');
     setSubmitted(prev => ({ ...prev, [type]: true }));
   };
-
-  const getSaved = (type) => localStorage.getItem(`pog_assign_${module.id}_${type}`) || '';
-  const allRequired = tasks.filter(t => t.minWords > 0).every(t => submitted[t.type] || getSaved(t.type));
 
   return (
     <div>
       <h2 className="section-heading">Module Assignment</h2>
       <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'8px' }}>
-        Complete each task below. Your work is saved locally on your device. All required tasks must be submitted before the quiz unlocks.
+        Complete each task below. Your work is saved locally on your device.
       </p>
       <div className="alert-info" style={{ marginBottom:'24px' }}>
-        <strong>How assignments work:</strong> Each task has its own text box and Submit button. Required tasks show a minimum word count. The quiz unlocks once all required tasks are submitted.
+        <strong>How assignments work:</strong> Each task has its own text box and Submit button. Required tasks show a minimum word count.
       </div>
-
       <div style={{ display:'flex',flexDirection:'column',gap:'22px' }}>
         {tasks.map((task, i) => {
           const isSaved = getSaved(task.type) !== '';
@@ -3854,6 +4005,105 @@ function AssignmentTab({ module, catColor, setActiveTab }) {
           const wc      = wordCounts[task.type] || 0;
           return (
             <div key={task.type} style={{ border:`2px solid ${isDone ? catColor() : 'var(--primary-pale)'}`,borderRadius:'14px',overflow:'hidden' }}>
+              <div style={{ background:isDone ? `${catColor()}12` : 'var(--bg-main)',padding:'14px 20px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'10px' }}>
+                <div style={{ display:'flex',alignItems:'center',gap:'10px' }}>
+                  <div style={{ width:'28px',height:'28px',background:isDone ? catColor() : '#ccc',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:'800',fontSize:'13px',flexShrink:0 }}>
+                    {isDone ? <Icons.Check /> : i+1}
+                  </div>
+                  <div>
+                    <h4 style={{ color:'var(--primary)',margin:0,fontSize:'15px',fontWeight:'700' }}>{task.title}</h4>
+                    {task.minWords > 0 && <span style={{ fontSize:'11px',color:'var(--text-muted)' }}>Minimum {task.minWords} words required</span>}
+                  </div>
+                </div>
+                {isDone && <span className="badge badge-green" style={{ padding:'5px 12px' }}>Submitted</span>}
+              </div>
+              <div style={{ padding:'18px 20px' }}>
+                <p style={{ color:'var(--text-main)',fontSize:'13px',lineHeight:'1.7',marginBottom:'14px' }}>{task.desc}</p>
+                <textarea
+                  style={{ width:'100%',minHeight:'110px',padding:'12px',border:'2px solid var(--primary-pale)',borderRadius:'9px',fontSize:'14px',fontFamily:'inherit',resize:'vertical',outline:'none',transition:'border-color 0.2s' }}
+                  placeholder={task.placeholder}
+                  defaultValue={getSaved(task.type)}
+                  onChange={e => handleChange(task.type, e.target.value)}
+                  onFocus={e => e.target.style.borderColor = catColor()}
+                  onBlur={e => e.target.style.borderColor = 'var(--primary-pale)'}
+                />
+                <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:'10px',flexWrap:'wrap',gap:'8px' }}>
+                  <span style={{ fontSize:'12px',color:wc >= task.minWords ? catColor() : 'var(--text-muted)' }}>
+                    {wc} word{wc !== 1 ? 's' : ''}{task.minWords > 0 ? ` / ${task.minWords} required` : ''}
+                  </span>
+                  <button className="btn-primary" style={{ fontSize:'13px',padding:'8px 20px',background:catColor(),borderRadius:'20px' }} onClick={() => handleSubmit(task.type, task.minWords)}>
+                    {isDone ? 'Update Submission' : 'Submit Task'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ marginTop:'28px',padding:'20px',background:allRequired ? '#eafaea' : '#fff8e1',borderRadius:'12px',border:`1px solid ${allRequired ? '#c3e6c3' : '#ffe082'}` }}>
+        <p style={{ fontWeight:'700',marginBottom:'6px',fontSize:'14px',color:allRequired ? '#1e5a2c' : '#7a5b13' }}>
+          {allRequired ? 'All assignments completed!' : 'Complete all required assignments.'}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   PROJECT TAB (Admin-created practicals)
+   ========================================================= */
+function ProjectTab({ module, catColor, setActiveTab, onProjectPassed }) {
+  const [submissions, setSubmissions] = useState({});
+  const [submitted, setSubmitted] = useState({});
+  const [wordCounts, setWordCounts] = useState({});
+
+  const tasks = module.content?.projects || [];
+
+  const getSaved = useCallback((title) => {
+    const safeTitle = (title || '').replace(/\s+/g,'_');
+    return localStorage.getItem(`pog_assign_${module.id}_${safeTitle}`) || '';
+  }, [module.id]);
+
+  const allRequired = tasks.filter(t => t.minWords > 0).every(t => submitted[t.title] || getSaved(t.title));
+
+  useEffect(() => {
+    if (allRequired || tasks.length === 0) {
+      onProjectPassed();
+    }
+  }, [allRequired, tasks.length, onProjectPassed]);
+
+  const handleChange = (title, val) => {
+    setSubmissions(prev => ({ ...prev, [title]: val }));
+    const wc = val.trim().split(/\s+/).filter(w => w.length > 0).length;
+    setWordCounts(prev => ({ ...prev, [title]: wc }));
+  };
+
+  const handleSubmit = (title, minWords) => {
+    const wc = wordCounts[title] || 0;
+    if (minWords > 0 && wc < minWords) { alert(`Please write at least ${minWords} words. You have ${wc} so far.`); return; }
+    const safeTitle = (title || '').replace(/\s+/g,'_');
+    const key = `pog_assign_${module.id}_${safeTitle}`;
+    localStorage.setItem(key, submissions[title] || '');
+    setSubmitted(prev => ({ ...prev, [title]: true }));
+  };
+
+  return (
+    <div>
+      <h2 className="section-heading">Module Project</h2>
+      <p style={{ color:'var(--text-muted)',fontSize:'14px',marginBottom:'8px' }}>
+        Complete each task below. Your work is saved locally on your device. All required tasks must be submitted before the quiz unlocks.
+      </p>
+      <div className="alert-info" style={{ marginBottom:'24px' }}>
+        <strong>How projects work:</strong> Each task has its own text box and Submit button. Required tasks show a minimum word count. The module is not passed until the project is submitted.
+      </div>
+
+      <div style={{ display:'flex',flexDirection:'column',gap:'22px' }}>
+        {tasks.map((task, i) => {
+          const isSaved = getSaved(task.title) !== '';
+          const isDone  = submitted[task.title] || isSaved;
+          const wc      = wordCounts[task.title] || 0;
+          return (
+            <div key={task.title} style={{ border:`2px solid ${isDone ? catColor() : 'var(--primary-pale)'}`,borderRadius:'14px',overflow:'hidden' }}>
               {/* Task header */}
               <div style={{ background:isDone ? `${catColor()}12` : 'var(--bg-main)',padding:'14px 20px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'10px' }}>
                 <div style={{ display:'flex',alignItems:'center',gap:'10px' }}>
@@ -3873,20 +4123,20 @@ function AssignmentTab({ module, catColor, setActiveTab }) {
                 <p style={{ color:'var(--text-main)',fontSize:'13px',lineHeight:'1.7',marginBottom:'14px' }}>{task.desc}</p>
                 <textarea
                   style={{ width:'100%',minHeight:'110px',padding:'12px',border:'2px solid var(--primary-pale)',borderRadius:'9px',fontSize:'14px',fontFamily:'inherit',resize:'vertical',outline:'none',transition:'border-color 0.2s' }}
-                  placeholder={task.placeholder}
-                  defaultValue={getSaved(task.type)}
-                  onChange={e => handleChange(task.type, e.target.value)}
+                  placeholder={task.placeholder || 'Type here...'}
+                  defaultValue={getSaved(task.title)}
+                  onChange={e => handleChange(task.title, e.target.value)}
                   onFocus={e => e.target.style.borderColor = catColor()}
                   onBlur={e => e.target.style.borderColor = 'var(--primary-pale)'}
                 />
                 <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:'10px',flexWrap:'wrap',gap:'8px' }}>
-                  <span style={{ fontSize:'12px',color:wc >= task.minWords ? catColor() : 'var(--text-muted)' }}>
+                  <span style={{ fontSize:'12px',color:wc >= (task.minWords || 0) ? catColor() : 'var(--text-muted)' }}>
                     {wc} word{wc !== 1 ? 's' : ''}{task.minWords > 0 ? ` / ${task.minWords} required` : ''}
                   </span>
                   <button
                     className="btn-primary"
                     style={{ fontSize:'13px',padding:'8px 20px',background:catColor(),borderRadius:'20px' }}
-                    onClick={() => handleSubmit(task.type, task.minWords)}
+                    onClick={() => handleSubmit(task.title, task.minWords || 0)}
                   >
                     {isDone ? 'Update Submission' : 'Submit Task'}
                   </button>
@@ -3899,16 +4149,11 @@ function AssignmentTab({ module, catColor, setActiveTab }) {
 
       <div style={{ marginTop:'28px',padding:'20px',background:allRequired ? '#eafaea' : '#fff8e1',borderRadius:'12px',border:`1px solid ${allRequired ? '#c3e6c3' : '#ffe082'}` }}>
         <p style={{ fontWeight:'700',marginBottom:'6px',fontSize:'14px',color:allRequired ? '#1e5a2c' : '#7a5b13' }}>
-          {allRequired ? 'All required tasks submitted — Quiz is now unlocked!' : 'Complete all required tasks to unlock the Quiz'}
+          {allRequired ? 'All required projects submitted — Module complete!' : 'Complete all required project tasks.'}
         </p>
         <p style={{ margin:0,fontSize:'13px',color:allRequired ? '#2d7a2d' : '#7a5b13' }}>
-          {allRequired ? 'Great work! Proceed to the Quiz tab to test your understanding.' : 'Submit each required task above, then return here to proceed.'}
+          {allRequired ? 'Great work! You have finished the practical requirements for this module.' : 'Submit each required task above, then return here to proceed.'}
         </p>
-        {allRequired && (
-          <button className="btn-primary" style={{ marginTop:'14px',background:catColor() }} onClick={() => setActiveTab('quiz')}>
-            Go to Quiz
-          </button>
-        )}
       </div>
     </div>
   );
