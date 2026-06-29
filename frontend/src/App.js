@@ -1588,9 +1588,9 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
   const moduleVideoMap = {
     // Module 1: Understanding Your Worth
     1: [
-      { title: 'The Power of Vulnerability — Brené Brown (TED)', url: 'https://www.youtube.com/watch?v=iCvmsMzlF7o' },
-      { title: 'How to Build Self-Worth — Mastin Kipp', url: 'https://www.youtube.com/watch?v=uOrVnlMiEXo' },
-      { title: 'Know Your Worth — Motivational Video for Women', url: 'https://www.youtube.com/watch?v=vc3MAdMpmEg' },
+      { title: 'The Power of Vulnerability — Brené Brown (TED)', url: 'https://www.youtube.com/watch?v=sTJ7AzBIJoI' },
+      { title: 'How to Build Self-Worth — Priyanka Chopra', url: 'https://www.youtube.com/watch?v=vVnK2e3JvS0' },
+      { title: 'Know Your Worth — Motivational Video for Women', url: 'https://www.youtube.com/watch?v=f-Btz22Q6B8' },
     ],
     // Module 2: Breaking Cultural Barriers
     2: [
@@ -1958,20 +1958,20 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                 
                 {/* Inline video player container */}
                 {selectedVideo && isOnline && (
-                  <div className="premium-card animate-fade-in" style={{ padding:'16px', marginBottom:'14px', position:'relative', border:'2px solid var(--primary-light)', background:'#fff' }}>
-                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'12px' }}>
-                      <h4 style={{ color:'var(--primary)', margin:0, fontWeight:'700', fontSize:'14px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'80%' }}>
+                  <div className="premium-card animate-fade-in" style={{ padding:'16px', marginBottom:'14px', position:'relative', border:'2px solid var(--primary-light)', background:'#fff', width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'12px', flexWrap: 'wrap', gap: '8px' }}>
+                      <h4 style={{ color:'var(--primary)', margin:0, fontWeight:'700', fontSize:'clamp(13px, 3.5vw, 15px)', flex: '1 1 150px', lineHeight: '1.4' }}>
                         Playing: {selectedVideo.title}
                       </h4>
                       <button 
                         onClick={() => setSelectedVideo(null)} 
                         className="btn-outline"
-                        style={{ padding:'4px 10px', fontSize:'11px', cursor:'pointer' }}
+                        style={{ padding:'6px 12px', fontSize:'12px', cursor:'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
                       >
                         X Close Player
                       </button>
                     </div>
-                    <div style={{ position:'relative', paddingBottom:'56.25%', height:0, overflow:'hidden', borderRadius:'8px', background:'#000' }}>
+                    <div style={{ position:'relative', paddingBottom:'56.25%', height:0, overflow:'hidden', borderRadius:'8px', background:'#000', width: '100%' }}>
                       <iframe 
                         title={selectedVideo.title}
                         src={getYouTubeEmbedUrl(selectedVideo.url)} 
