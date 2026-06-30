@@ -11,7 +11,8 @@ import {
   getMentorshipSessions,
   getForumPosts,
   createForumPost,
-  createForumComment
+  createForumComment,
+  updateModule
 } from './api';
 import { t } from './translations';
 
@@ -373,7 +374,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (user && user.role !== 'admin') fetchStats();
+    if (user) fetchStats();
   }, [user, fetchStats]);
 
   /* ---- Auth ---- */
@@ -608,7 +609,7 @@ export default function App() {
   if (page === 'profile')       return <AuthenticatedPortal><ProfilePage user={user} lang={lang} modules={modules} /></AuthenticatedPortal>;
   if (page === 'survey')        return <><ToastBar/><AuthenticatedPortal><SUSPage lang={lang} showToast={showToast} /></AuthenticatedPortal></>;
   if (page === 'admin')         return <AuthenticatedPortal><Admin openAdminPanel={openAdminPanel} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'adminAction')   return <AuthenticatedPortal><AdminAction go={setPage} panel={selectedAdminPanel} lang={lang} modules={modules} /></AuthenticatedPortal>;
+  if (page === 'adminAction')   return <AuthenticatedPortal><AdminAction go={setPage} panel={selectedAdminPanel} lang={lang} modules={modules} onModuleUpdated={fetchStats} /></AuthenticatedPortal>;
 
   return <Home go={setPage} lang={lang} LanguageToggle={LanguageToggle} />;
 }
@@ -3611,7 +3612,7 @@ function Admin({ openAdminPanel, lang }) {
 /* =========================================================
    ADMIN ACTION
    ========================================================= */
-function AdminAction({ go, panel, lang, modules }) {
+function AdminAction({ go, panel, lang, modules, onModuleUpdated }) {
   void lang;
   const [sessionList, setSessionList] = useState([]);
   // eslint-disable-next-line no-unused-vars
@@ -3629,12 +3630,19 @@ function AdminAction({ go, panel, lang, modules }) {
     setEditMinWords(proj.minWords);
   };
 
-  const saveEditProject = () => {
-    alert(`In a real app, this would hit PUT /api/modules/${selectedModuleId}. Saving locally...`);
+  const saveEditProject = async () => {
     const m = modules?.find(x => x.id === selectedModuleId);
     if(m) {
       if(!m.content.projects) m.content.projects = [];
       m.content.projects[0] = { title: editTitle, desc: editDesc, minWords: parseInt(editMinWords,10)||0 };
+      try {
+        await updateModule(selectedModuleId, m.content);
+        if (onModuleUpdated) onModuleUpdated();
+        alert('Project updated successfully in database!');
+      } catch (err) {
+        console.error('Failed to update module content:', err);
+        alert('Failed to update project in database.');
+      }
     }
     setSelectedModuleId(null);
   };

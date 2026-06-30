@@ -95,4 +95,22 @@ router.post('/:id/complete', async (req, res) => {
   }
 });
 
+// PUT update module content (admin only)
+router.put('/:id', async (req, res) => {
+  try {
+    const userId = getUserIdFromToken(req);
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized. Please login.' });
+    }
+    
+    const { content } = req.body;
+    const moduleId = parseInt(req.params.id);
+
+    await db.updateModuleContent(moduleId, content);
+    res.json({ message: 'Module content updated successfully', content });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 module.exports = router;

@@ -288,6 +288,23 @@ const db = {
     return readJson('modules').sort((a, b) => a.order - b.order);
   },
 
+  updateModuleContent: async (id, content) => {
+    if (usePostgres) {
+      await pool.query(
+        'UPDATE modules SET content = $1 WHERE id = $2',
+        [typeof content === 'string' ? content : JSON.stringify(content), id]
+      );
+      return true;
+    }
+    const modules = readJson('modules');
+    const index = modules.findIndex(m => m.id === parseInt(id));
+    if (index !== -1) {
+      modules[index].content = content;
+      writeJson('modules', modules);
+    }
+    return true;
+  },
+
   saveModules: async (modulesList) => {
     if (usePostgres) {
       // Clear modules first to avoid collision on seed

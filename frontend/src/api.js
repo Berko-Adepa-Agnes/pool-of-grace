@@ -28,6 +28,7 @@ export const getModules = () => API.get('/modules');
 export const getModule = (id) => API.get('/modules/' + id);
 export const completeModuleQuiz = (id, score) => API.post('/modules/' + id + '/complete', { score });
 export const completeModuleStep = (id, payload) => API.post('/modules/' + id + '/complete', payload);
+export const updateModule = (id, content) => API.put('/modules/' + id, { content });
 
 export const getMentors = () => API.get('/mentorship/mentors');
 export const bookMentorship = (bookingData) => API.post('/mentorship/book', bookingData);
