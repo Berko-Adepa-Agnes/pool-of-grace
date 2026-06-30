@@ -13,7 +13,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'First name, email, and password are required' });
     }
 
-    // FIX 6: Password strength validation — minimum 8 characters
+    // Password strength validation — minimum 8 characters
     if (password.length < 8) {
       return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
     }

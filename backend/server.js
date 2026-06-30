@@ -11,7 +11,7 @@ const seed = require('./seed');
 const app = express();
 
 /* =========================================================
-   FIX 1: Security Headers (helmet)
+   Security Headers
    Adds X-Frame-Options, X-Content-Type-Options,
    Strict-Transport-Security, and more.
    ========================================================= */
@@ -21,7 +21,7 @@ app.use(helmet({
 }));
 
 /* =========================================================
-   FIX 2: Restrict CORS to known origins
+   CORS Configuration
    Only your frontend can call the API.
    ========================================================= */
 const allowedOrigins = [
@@ -46,7 +46,7 @@ app.use(cors({
 app.use(express.json({ limit: '1mb' }));
 
 /* =========================================================
-   FIX 4: XSS Input Sanitization Middleware
+   XSS Input Sanitization Middleware
    Strips malicious HTML/JS from all string fields in
    request bodies before they reach route handlers.
    ========================================================= */
@@ -75,7 +75,7 @@ app.use((req, res, next) => {
 });
 
 /* =========================================================
-   FIX 3: Rate Limiting on Auth Routes
+   Rate Limiting on Auth Routes
    Max 10 login/register attempts per IP per 15 minutes.
    ========================================================= */
 const authLimiter = rateLimit({
@@ -97,7 +97,7 @@ app.use('/api/modules', require('./routes/modules'));
 app.use('/api/mentorship', require('./routes/mentorship'));
 app.use('/api/forum', require('./routes/forum'));
 
-/* FIX 5: Mount the careers route */
+/* Careers route */
 app.use('/api/careers', require('./routes/careers'));
 
 // Serve React frontend in production

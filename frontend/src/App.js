@@ -17,7 +17,7 @@ import {
 import { t } from './translations';
 
 /* =========================================================
-   SVG ICON LIBRARY  (no emojis)
+   SVG ICON LIBRARY
    ========================================================= */
 const Icons = {
   Dashboard: () => (

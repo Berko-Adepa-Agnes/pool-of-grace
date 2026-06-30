@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../db');
 
 // Helper middleware to get authenticated user detail
-// FIX 7: Look up user in DB to get their first name instead of leaking email
+// Look up user in DB to get their first name instead of using email
 const getUserInfo = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

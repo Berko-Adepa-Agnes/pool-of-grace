@@ -68,7 +68,7 @@ Gender inequality in education remains a critical barrier to economic developmen
 
 ## 2. Demo Video
 
- **Demo Video:** [Watch on Loom](https://www.loom.com/share/d58ebc4fde38456b873f2dd090d571be)
+ **Demo Video:** [Watch on Loom](https://www.loom.com/share/d58ebc4fde38456b873f2dd090d571be) (Local MP4: `pool_of_grace_demo.mp4`)
 
 > The video demonstrates all core functionalities: Dashboard, Learning Modules (Notes, Resources, Quiz, Grades), Practice Lab, Achievements, Mentorship Booking, Community Forum, Career Resources, CV Builder, Discover & Share page, Admin Panel, Offline Mode, and Mobile Responsiveness.
 
