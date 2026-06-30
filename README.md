@@ -68,7 +68,7 @@ Gender inequality in education remains a critical barrier to economic developmen
 
 ## 2. Demo Video
 
- **5-Minute Demo Video:** [Watch on YouTube/Loom — LINK TO BE ADDED]
+ **Demo Video:** [Watch on Loom](https://www.loom.com/share/d58ebc4fde38456b873f2dd090d571be)
 
 > The video demonstrates all core functionalities: Dashboard, Learning Modules (Notes, Resources, Quiz, Grades), Practice Lab, Achievements, Mentorship Booking, Community Forum, Career Resources, CV Builder, Discover & Share page, Admin Panel, Offline Mode, and Mobile Responsiveness.
 
