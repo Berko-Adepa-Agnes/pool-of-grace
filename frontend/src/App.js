@@ -3459,6 +3459,7 @@ function Admin({ openAdminPanel, lang }) {
 
   const panels = [
     { key:'users',        title:'Participants',        desc:'View all registered participants, performance, and profiles.',    btn:'Manage Participants',  icon:'P' },
+    { key:'modules',      title:'Manage Modules',      desc:'Edit projects and assignment details for all 20 modules.',         btn:'Manage Modules',       icon:'M' },
     { key:'leaderboard',  title:'Leaderboard',         desc:'Top performers ranked by quiz scores and module completions.',     btn:'View Leaderboard',     icon:'L' },
     { key:'roles',        title:'Roles and Mentors',   desc:'Assign mentor, instructor, or admin roles to platform users.',    btn:'Manage Roles',         icon:'R' },
     { key:'sessions',     title:'Mentorship Sessions', desc:'Monitor all mentorship bookings and session history.',             btn:'Monitor Bookings',     icon:'S' },
