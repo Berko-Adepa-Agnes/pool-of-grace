@@ -450,12 +450,53 @@ export default function App() {
     const savedToken = localStorage.getItem('poolofgrace_token');
     const savedLang = localStorage.getItem('poolofgrace_lang');
     if (savedLang) setLang(savedLang);
+
     if (savedUser && savedToken) {
+      // Check if JWT token has expired without an external library
+      try {
+        const payload = JSON.parse(atob(savedToken.split('.')[1]));
+        const isExpired = payload.exp && Date.now() / 1000 > payload.exp;
+        if (isExpired) {
+          localStorage.removeItem('poolofgrace_user');
+          localStorage.removeItem('poolofgrace_token');
+          localStorage.removeItem('pog_last_page');
+          localStorage.removeItem('pog_last_module_id');
+          return;
+        }
+      } catch (_) {
+        // If token decode fails, clear and start fresh
+        localStorage.removeItem('poolofgrace_user');
+        localStorage.removeItem('poolofgrace_token');
+        return;
+      }
+
       const u = JSON.parse(savedUser);
       setUser(u);
-      if (u.role === 'admin') setPage('admin');
-      else if (!u.onboardingData) setPage('onboarding');
-      else setPage('dashboard');
+
+      if (u.role === 'admin') {
+        setPage('admin');
+      } else if (!u.onboardingData) {
+        setPage('onboarding');
+      } else {
+        // Restore last position — where the participant was before closing the browser
+        const RESTORABLE_PAGES = ['dashboard','modules','moduleView','practiceLab',
+          'schedule','forum','career','grades','certificates','cvBuilder',
+          'achievements','discover','recordings','announcements','calendar',
+          'inbox','history','profile','survey'];
+        const lastPage = localStorage.getItem('pog_last_page');
+        const lastModuleId = localStorage.getItem('pog_last_module_id');
+
+        if (lastPage && RESTORABLE_PAGES.includes(lastPage)) {
+          setPage(lastPage);
+          if (lastPage === 'moduleView' && lastModuleId) {
+            // selectedModule will be populated from modules after fetchStats resolves
+            // Store the pending module id for restoration after data loads
+            localStorage.setItem('pog_restore_module_id', lastModuleId);
+          }
+        } else {
+          setPage('dashboard');
+        }
+      }
     }
   }, []);
 
@@ -538,14 +579,84 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (user) fetchStats();
+    if (user) {
+      fetchStats().then(() => {
+        // After modules load, check if we need to restore a pending module view
+        const pendingId = localStorage.getItem('pog_restore_module_id');
+        if (pendingId) {
+          localStorage.removeItem('pog_restore_module_id');
+          setModules(prev => {
+            const found = prev.find(m => String(m.id) === pendingId);
+            if (found) setSelectedModule(found);
+            return prev;
+          });
+        }
+      }).catch(() => {});
+    }
   }, [user, fetchStats]);
+
+  /* ---- Save session position whenever page or module changes ---- */
+  const RESTORABLE_PAGES = ['dashboard','modules','moduleView','practiceLab',
+    'schedule','forum','career','grades','certificates','cvBuilder',
+    'achievements','discover','recordings','announcements','calendar',
+    'inbox','history','profile','survey'];
+
+  useEffect(() => {
+    if (user && RESTORABLE_PAGES.includes(page)) {
+      localStorage.setItem('pog_last_page', page);
+      if (page === 'moduleView' && selectedModule) {
+        localStorage.setItem('pog_last_module_id', String(selectedModule.id));
+      } else if (page !== 'moduleView') {
+        localStorage.removeItem('pog_last_module_id');
+      }
+    }
+  }, [page, selectedModule, user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /* ---- Inactivity auto-logout (30 minutes of no activity) ---- */
+  useEffect(() => {
+    if (!user) return;
+
+    const TIMEOUT_MS = 30 * 60 * 1000;       // 30 minutes
+    const WARN_MS    = 25 * 60 * 1000;       // warn at 25 minutes
+    let logoutTimer;
+    let warnTimer;
+
+    const resetTimers = () => {
+      clearTimeout(logoutTimer);
+      clearTimeout(warnTimer);
+      warnTimer = setTimeout(() => {
+        setToast({ msg: 'You will be logged out in 5 minutes due to inactivity. Keep going to stay signed in.', type: 'info' });
+      }, WARN_MS);
+      logoutTimer = setTimeout(() => {
+        // Clear all session data and log out
+        setUser(null);
+        localStorage.removeItem('poolofgrace_user');
+        localStorage.removeItem('poolofgrace_token');
+        localStorage.removeItem('pog_last_page');
+        localStorage.removeItem('pog_last_module_id');
+        setPage('login');
+        setToast({ msg: 'You were signed out for your security after 30 minutes of inactivity. Please sign in again.', type: 'info' });
+      }, TIMEOUT_MS);
+    };
+
+    const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    events.forEach(e => window.addEventListener(e, resetTimers, { passive: true }));
+    resetTimers();
+
+    return () => {
+      clearTimeout(logoutTimer);
+      clearTimeout(warnTimer);
+      events.forEach(e => window.removeEventListener(e, resetTimers));
+    };
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ---- Auth ---- */
   const login = (userData, token) => {
     setUser(userData);
     localStorage.setItem('poolofgrace_user', JSON.stringify(userData));
     localStorage.setItem('poolofgrace_token', token);
+    // Record last-seen timestamp for the welcome-back display
+    localStorage.setItem('pog_last_seen', new Date().toISOString());
     if (userData.role === 'admin') setPage('admin');
     else if (!userData.onboardingData) setPage('onboarding');
     else setPage('dashboard');
@@ -565,11 +676,22 @@ export default function App() {
     setUser(null);
     localStorage.removeItem('poolofgrace_user');
     localStorage.removeItem('poolofgrace_token');
+    // Clear saved session position so the next person on this device starts fresh
+    localStorage.removeItem('pog_last_page');
+    localStorage.removeItem('pog_last_module_id');
+    localStorage.removeItem('pog_restore_module_id');
+    setSelectedModule(null);
     setPage('home');
   };
 
   /* ---- Navigation helpers ---- */
-  const openModule = (mod) => { setSelectedModule(mod); setPage('moduleView'); };
+  const openModule = (mod) => {
+    setSelectedModule(mod);
+    setPage('moduleView');
+    // Immediately persist so closing the tab mid-module is recoverable
+    localStorage.setItem('pog_last_page', 'moduleView');
+    localStorage.setItem('pog_last_module_id', String(mod.id));
+  };
   const openAdminPanel = (p) => { setSelectedAdminPanel(p); setPage('adminAction'); };
 
   /* ---- Language toggle ---- */
@@ -1294,6 +1416,21 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang, startTour 
   const greeting = hour < 12 ? t('dashboard.greetingMorning', lang) : hour < 17 ? t('dashboard.greetingAfternoon', lang) : t('dashboard.greetingEvening', lang);
   const progressPercent = Math.round((completionsCount / 20) * 100);
 
+  // Read last-seen for the welcome-back notice
+  const lastSeenRaw = localStorage.getItem('pog_last_seen');
+  const lastSeenDate = lastSeenRaw ? new Date(lastSeenRaw) : null;
+  const formatLastSeen = (d) => {
+    if (!d) return null;
+    const diffMs = Date.now() - d.getTime();
+    const diffH = Math.floor(diffMs / 3600000);
+    const diffD = Math.floor(diffMs / 86400000);
+    if (diffH < 1) return 'just now';
+    if (diffH < 24) return `${diffH} hour${diffH > 1 ? 's' : ''} ago`;
+    return `${diffD} day${diffD > 1 ? 's' : ''} ago`;
+  };
+  const lastSeenLabel = formatLastSeen(lastSeenDate);
+
+
   // Live countdown to next Saturday 4:00 PM GMT
   const getNextSaturday = () => {
     const now = new Date();
@@ -1328,6 +1465,34 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang, startTour 
         <h2>{greeting}, {user ? user.firstName : ''}!</h2>
         <p>{t('dashboard.subheading', lang)}</p>
       </div>
+
+      {/* Welcome-back notice for returning participants */}
+      {lastSeenLabel && (
+        <div style={{
+          background: 'linear-gradient(135deg, #eafaea, #d4f0d4)',
+          border: '1px solid var(--primary-light)',
+          borderRadius: '12px',
+          padding: '12px 20px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '8px'
+        }}>
+          <div>
+            <span style={{ fontWeight: '700', color: 'var(--primary)', fontSize: '14px' }}>
+              Welcome back, {user ? user.firstName : ''}!
+            </span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '13px', marginLeft: '10px' }}>
+              Your last session was {lastSeenLabel}. Your progress has been saved.
+            </span>
+          </div>
+          <span style={{ fontSize: '12px', color: 'var(--primary-light)', fontWeight: '600' }}>
+            Session restored
+          </span>
+        </div>
+      )}
 
       {/* Announcements Banner */}
       <div style={{ background: 'linear-gradient(135deg,#1a4c1a,#2d7a2d)', borderRadius: '14px', padding: '14px 22px', marginBottom: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
