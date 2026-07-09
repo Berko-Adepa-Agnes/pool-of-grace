@@ -344,6 +344,20 @@ export default function App() {
   const [tourStep, setTourStep] = useState(null);
 
   useEffect(() => {
+    const tourCompleted = localStorage.getItem('pog_tour_completed');
+    if (!tourCompleted) {
+      setTourStep(0);
+    }
+  }, []);
+
+  const endTour = (save = true) => {
+    if (save) {
+      localStorage.setItem('pog_tour_completed', 'true');
+    }
+    setTourStep(null);
+  };
+
+  useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
     window.addEventListener('online', handleOnline);
@@ -780,7 +794,7 @@ export default function App() {
               if (tourStep === 6) setPage('cvBuilder');
               setTourStep(tourStep + 1);
             } else {
-              setTourStep(null);
+              endTour(true);
               setPage('dashboard');
             }
           }}
@@ -797,7 +811,7 @@ export default function App() {
             }
           }}
           onClose={() => {
-            setTourStep(null);
+            endTour(true);
             setPage('dashboard');
           }}
         />
