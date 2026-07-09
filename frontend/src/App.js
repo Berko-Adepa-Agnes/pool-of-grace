@@ -784,15 +784,20 @@ export default function App() {
         <InteractiveTour 
           stepIndex={tourStep}
           onNext={() => {
+            const nextStep = tourStep + 1;
+            // Map: current step → page to navigate to before moving forward
+            const nextPageMap = {
+              0: 'register',
+              1: 'onboarding',
+              2: 'dashboard',
+              3: 'modules',
+              4: 'practiceLab',
+              5: 'schedule',
+              6: 'cvBuilder',
+            };
             if (tourStep < tourSteps.length - 1) {
-              if (tourStep === 0) setPage('register');
-              if (tourStep === 1) setPage('onboarding');
-              if (tourStep === 2) setPage('dashboard');
-              if (tourStep === 3) setPage('modules');
-              if (tourStep === 4) setPage('practiceLab');
-              if (tourStep === 5) setPage('schedule');
-              if (tourStep === 6) setPage('cvBuilder');
-              setTourStep(tourStep + 1);
+              if (nextPageMap[tourStep]) setPage(nextPageMap[tourStep]);
+              setTourStep(nextStep);
             } else {
               endTour(true);
               setPage('dashboard');
@@ -800,14 +805,19 @@ export default function App() {
           }}
           onPrev={() => {
             if (tourStep > 0) {
-              if (tourStep === 1) setPage('home');
-              if (tourStep === 2) setPage('register');
-              if (tourStep === 3) setPage('onboarding');
-              if (tourStep === 4) setPage('dashboard');
-              if (tourStep === 5) setPage('modules');
-              if (tourStep === 6) setPage('practiceLab');
-              if (tourStep === 7) setPage('schedule');
-              setTourStep(tourStep - 1);
+              const prevStep = tourStep - 1;
+              // Map: current step → page to navigate to when going back
+              const prevPageMap = {
+                1: 'home',
+                2: 'register',
+                3: 'onboarding',
+                4: 'dashboard',
+                5: 'modules',
+                6: 'practiceLab',
+                7: 'schedule',
+              };
+              if (prevPageMap[tourStep]) setPage(prevPageMap[tourStep]);
+              setTourStep(prevStep);
             }
           }}
           onClose={() => {
