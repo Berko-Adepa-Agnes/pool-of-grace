@@ -180,6 +180,24 @@ const Icons = {
 
 const tourSteps = [
   {
+    target: 'landing-get-started',
+    title: 'Platform Landing Page',
+    text: 'Welcome to Pool of Grace! The journey begins here. Clicking the Get Started button will direct you to create your free profile.',
+    placement: 'bottom'
+  },
+  {
+    target: 'register-container',
+    title: 'Secure Account Registration',
+    text: 'Fill in your name, email, and choose a secure password. Make sure to select your role as a participant to sign up.',
+    placement: 'bottom'
+  },
+  {
+    target: 'onboarding-container',
+    title: 'Tell Us Your Story',
+    text: 'In the onboarding survey, you will share your interests, age, location, and the barriers you face so we can personalize your path.',
+    placement: 'bottom'
+  },
+  {
     target: 'sidebar-nav-dashboard',
     title: 'Your Dashboard',
     text: 'This is your central command center. Track your overall module progress, check weekly Google Meet meeting schedules, and see announcements.',
@@ -220,15 +238,27 @@ function InteractiveTour({ stepIndex, onNext, onPrev, onClose }) {
       const el = document.getElementById(step.target);
       if (el) {
         const rect = el.getBoundingClientRect();
-        setStyle({
-          position: 'fixed',
-          top: `${rect.top + rect.height / 2}px`,
-          left: `${rect.right + 15}px`,
-          transform: 'translateY(-50%)',
-          zIndex: 11000,
-          opacity: 1,
-          transition: 'all 0.3s ease'
-        });
+        if (step.placement === 'bottom') {
+          setStyle({
+            position: 'fixed',
+            top: `${rect.bottom + 15}px`,
+            left: `${rect.left + rect.width / 2}px`,
+            transform: 'translateX(-50%)',
+            zIndex: 11000,
+            opacity: 1,
+            transition: 'all 0.3s ease'
+          });
+        } else {
+          setStyle({
+            position: 'fixed',
+            top: `${rect.top + rect.height / 2}px`,
+            left: `${rect.right + 15}px`,
+            transform: 'translateY(-50%)',
+            zIndex: 11000,
+            opacity: 1,
+            transition: 'all 0.3s ease'
+          });
+        }
       } else {
         setStyle({
           position: 'fixed',
@@ -255,6 +285,10 @@ function InteractiveTour({ stepIndex, onNext, onPrev, onClose }) {
           0% { transform: translateY(-50%) translateX(0); }
           100% { transform: translateY(-50%) translateX(-8px); }
         }
+        @keyframes pointing-bounce-up {
+          0% { transform: translateX(-50%) translateY(0); }
+          100% { transform: translateX(-50%) translateY(6px); }
+        }
       `}</style>
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 10500, pointerEvents: 'none' }} />
       <div className="premium-card animate-fade-in" style={{ 
@@ -267,9 +301,15 @@ function InteractiveTour({ stepIndex, onNext, onPrev, onClose }) {
         borderLeft: '5px solid var(--primary)',
         pointerEvents: 'auto'
       }}>
-        <div style={{ position: 'absolute', left: '-25px', top: '50%', transform: 'translateY(-50%)', fontSize: '24px', animation: 'pointing-bounce 1s infinite alternate' }}>
-          👈
-        </div>
+        {step.placement === 'bottom' ? (
+          <div style={{ position: 'absolute', top: '-25px', left: '50%', transform: 'translateX(-50%)', fontSize: '24px', animation: 'pointing-bounce-up 1s infinite alternate' }}>
+            👆
+          </div>
+        ) : (
+          <div style={{ position: 'absolute', left: '-25px', top: '50%', transform: 'translateY(-50%)', fontSize: '24px', animation: 'pointing-bounce 1s infinite alternate' }}>
+            👈
+          </div>
+        )}
         <h4 style={{ color: 'var(--primary)', margin: '0 0 8px', fontSize: '15px', fontWeight: '700' }}>{step.title}</h4>
         <p style={{ margin: '0 0 16px', fontSize: '13px', lineHeight: '1.5', color: '#555' }}>{step.text}</p>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -671,48 +711,10 @@ export default function App() {
         </header>
         {children}
       </main>
-      {tourStep !== null && (
-        <InteractiveTour 
-          stepIndex={tourStep}
-          onNext={() => {
-            if (tourStep < tourSteps.length - 1) {
-              if (tourStep === 0) setPage('modules');
-              if (tourStep === 1) setPage('practiceLab');
-              if (tourStep === 2) setPage('schedule');
-              if (tourStep === 3) setPage('cvBuilder');
-              setTourStep(tourStep + 1);
-            } else {
-              setTourStep(null);
-              setPage('dashboard');
-            }
-          }}
-          onPrev={() => {
-            if (tourStep > 0) {
-              if (tourStep === 1) setPage('dashboard');
-              if (tourStep === 2) setPage('modules');
-              if (tourStep === 3) setPage('practiceLab');
-              if (tourStep === 4) setPage('schedule');
-              setTourStep(tourStep - 1);
-            }
-          }}
-          onClose={() => {
-            setTourStep(null);
-            setPage('dashboard');
-          }}
-        />
-      )}
     </div>
   );
 
   /* ---- Router ---- */
-  if (page === 'home') return <Home go={setPage} lang={lang} LanguageToggle={LanguageToggle} />;
-  if (page === 'register') return <Register go={setPage} login={login} lang={lang} LanguageToggle={LanguageToggle} />;
-  if (page === 'login') return <Login go={setPage} login={login} lang={lang} LanguageToggle={LanguageToggle} />;
-  if (page === 'forgot') return <ForgotPassword go={setPage} lang={lang} />;
-  if (page === 'onboarding') return <Onboarding user={user} completeOnboarding={completeOnboardingData} lang={lang} />;
-  if (page === 'selfWorthIntro') return <SelfWorthIntro user={user} go={setPage} lang={lang} />;
-  if (page === 'consent') return <AuthenticatedPortal><ConsentFormPage lang={lang} /></AuthenticatedPortal>;
-
   const ToastBar = () => toast ? (
     <div style={{
       position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999,
@@ -726,38 +728,88 @@ export default function App() {
     </div>
   ) : null;
 
+  const renderPageContent = () => {
+    if (page === 'home') return <Home go={setPage} lang={lang} LanguageToggle={LanguageToggle} startTour={() => setTourStep(0)} />;
+    if (page === 'register') return <Register go={setPage} login={login} lang={lang} LanguageToggle={LanguageToggle} />;
+    if (page === 'login') return <Login go={setPage} login={login} lang={lang} LanguageToggle={LanguageToggle} />;
+    if (page === 'forgot') return <ForgotPassword go={setPage} lang={lang} />;
+    if (page === 'onboarding') return <Onboarding user={user} completeOnboarding={completeOnboardingData} lang={lang} />;
+    if (page === 'selfWorthIntro') return <SelfWorthIntro user={user} go={setPage} lang={lang} />;
+    if (page === 'consent') return <AuthenticatedPortal><ConsentFormPage lang={lang} /></AuthenticatedPortal>;
+    if (page === 'dashboard') return <AuthenticatedPortal><Dashboard user={user} go={setPage} completionsCount={completionsCount} sessionsCount={sessionsCount} lang={lang} startTour={() => setTourStep(0)} /></AuthenticatedPortal>;
+    if (page === 'modules') return <AuthenticatedPortal><ModulesList openModule={openModule} lang={lang} modules={modules} /></AuthenticatedPortal>;
+    const currentModule = selectedModule ? (modules.find(m => m.id === selectedModule.id) || selectedModule) : null;
+    if (page === 'moduleView') return <AuthenticatedPortal><ModuleView module={currentModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} showToast={showToast} isOnline={isOnline} /></AuthenticatedPortal>;
+    if (page === 'schedule') return <AuthenticatedPortal><Schedule go={setPage} lang={lang} onBooked={() => { fetchStats(); showToast('Session booked! Check your inbox for details.'); }} /></AuthenticatedPortal>;
+    if (page === 'forum') return <AuthenticatedPortal><Forum lang={lang} /></AuthenticatedPortal>;
+    if (page === 'career') return <AuthenticatedPortal><CareerResources lang={lang} /></AuthenticatedPortal>;
+    if (page === 'grades') return <AuthenticatedPortal><Grades modules={modules} lang={lang} /></AuthenticatedPortal>;
+    if (page === 'certificates') return <AuthenticatedPortal><CertificatePage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
+    if (page === 'cvBuilder') return <AuthenticatedPortal><CVBuilder user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
+    if (page === 'practiceLab') return <AuthenticatedPortal><PracticeLab lang={lang} modules={modules} showToast={showToast} /></AuthenticatedPortal>;
+    if (page === 'achievements') return <AuthenticatedPortal><AchievementsPage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
+    if (page === 'discover') return <AuthenticatedPortal><DiscoverPage lang={lang} go={setPage} /></AuthenticatedPortal>;
+    if (page === 'recordings') return <AuthenticatedPortal><RecordingsPage lang={lang} user={user} /></AuthenticatedPortal>;
+    if (page === 'announcements') return <AuthenticatedPortal><AnnouncementsPage lang={lang} user={user} /></AuthenticatedPortal>;
+    if (page === 'calendar') return <AuthenticatedPortal><CalendarPage lang={lang} /></AuthenticatedPortal>;
+    if (page === 'inbox') return <AuthenticatedPortal><Inbox messages={inboxMessages} lang={lang} /></AuthenticatedPortal>;
+    if (page === 'history') return <AuthenticatedPortal><History modules={modules} lang={lang} /></AuthenticatedPortal>;
+    if (page === 'privacy') return <AuthenticatedPortal><PrivacyPage lang={lang} /></AuthenticatedPortal>;
+    if (page === 'profile') return <AuthenticatedPortal><ProfilePage user={user} lang={lang} modules={modules} /></AuthenticatedPortal>;
+    if (page === 'survey') return <AuthenticatedPortal><SUSPage lang={lang} showToast={showToast} /></AuthenticatedPortal>;
+    if (page === 'admin') return <AuthenticatedPortal><Admin openAdminPanel={openAdminPanel} lang={lang} /></AuthenticatedPortal>;
+    if (page === 'adminAction') return <AuthenticatedPortal><AdminAction go={setPage} panel={selectedAdminPanel} lang={lang} modules={modules} onModuleUpdated={fetchStats} /></AuthenticatedPortal>;
+    return <Home go={setPage} lang={lang} LanguageToggle={LanguageToggle} startTour={() => setTourStep(0)} />;
+  };
 
-  if (page === 'dashboard') return <><ToastBar /><AuthenticatedPortal><Dashboard user={user} go={setPage} completionsCount={completionsCount} sessionsCount={sessionsCount} lang={lang} startTour={() => setTourStep(0)} /></AuthenticatedPortal></>;
-  if (page === 'modules') return <><ToastBar /><AuthenticatedPortal><ModulesList openModule={openModule} lang={lang} modules={modules} /></AuthenticatedPortal></>;
-  const currentModule = selectedModule ? (modules.find(m => m.id === selectedModule.id) || selectedModule) : null;
-  if (page === 'moduleView') return <><ToastBar /><AuthenticatedPortal><ModuleView module={currentModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} showToast={showToast} isOnline={isOnline} /></AuthenticatedPortal></>;
-  if (page === 'schedule') return <><ToastBar /><AuthenticatedPortal><Schedule go={setPage} lang={lang} onBooked={() => { fetchStats(); showToast('Session booked! Check your inbox for details.'); }} /></AuthenticatedPortal></>;
-  if (page === 'forum') return <><ToastBar /><AuthenticatedPortal><Forum lang={lang} /></AuthenticatedPortal></>;
-  if (page === 'career') return <AuthenticatedPortal><CareerResources lang={lang} /></AuthenticatedPortal>;
-  if (page === 'grades') return <AuthenticatedPortal><Grades modules={modules} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'certificates') return <AuthenticatedPortal><CertificatePage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'cvBuilder') return <AuthenticatedPortal><CVBuilder user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'practiceLab') return <><ToastBar /><AuthenticatedPortal><PracticeLab lang={lang} modules={modules} showToast={showToast} /></AuthenticatedPortal></>;
-  if (page === 'achievements') return <AuthenticatedPortal><AchievementsPage user={user} modules={modules} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'discover') return <AuthenticatedPortal><DiscoverPage lang={lang} go={setPage} /></AuthenticatedPortal>;
-  if (page === 'recordings') return <AuthenticatedPortal><RecordingsPage lang={lang} user={user} /></AuthenticatedPortal>;
-  if (page === 'announcements') return <AuthenticatedPortal><AnnouncementsPage lang={lang} user={user} /></AuthenticatedPortal>;
-  if (page === 'calendar') return <AuthenticatedPortal><CalendarPage lang={lang} /></AuthenticatedPortal>;
-  if (page === 'inbox') return <AuthenticatedPortal><Inbox messages={inboxMessages} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'history') return <AuthenticatedPortal><History modules={modules} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'privacy') return <AuthenticatedPortal><PrivacyPage lang={lang} /></AuthenticatedPortal>;
-  if (page === 'profile') return <AuthenticatedPortal><ProfilePage user={user} lang={lang} modules={modules} /></AuthenticatedPortal>;
-  if (page === 'survey') return <><ToastBar /><AuthenticatedPortal><SUSPage lang={lang} showToast={showToast} /></AuthenticatedPortal></>;
-  if (page === 'admin') return <AuthenticatedPortal><Admin openAdminPanel={openAdminPanel} lang={lang} /></AuthenticatedPortal>;
-  if (page === 'adminAction') return <AuthenticatedPortal><AdminAction go={setPage} panel={selectedAdminPanel} lang={lang} modules={modules} onModuleUpdated={fetchStats} /></AuthenticatedPortal>;
-
-  return <Home go={setPage} lang={lang} LanguageToggle={LanguageToggle} />;
+  return (
+    <>
+      <ToastBar />
+      {renderPageContent()}
+      {tourStep !== null && (
+        <InteractiveTour 
+          stepIndex={tourStep}
+          onNext={() => {
+            if (tourStep < tourSteps.length - 1) {
+              if (tourStep === 0) setPage('register');
+              if (tourStep === 1) setPage('onboarding');
+              if (tourStep === 2) setPage('dashboard');
+              if (tourStep === 3) setPage('modules');
+              if (tourStep === 4) setPage('practiceLab');
+              if (tourStep === 5) setPage('schedule');
+              if (tourStep === 6) setPage('cvBuilder');
+              setTourStep(tourStep + 1);
+            } else {
+              setTourStep(null);
+              setPage('dashboard');
+            }
+          }}
+          onPrev={() => {
+            if (tourStep > 0) {
+              if (tourStep === 1) setPage('home');
+              if (tourStep === 2) setPage('register');
+              if (tourStep === 3) setPage('onboarding');
+              if (tourStep === 4) setPage('dashboard');
+              if (tourStep === 5) setPage('modules');
+              if (tourStep === 6) setPage('practiceLab');
+              if (tourStep === 7) setPage('schedule');
+              setTourStep(tourStep - 1);
+            }
+          }}
+          onClose={() => {
+            setTourStep(null);
+            setPage('dashboard');
+          }}
+        />
+      )}
+    </>
+  );
 }
 
 /* =========================================================
    HOME — Landing Page
    ========================================================= */
-function Home({ go, lang, LanguageToggle }) {
+function Home({ go, lang, LanguageToggle, startTour }) {
   return (
     <div style={{ minHeight: '100vh', background: '#f8fdf8' }}>
       {/* Nav */}
@@ -784,11 +836,14 @@ function Home({ go, lang, LanguageToggle }) {
           {t('hero.subtitle', lang)}
         </p>
         <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button className="btn-primary" style={{ background: '#fff', color: 'var(--primary)', padding: '14px 36px', fontSize: '15px' }} onClick={() => go('register')}>
+          <button id="landing-get-started" className="btn-primary" style={{ background: '#fff', color: 'var(--primary)', padding: '14px 36px', fontSize: '15px' }} onClick={() => go('register')}>
             {t('hero.startCTA', lang)}
           </button>
           <button className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.55)', color: '#fff', padding: '14px 28px', fontSize: '15px' }} onClick={() => go('login')}>
             {t('hero.loginCTA', lang)}
+          </button>
+          <button className="btn-primary" style={{ background: 'var(--primary-light)', border: 'none', color: '#fff', padding: '14px 36px', fontSize: '15px' }} onClick={() => startTour()}>
+            Take Platform Tour 🚀
           </button>
         </div>
         <div className="hero-metrics">
@@ -958,7 +1013,7 @@ function Register({ go, login, lang, LanguageToggle }) {
   return (
     <div className="auth-wrapper">
       <div style={{ position: 'fixed', top: '18px', right: '18px', zIndex: 10 }}><LanguageToggle /></div>
-      <div className="premium-card auth-card animate-fade-in">
+      <div id="register-container" className="premium-card auth-card animate-fade-in">
         <div style={{ textAlign: 'center', marginBottom: '26px' }}>
           <h2 style={{ color: 'var(--primary)', fontWeight: '800', fontSize: 'clamp(20px,4vw,24px)' }}>{t('nav.register', lang)}</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '6px' }}>Start your journey with us today</p>
@@ -1081,7 +1136,7 @@ function Onboarding({ user, completeOnboarding, lang }) {
           </div>
         </div>
 
-        <div className="premium-card animate-fade-in" style={{ padding: 'clamp(22px,5vw,38px)' }}>
+        <div id="onboarding-container" className="premium-card animate-fade-in" style={{ padding: 'clamp(22px,5vw,38px)' }}>
           {step === 1 && (
             <div>
               <h2 style={{ color: 'var(--primary)', fontSize: 'clamp(18px,4vw,22px)', fontWeight: '800', marginBottom: '10px' }}>
