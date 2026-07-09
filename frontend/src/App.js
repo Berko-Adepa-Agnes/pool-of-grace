@@ -1070,6 +1070,7 @@ function SelfWorthIntro({ user, go, lang }) {
    DASHBOARD
    ========================================================= */
 function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
+  const [showWalkthrough, setShowWalkthrough] = useState(false);
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t('dashboard.greetingMorning', lang) : hour < 17 ? t('dashboard.greetingAfternoon', lang) : t('dashboard.greetingEvening', lang);
   const progressPercent = Math.round((completionsCount / 20) * 100);
@@ -1118,6 +1119,17 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
           <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px' }}>Pool of Grace is accepting new participants for the June 2026 cohort!</span>
         </div>
         <button onClick={() => go('announcements')} style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '7px 16px', borderRadius: '18px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>View All</button>
+      </div>
+
+      {/* Video Walkthrough Banner */}
+      <div className="banner-strip" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', background: 'linear-gradient(135deg,#1f3d3d,#2d5a5a)', marginBottom: '18px' }}>
+        <div>
+          <div style={{ fontWeight: '700', fontSize: '15px', marginBottom: '3px' }}>🎥 Platform Video Walkthrough Guide</div>
+          <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: '13px' }}>New to Pool of Grace? Watch this quick video guide to learn how to navigate and use the platform.</div>
+        </div>
+        <button onClick={() => setShowWalkthrough(true)} style={{ background: '#fff', border: 'none', color: '#1f3d3d', padding: '9px 20px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: '700', fontFamily: 'inherit' }}>
+          Watch Video Guide
+        </button>
       </div>
 
       {/* Meeting Banner + Countdown */}
@@ -1220,6 +1232,32 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
           </div>
         ))}
       </div>
+
+      {/* Walkthrough Video Modal */}
+      {showWalkthrough && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.7)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div className="premium-card animate-fade-in" style={{ padding: '24px', background: 'var(--card-bg)', maxWidth: '800px', width: '100%', position: 'relative', boxShadow: '0 12px 40px rgba(0,0,0,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ color: 'var(--primary)', margin: 0, fontSize: '18px', fontWeight: '700' }}>Platform Video Walkthrough</h3>
+              <button onClick={() => setShowWalkthrough(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '18px', cursor: 'pointer', fontWeight: 'bold' }}>×</button>
+            </div>
+            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '8px', background: '#000' }}>
+              <iframe 
+                title="Pool of Grace Walkthrough Guide"
+                src="https://www.loom.com/embed/d58ebc4fde38456b873f2dd090d571be" 
+                frameBorder="0" 
+                webkitallowfullscreen="true" 
+                mozallowfullscreen="true" 
+                allowFullScreen 
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+              ></iframe>
+            </div>
+            <div style={{ marginTop: '16px', fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+              This video guides you through the dashboard, learning modules, gamified Practice Lab coding sandbox, mentorship booking, achievements system, and resume builder.
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1861,7 +1899,52 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
     ],
   };
 
+  const moduleBooksMap = {
+    // Module 1: Self-Worth
+    1: [
+      { title: 'Mindset: The New Psychology of Success', author: 'Carol S. Dweck', desc: 'Discover how a growth mindset builds confidence, resilience, and unlocks your potential in coding and life.', link: 'https://books.google.com.gh/books?id=g-4lDAAAQBAJ' },
+      { title: 'Self-Efficacy: The Exercise of Control', author: 'Albert Bandura', desc: 'The definitive text on self-efficacy theory and building self-belief to master new technical challenges.', link: 'https://books.google.com.gh/books?id=eJ-PN9g54tcC' }
+    ],
+    // Module 2: Breaking Cultural Barriers
+    2: [
+      { title: 'We Should All Be Feminists', author: 'Chimamanda Ngozi Adichie', desc: 'A personal, eloquent argument for gender equality, empowering women to step into male-dominated tech roles.', link: 'https://books.google.com.gh/books?id=f_w4DQAAQBAJ' },
+      { title: 'Lean In: Women, Work, and the Will to Lead', author: 'Sheryl Sandberg', desc: 'Practical advice on overcoming internal/external hurdles, negotiating, and finding mentors in professional careers.', link: 'https://books.google.com.gh/books?id=r68dZ2f_N4IC' }
+    ],
+    // Module 3: Building Confidence
+    3: [
+      { title: 'The Confidence Code', author: 'Katty Kay & Claire Shipman', desc: 'The science and art of self-assurance for women, showing how to turn thoughts into positive, risky actions.', link: 'https://books.google.com.gh/books?id=gD3qAgAAQBAJ' }
+    ],
+    // Module 4: Fear of Failure
+    4: [
+      { title: 'The Fringe Benefits of Failure', author: 'J.K. Rowling', desc: 'Why failure can be a foundation for success, explaining how hitting rock bottom can free you to rebuild.', link: 'https://books.google.com.gh/books?id=KIdRDgAAQBAJ' }
+    ],
+    // Module 5: Vision and Goals
+    5: [
+      { title: 'Atomic Habits', author: 'James Clear', desc: 'An easy & proven framework to build coding practice habits, complete challenges daily, and see exponential growth.', link: 'https://books.google.com.gh/books?id=wyj1DwAAQBAJ' }
+    ],
+    // Module 8: HTML & CSS
+    8: [
+      { title: 'HTML & CSS: Design and Build Websites', author: 'Jon Duckett', desc: 'The most popular, visual, and beginner-friendly guide to learning structure and design of the web.', link: 'https://books.google.com.gh/books?id=aAdyDwAAQBAJ' }
+    ],
+    // Module 9: JavaScript
+    9: [
+      { title: 'Eloquent JavaScript', author: 'Marijn Haverbeke', desc: 'A deep, interactive introduction to programming, writing clean code, and mastering JavaScript.', link: 'https://eloquentjavascript.net/' }
+    ],
+    // Module 11: Python
+    11: [
+      { title: 'Python Crash Course', author: 'Eric Matthes', desc: 'A fast-paced, project-based introduction to programming. Build games, analyze data, and run web scripts.', link: 'https://books.google.com.gh/books?id=m6zQDwAAQBAJ' }
+    ],
+    // Module 12: SQL
+    12: [
+      { title: 'SQL Queries for Mere Mortals', author: 'John L. Viescas', desc: 'A hands-on, step-by-step tutorial for writing database queries, managing tables, and joining data.', link: 'https://books.google.com.gh/books?id=m18SDQAAQBAJ' }
+    ]
+  };
+
   const videoLinks = moduleVideoMap[module.id] || moduleVideoMap[1];
+  const moduleBooks = moduleBooksMap[module.id] || [
+    { title: 'The Pragmatic Programmer', author: 'Andrew Hunt & David Thomas', desc: 'The classic guide to developer career growth, coding practices, and personal craftsmanship.', link: 'https://books.google.com.gh/books?id=8ydeDwAAQBAJ' },
+    { title: 'Soft Skills: The Software Developer\'s Life Manual', author: 'John Sonmez', desc: 'Learn how to manage your tech career, productivity, networking, and finances as a developer.', link: 'https://books.google.com.gh/books?id=Yh5JDwAAQBAJ' }
+  ];
 
   const tabs = [
     { key: 'notes', label: 'Notes' },
@@ -2173,6 +2256,30 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
                 ))}
               </div>
             )}
+
+            {/* Recommended Books Section */}
+            <div className="premium-card" style={{ padding: '22px', marginBottom: '28px', background: 'var(--primary-pale)', borderLeft: '5px solid var(--primary-light)', marginTop: '24px' }}>
+              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                📚 Recommended Books & E-Books
+              </h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '16px' }}>
+                Recommended literature selected by Agnes to expand your understanding of Stage {module.order}.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {moduleBooks.map((book, bi) => (
+                  <div key={bi} style={{ background: '#fff', padding: '14px 18px', borderRadius: '10px', border: '1px solid var(--primary-pale)', boxShadow: 'var(--shadow-sm)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                    <div style={{ flex: 1, minWidth: '200px' }}>
+                      <div style={{ fontWeight: '700', fontSize: '14px', color: 'var(--primary)', marginBottom: '3px' }}>{book.title}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>By {book.author}</div>
+                      <div style={{ fontSize: '12.5px', color: 'var(--text-main)', lineHeight: '1.4' }}>{book.desc}</div>
+                    </div>
+                    <a href={book.link} target="_blank" rel="noopener noreferrer" className="btn-outline" style={{ padding: '7px 16px', fontSize: '12px', whiteSpace: 'nowrap' }}>
+                      Open Book Info
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div className="alert-info" style={{ marginTop: '24px' }}>
               <h4 style={{ fontWeight: '700', marginBottom: '10px', fontSize: '14px' }}>Additional Reading</h4>
