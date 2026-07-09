@@ -178,6 +178,115 @@ const Icons = {
   ),
 };
 
+const tourSteps = [
+  {
+    target: 'sidebar-nav-dashboard',
+    title: 'Your Dashboard',
+    text: 'This is your central command center. Track your overall module progress, check weekly Google Meet meeting schedules, and see announcements.',
+    placement: 'right'
+  },
+  {
+    target: 'sidebar-nav-modules',
+    title: 'Learning Modules',
+    text: 'Access all 20 modules here. You must complete the 7 Self-Worth foundation modules before the Technical Skills modules open up.',
+    placement: 'right'
+  },
+  {
+    target: 'sidebar-nav-practiceLab',
+    title: 'Interactive Practice Lab',
+    text: 'Write HTML/CSS/JS code to solve interactive challenges (like coding the Ghana Flag) and earn XP badges!',
+    placement: 'right'
+  },
+  {
+    target: 'sidebar-nav-schedule',
+    title: 'Mentorship Booking',
+    text: 'Book one-on-one mentoring sessions or office hours directly with Agnes and other industry software engineers.',
+    placement: 'right'
+  },
+  {
+    target: 'sidebar-nav-cvBuilder',
+    title: 'Printable CV Builder',
+    text: 'Your resume updates automatically as you complete modules and earn badges. Download a ready-to-print PDF CV for job applications!',
+    placement: 'right'
+  }
+];
+
+function InteractiveTour({ stepIndex, onNext, onPrev, onClose }) {
+  const step = tourSteps[stepIndex];
+  const [style, setStyle] = useState({ opacity: 0 });
+
+  useEffect(() => {
+    const updatePosition = () => {
+      const el = document.getElementById(step.target);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        setStyle({
+          position: 'fixed',
+          top: `${rect.top + rect.height / 2}px`,
+          left: `${rect.right + 15}px`,
+          transform: 'translateY(-50%)',
+          zIndex: 11000,
+          opacity: 1,
+          transition: 'all 0.3s ease'
+        });
+      } else {
+        setStyle({
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 11000,
+          opacity: 1
+        });
+      }
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    return () => window.removeEventListener('resize', updatePosition);
+  }, [stepIndex, step]);
+
+  if (!step) return null;
+
+  return (
+    <>
+      <style>{`
+        @keyframes pointing-bounce {
+          0% { transform: translateY(-50%) translateX(0); }
+          100% { transform: translateY(-50%) translateX(-8px); }
+        }
+      `}</style>
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 10500, pointerEvents: 'none' }} />
+      <div className="premium-card animate-fade-in" style={{ 
+        ...style, 
+        width: '320px', 
+        padding: '20px', 
+        background: '#fff', 
+        color: '#2b3a2b',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.25)', 
+        borderLeft: '5px solid var(--primary)',
+        pointerEvents: 'auto'
+      }}>
+        <div style={{ position: 'absolute', left: '-25px', top: '50%', transform: 'translateY(-50%)', fontSize: '24px', animation: 'pointing-bounce 1s infinite alternate' }}>
+          👈
+        </div>
+        <h4 style={{ color: 'var(--primary)', margin: '0 0 8px', fontSize: '15px', fontWeight: '700' }}>{step.title}</h4>
+        <p style={{ margin: '0 0 16px', fontSize: '13px', lineHeight: '1.5', color: '#555' }}>{step.text}</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '600' }}>Step {stepIndex + 1} of {tourSteps.length}</span>
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <button className="btn-outline" style={{ padding: '5px 10px', fontSize: '11px' }} onClick={onClose}>Skip</button>
+            {stepIndex > 0 && <button className="btn-outline" style={{ padding: '5px 10px', fontSize: '11px' }} onClick={onPrev}>Back</button>}
+            <button className="btn-primary" style={{ padding: '5px 12px', fontSize: '11px', background: 'var(--primary)' }} onClick={onNext}>
+              {stepIndex === tourSteps.length - 1 ? 'Finish' : 'Next'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 /* =========================================================
    ROOT APP
    ========================================================= */
@@ -192,6 +301,7 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [isOnline, setIsOnline] = useState(window.navigator.onLine);
+  const [tourStep, setTourStep] = useState(null);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -477,7 +587,7 @@ export default function App() {
           {navItems.map(item => {
             const isActive = page === item.key || (item.key === 'modules' && page === 'moduleView');
             return (
-              <button key={item.key} onClick={() => setPage(item.key)}
+              <button key={item.key} id={`sidebar-nav-${item.key}`} onClick={() => setPage(item.key)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '10px', padding: '11px 14px', width: '100%',
                   border: 'none', background: isActive ? 'var(--primary)' : 'transparent',
@@ -561,6 +671,36 @@ export default function App() {
         </header>
         {children}
       </main>
+      {tourStep !== null && (
+        <InteractiveTour 
+          stepIndex={tourStep}
+          onNext={() => {
+            if (tourStep < tourSteps.length - 1) {
+              if (tourStep === 0) setPage('modules');
+              if (tourStep === 1) setPage('practiceLab');
+              if (tourStep === 2) setPage('schedule');
+              if (tourStep === 3) setPage('cvBuilder');
+              setTourStep(tourStep + 1);
+            } else {
+              setTourStep(null);
+              setPage('dashboard');
+            }
+          }}
+          onPrev={() => {
+            if (tourStep > 0) {
+              if (tourStep === 1) setPage('dashboard');
+              if (tourStep === 2) setPage('modules');
+              if (tourStep === 3) setPage('practiceLab');
+              if (tourStep === 4) setPage('schedule');
+              setTourStep(tourStep - 1);
+            }
+          }}
+          onClose={() => {
+            setTourStep(null);
+            setPage('dashboard');
+          }}
+        />
+      )}
     </div>
   );
 
@@ -587,7 +727,7 @@ export default function App() {
   ) : null;
 
 
-  if (page === 'dashboard') return <><ToastBar /><AuthenticatedPortal><Dashboard user={user} go={setPage} completionsCount={completionsCount} sessionsCount={sessionsCount} lang={lang} /></AuthenticatedPortal></>;
+  if (page === 'dashboard') return <><ToastBar /><AuthenticatedPortal><Dashboard user={user} go={setPage} completionsCount={completionsCount} sessionsCount={sessionsCount} lang={lang} startTour={() => setTourStep(0)} /></AuthenticatedPortal></>;
   if (page === 'modules') return <><ToastBar /><AuthenticatedPortal><ModulesList openModule={openModule} lang={lang} modules={modules} /></AuthenticatedPortal></>;
   const currentModule = selectedModule ? (modules.find(m => m.id === selectedModule.id) || selectedModule) : null;
   if (page === 'moduleView') return <><ToastBar /><AuthenticatedPortal><ModuleView module={currentModule} go={setPage} lang={lang} onQuizPassed={fetchStats} modules={modules} openModule={openModule} showToast={showToast} isOnline={isOnline} /></AuthenticatedPortal></>;
@@ -1069,7 +1209,7 @@ function SelfWorthIntro({ user, go, lang }) {
 /* =========================================================
    DASHBOARD
    ========================================================= */
-function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
+function Dashboard({ user, go, completionsCount, sessionsCount, lang, startTour }) {
   const [showWalkthrough, setShowWalkthrough] = useState(false);
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t('dashboard.greetingMorning', lang) : hour < 17 ? t('dashboard.greetingAfternoon', lang) : t('dashboard.greetingEvening', lang);
@@ -1127,9 +1267,14 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang }) {
           <div style={{ fontWeight: '700', fontSize: '15px', marginBottom: '3px' }}>🎥 Platform Video Walkthrough Guide</div>
           <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: '13px' }}>New to Pool of Grace? Watch this quick video guide to learn how to navigate and use the platform.</div>
         </div>
-        <button onClick={() => setShowWalkthrough(true)} style={{ background: '#fff', border: 'none', color: '#1f3d3d', padding: '9px 20px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: '700', fontFamily: 'inherit' }}>
-          Watch Video Guide
-        </button>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button onClick={() => startTour()} style={{ background: '#2d7a2d', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '9px 20px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: '700', fontFamily: 'inherit' }}>
+            Take Interactive Tour 🚀
+          </button>
+          <button onClick={() => setShowWalkthrough(true)} style={{ background: '#fff', border: 'none', color: '#1f3d3d', padding: '9px 20px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: '700', fontFamily: 'inherit' }}>
+            Watch Video Guide
+          </button>
+        </div>
       </div>
 
       {/* Meeting Banner + Countdown */}
