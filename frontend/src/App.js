@@ -302,12 +302,12 @@ function InteractiveTour({ stepIndex, onNext, onPrev, onClose }) {
         pointerEvents: 'auto'
       }}>
         {step.placement === 'bottom' ? (
-          <div style={{ position: 'absolute', top: '-25px', left: '50%', transform: 'translateX(-50%)', fontSize: '24px', animation: 'pointing-bounce-up 1s infinite alternate' }}>
-            👆
+          <div style={{ position: 'absolute', top: '-25px', left: '50%', transform: 'translateX(-50%)', fontSize: '18px', color: 'var(--primary)', animation: 'pointing-bounce-up 1s infinite alternate' }}>
+            ▲
           </div>
         ) : (
-          <div style={{ position: 'absolute', left: '-25px', top: '50%', transform: 'translateY(-50%)', fontSize: '24px', animation: 'pointing-bounce 1s infinite alternate' }}>
-            👈
+          <div style={{ position: 'absolute', left: '-20px', top: '50%', transform: 'translateY(-50%)', fontSize: '18px', color: 'var(--primary)', animation: 'pointing-bounce 1s infinite alternate' }}>
+            ◀
           </div>
         )}
         <h4 style={{ color: 'var(--primary)', margin: '0 0 8px', fontSize: '15px', fontWeight: '700' }}>{step.title}</h4>
@@ -843,7 +843,7 @@ function Home({ go, lang, LanguageToggle, startTour }) {
             {t('hero.loginCTA', lang)}
           </button>
           <button className="btn-primary" style={{ background: 'var(--primary-light)', border: 'none', color: '#fff', padding: '14px 36px', fontSize: '15px' }} onClick={() => startTour()}>
-            Take Platform Tour 🚀
+            Take Platform Tour
           </button>
         </div>
         <div className="hero-metrics">
@@ -1319,12 +1319,12 @@ function Dashboard({ user, go, completionsCount, sessionsCount, lang, startTour 
       {/* Video Walkthrough Banner */}
       <div className="banner-strip" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', background: 'linear-gradient(135deg,#1f3d3d,#2d5a5a)', marginBottom: '18px' }}>
         <div>
-          <div style={{ fontWeight: '700', fontSize: '15px', marginBottom: '3px' }}>🎥 Platform Video Walkthrough Guide</div>
+          <div style={{ fontWeight: '700', fontSize: '15px', marginBottom: '3px' }}>Platform Video Walkthrough Guide</div>
           <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: '13px' }}>New to Pool of Grace? Watch this quick video guide to learn how to navigate and use the platform.</div>
         </div>
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <button onClick={() => startTour()} style={{ background: '#2d7a2d', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '9px 20px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: '700', fontFamily: 'inherit' }}>
-            Take Interactive Tour 🚀
+            Take Interactive Tour
           </button>
           <button onClick={() => setShowWalkthrough(true)} style={{ background: '#fff', border: 'none', color: '#1f3d3d', padding: '9px 20px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: '700', fontFamily: 'inherit' }}>
             Watch Video Guide
@@ -2460,7 +2460,7 @@ function ModuleView({ module, go, lang, onQuizPassed, modules, openModule, showT
             {/* Recommended Books Section */}
             <div className="premium-card" style={{ padding: '22px', marginBottom: '28px', background: 'var(--primary-pale)', borderLeft: '5px solid var(--primary-light)', marginTop: '24px' }}>
               <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                📚 Recommended Books & E-Books
+                Recommended Books & E-Books
               </h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '16px' }}>
                 Recommended literature selected by Agnes to expand your understanding of Stage {module.order}.
