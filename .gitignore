@@ -26,3 +26,8 @@ backend/db_data/
 capstone_research/
 # Exclude Capstone Report text to avoid Turnitin/plagiarism checks
 complete_capstone_report.md
+
+# Ignore all report and assessment document formats globally to prevent accidental git tracking
+*.pdf
+*.html
+*.docx
