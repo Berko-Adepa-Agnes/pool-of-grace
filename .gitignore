@@ -21,3 +21,6 @@ Thumbs.db
 # Protect participant data files from Git
 # Contains user passwords, personal stories, onboarding responses
 backend/db_data/
+
+# Protect capstone research data (consent forms and recordings index)
+capstone_research/
