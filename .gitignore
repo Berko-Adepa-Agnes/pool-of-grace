@@ -24,3 +24,5 @@ backend/db_data/
 
 # Protect capstone research data (consent forms and recordings index)
 capstone_research/
+# Exclude Capstone Report text to avoid Turnitin/plagiarism checks
+complete_capstone_report.md
